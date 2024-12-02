@@ -1,0 +1,77 @@
+import { RootState } from './store';
+
+import { resetDiscoverSlice, setSwipingDataRedux, addSwipingDataRedux } from './DiscoverSlice/discoverSlice';
+
+import {
+  resetLocalSlice,
+  addLocalData,
+  setSelectedJob,
+  updateSelectedJobSettingsRedux,
+  setSelectedJobPreferencesRedux,
+  addSelectedJobMatchesRedux,
+  updateSelectedJobMatchNotificationRedux,
+  updateSelectedJobMatch,
+  updateSelectedJob,
+  unselectJobRedux,
+  setSelectedChannel,
+  setIsGetDataForSwipingLoading,
+} from './LocalSlice/localSlice';
+
+import {
+  resetLoggedInUserSlice,
+  addLoggedInUser,
+  setLoggedInUser,
+  setMatches,
+  addMatches,
+  updateMatch,
+  setEmployersJobs,
+  addEmployersJobs,
+  updateLoggedInUserImgRedux,
+  updateResumeData,
+  updateEmployerJobSettingsRedux,
+  setEmployerJobPreferencesRedux,
+  setEmployeePreferencesRedux,
+  updateMatchNotificationRedux,
+  deleteJobRedux,
+  updateEmployersJob,
+  removeFromReceivedLikesById,
+  addReceivedLike,
+} from './LoggedInUserSlice/loggedInUserSlice';
+
+export {
+  resetDiscoverSlice,
+  setIsGetDataForSwipingLoading,
+  updateSelectedJobMatch,
+  setSwipingDataRedux,
+  addSwipingDataRedux,
+  resetLocalSlice,
+  addLocalData,
+  setSelectedJob,
+  updateSelectedJobSettingsRedux,
+  resetLoggedInUserSlice,
+  addLoggedInUser,
+  setLoggedInUser,
+  setMatches,
+  addMatches,
+  updateMatch,
+  setEmployersJobs,
+  addEmployersJobs,
+  updateLoggedInUserImgRedux,
+  updateResumeData,
+  updateEmployerJobSettingsRedux,
+  setSelectedJobPreferencesRedux,
+  setEmployerJobPreferencesRedux,
+  setEmployeePreferencesRedux,
+  addSelectedJobMatchesRedux,
+  updateMatchNotificationRedux,
+  updateSelectedJobMatchNotificationRedux,
+  updateSelectedJob,
+  unselectJobRedux,
+  deleteJobRedux,
+  updateEmployersJob,
+  setSelectedChannel,
+  removeFromReceivedLikesById,
+  addReceivedLike,
+};
+
+export type { RootState };

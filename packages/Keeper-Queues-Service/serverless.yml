@@ -1,0 +1,210 @@
+service: keeper-queues-service
+app: pare
+org: jobfindingapp778
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  timeout: 20
+  region: us-east-1
+  iamRoleStatements:
+    # Allow sending emails with SES
+    - Effect: 'Allow'
+      Action:
+        - 'ses:SendEmail'
+        - 'ses:SendRawEmail'
+        - 'ses:SendTemplatedEmail'
+      Resource: '*'
+
+    # Allow interaction with SQS queues
+    - Effect: 'Allow'
+      Action:
+        - 'sqs:SendMessage'
+        - 'sqs:ReceiveMessage'
+        - 'sqs:DeleteMessage'
+        - 'sqs:GetQueueUrl'
+      Resource: 'arn:aws:sqs:us-east-1:*:*'
+
+    # Allow S3 operations (limit to required actions if possible)
+    - Effect: 'Allow'
+      Action:
+        - 's3:PutObject'
+        - 's3:GetObject'
+        - 's3:DeleteObject'
+        - 's3:ListBucket'
+      Resource: 'arn:aws:s3:::*' # Ideally specify the exact bucket ARN(s)
+
+package:
+  individually: true
+
+plugins:
+  - serverless-offline
+  - serverless-dotenv-plugin
+  - serverless-prune-plugin
+  - serverless-webpack
+
+custom:
+  webpack:
+    webpackConfig: './webpack.config.ts' # Specify the Webpack config file
+    includeModules: true # Automatically include required `node_modules`
+    packager: npm # Set package manager (npm or yarn)
+    packagerOptions:
+      scripts:
+        - 'npm rebuild' # Ensure any native dependencies are properly rebuilt
+
+  prune:
+    automatic: true
+    number: 3
+
+resources:
+  Resources:
+    # DLQs
+    JobsDLQ:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: JobsDLQ
+
+    GeoLocationDLQ:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: GeoLocationDLQ
+
+    SourceWebsiteCompaniesDLQ:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: SourceWebsiteCompaniesDLQ
+
+    GlassdoorCompaniesDLQ:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: GlassdoorCompaniesDLQ
+
+    CrunchbaseCompaniesDLQ:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: CrunchbaseCompaniesDLQ
+
+    GlassdoorReviewsDLQ:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: GlassdoorReviewsDLQ
+
+    # Main Queues with DLQs
+    JobsQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: JobsQueue
+        RedrivePolicy:
+          deadLetterTargetArn: !GetAtt JobsDLQ.Arn
+          maxReceiveCount: 3
+
+    GeoLocationQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: GeoLocationQueue
+        RedrivePolicy:
+          deadLetterTargetArn: !GetAtt GeoLocationDLQ.Arn
+          maxReceiveCount: 3
+
+    SourceWebsiteCompaniesQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: SourceWebsiteCompaniesQueue
+        RedrivePolicy:
+          deadLetterTargetArn: !GetAtt SourceWebsiteCompaniesDLQ.Arn
+          maxReceiveCount: 3
+
+    GlassdoorCompaniesQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: GlassdoorCompaniesQueue
+        RedrivePolicy:
+          deadLetterTargetArn: !GetAtt GlassdoorCompaniesDLQ.Arn
+          maxReceiveCount: 3
+
+    CrunchbaseCompaniesQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: CrunchbaseCompaniesQueue
+        RedrivePolicy:
+          deadLetterTargetArn: !GetAtt CrunchbaseCompaniesDLQ.Arn
+          maxReceiveCount: 3
+
+    GlassdoorReviewsQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: GlassdoorReviewsQueue
+        RedrivePolicy:
+          deadLetterTargetArn: !GetAtt GlassdoorReviewsDLQ.Arn
+          maxReceiveCount: 3
+
+functions:
+  triggerBrightDataQueues:
+    handler: functions/brightData/triggerBrightDataQueues.handler
+    events:
+      - http:
+          path: triggerBrightDataQueues
+          method: post
+          cors: true
+
+  processJobsQueue:
+    handler: functions/brightData/processJobsQueue.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - JobsQueue
+              - Arn
+          batchSize: 10
+
+  processGeoLocationQueue:
+    handler: functions/brightData/processGeoLocationQueue.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - GeoLocationQueue
+              - Arn
+          batchSize: 10
+
+  processSourceWebsiteCompaniesQueue:
+    handler: functions/brightData/processSourceWebsiteCompaniesQueue.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - SourceWebsiteCompaniesQueue
+              - Arn
+          batchSize: 10
+
+  processGlassdoorCompaniesQueue:
+    handler: functions/brightData/processGlassdoorCompaniesQueue.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - GlassdoorCompaniesQueue
+              - Arn
+          batchSize: 10
+
+  processCrunchbaseCompaniesQueue:
+    handler: functions/brightData/processCrunchbaseCompaniesQueue.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - CrunchbaseCompaniesQueue
+              - Arn
+          batchSize: 10
+
+  processGlassdoorReviewsQueue:
+    handler: functions/brightData/processGlassdoorReviewsQueue.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - GlassdoorReviewsQueue
+              - Arn
+          batchSize: 10

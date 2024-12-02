@@ -1,0 +1,50 @@
+{
+  "cli": {
+    "version": ">= 0.47.0"
+  },
+  "build": {
+    "base": {
+      "android": {
+        "image": "ubuntu-18.04-android-30-ndk-r19c",
+        "ndk": "21.4.7075529"
+      },
+      "ios": {
+        "image": "latest"
+      },
+      "channel": "base"
+    },
+    "development": {
+      "channel": "development",
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "API_URL": "https://mzl4y00fba.execute-api.us-east-1.amazonaws.com/dev"
+      },
+      "ios": {
+        "image": "latest"
+      }
+    },
+    "internal": {
+      "channel": "internal",
+      "distribution": "internal",
+      "env": {
+        "API_URL": "https://dpmf6o2aod.execute-api.us-east-1.amazonaws.com/production"
+      },
+      "ios": {
+        "image": "latest"
+      }
+    },
+    "production": {
+      "channel": "production",
+      "env": {
+        "API_URL": "https://dpmf6o2aod.execute-api.us-east-1.amazonaws.com/production"
+      },
+      "ios": {
+        "image": "latest"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

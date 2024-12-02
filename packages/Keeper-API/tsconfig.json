@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "preserveConstEnums": true,
+    "strictNullChecks": true,
+    "noEmitOnError": true,
+    "sourceMap": true,
+    "allowJs": true,
+    "target": "es2015",
+    "outDir": ".build",
+    "moduleResolution": "node",
+    "lib": ["es2015"],
+    "rootDir": "./"
+  },
+
+  "include": ["functions/**/*", "webpack.config.ts"],
+  "exclude": ["node_modules", "dist"]
+}

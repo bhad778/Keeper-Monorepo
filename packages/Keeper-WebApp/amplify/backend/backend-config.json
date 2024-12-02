@@ -1,0 +1,11 @@
+{
+  "auth": {
+    "paref440a36a": {
+      "customAuth": false,
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito",
+      "serviceType": "imported"
+    }
+  }
+}

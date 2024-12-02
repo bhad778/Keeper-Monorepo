@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "Keeper",
+    "slug": "keeper",
+    "version": "0.0.40",
+    "orientation": "portrait",
+    "icon": "./src/assets/images/keeperAppIcon.png",
+    "scheme": "myapp",
+    "userInterfaceStyle": "automatic",
+    "owner": "keeperorganization",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#1e1e1e",
+      "image": "./src/assets/images/splash.png"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "bitcode": false,
+      "bundleIdentifier": "com.bhad778.keeperApp",
+      "associatedDomains": ["applinks:keepertechjobs.com"],
+      "buildNumber": "40",
+      "usesIcloudStorage": true,
+      "config": {
+        "usesNonExemptEncryption": false
+      },
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to allow users to upload photos to their profile if they would like to. Example- A recruiter will make a job and they can upload a photo of that company so that other users will see it on the job description."
+      }
+    },
+    "android": {
+      "package": "com.bhad778.keeperApp",
+      "versionCode": 40,
+      "googleServicesFile": "./google-services.json"
+    },
+    "web": {
+      "favicon": "./src/assets/images/favicon.png"
+    },
+    "description": ""
+  }
+}
