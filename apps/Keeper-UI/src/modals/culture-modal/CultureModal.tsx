@@ -101,23 +101,6 @@ const CultureModal = ({ cultureModalVisible, setCultureModalVisible, setBenefits
             text='Do you like a loose, do-it-yourself environment or more strutured?'
             // textStyles={returnErrorStyles('onSiteOptionsOpenTo')}
           />
-          <View style={styles.buttonsContainer}>
-            {companyStructureOptions.map((option: string, index: number) => {
-              return (
-                <KeeperSelectButton
-                  key={index}
-                  onPress={value => console.log('asf')}
-                  title={option}
-                  // selected={editEmployeeState.onSiteOptionsOpenTo?.includes(option)}
-                  // selectedButtonStyles={styles.selectedButtonStyles}
-                  // unSelectedButtonStyles={styles.unSelectedButtonStyles}
-                  buttonStyles={styles.threeButton}
-                  // textStyles={styles.workSettingButtonText}
-                  // unSelectedTextStyles={styles.unSelectedTextStyles}
-                />
-              );
-            })}
-          </View>
         </View>
 
         <View style={styles.section}>

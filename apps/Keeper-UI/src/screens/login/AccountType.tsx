@@ -6,9 +6,11 @@ import { useDispatch } from 'react-redux';
 import { addLoggedInUser } from 'reduxStore';
 import { warmUpEmployeeSignUp, warmUpEmployerSignUp, warmUpGetForSwiping } from 'projectUtils/globalUtils';
 
-import FullNameLogo from '../../assets/svgs/fullNameLogo.svg';
+import FullNameLogo from 'assets'
 import AppHeaderText from '../../components/AppHeaderText';
 import useStyles from './AccountTypeStyles';
+
+
 
 const AccountType = () => {
   const navigation = useNavigation();
@@ -33,7 +35,7 @@ const AccountType = () => {
 
       dispatch(addLoggedInUser({ accountType }));
       // navigation.navigate('EducationSwiper');
-      finishSwiper(accountType);
+      // finishSwiper(accountType);
     },
     [dispatch, finishSwiper],
   );
@@ -46,9 +48,7 @@ const AccountType = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.keeperLogoContainer}>
-        <FullNameLogo style={styles.keeperLogo} />
-      </View>
+      <View style={styles.keeperLogoContainer}>{/* <FullNameLogo style={styles.keeperLogo} /> */}</View>
       <View style={styles.contents}>
         <View style={styles.headerTextContainer}>
           <AppHeaderText style={styles.headerText}>What will you be{'\n'} using Keeper for?</AppHeaderText>

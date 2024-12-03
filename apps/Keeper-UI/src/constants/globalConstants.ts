@@ -6,8 +6,8 @@ import {
   TFrontendBackendOptions,
   TOperatingSystem,
   TEmployerFilterListOptions,
+  TWorkAuthOptions,
 } from 'keeperTypes';
-import { TWorkAuthOptions } from 'types/globalTypes';
 
 export const bottomTabNavigatorBaseHeight = 80;
 

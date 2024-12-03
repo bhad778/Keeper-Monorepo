@@ -30,7 +30,7 @@ export const addAffindaSkillsToJobHistoryItem = (
               .replace(/\s/, '')
               .toLowerCase();
 
-            if (noCaseSkillName.includes(noCaseKeeperSkill)) {
+            if (noCaseSkillName?.includes(noCaseKeeperSkill)) {
               if (!jobSkills.includes(keeperSkill)) {
                 tempKeepSkill = keeperSkill;
                 return true;
@@ -71,7 +71,7 @@ export const affindaSkillsTransformer = (affindaSkills: ResumeDataSkillsItem[]) 
             .replace(/\s/, '')
             .toLowerCase();
 
-          if (noCaseSkillName.includes(noCaseKeeperSkill)) {
+          if (noCaseSkillName?.includes(noCaseKeeperSkill)) {
             if (noCaseSkillName?.includes('react')) {
               transformedSkills.push('React');
             }

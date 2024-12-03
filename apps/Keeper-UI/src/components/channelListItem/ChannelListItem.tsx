@@ -78,13 +78,13 @@ const ChannelListItem = ({
         },
       };
       if (isEmployee) {
-        dispatch(updateMatch({ matchData: matchUpdateObject }));
+        dispatch(updateMatch({ matchData: matchUpdateObject as Partial<TMatch> }));
       }
       try {
         UsersService.updateOwnMatch({
           userId: senderId,
           accountType,
-          matchToUpdate: matchUpdateObject,
+          matchToUpdate: matchUpdateObject as Partial<TMatch>,
         });
       } catch (error) {
         if (error) {
