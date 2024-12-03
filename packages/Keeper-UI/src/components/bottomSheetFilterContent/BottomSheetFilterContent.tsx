@@ -3,16 +3,31 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { RootState } from 'reduxStore';
 import { useSelector } from 'react-redux';
-import { TCompanySize, TFrontendBackendOptions } from 'types';
+import {
+  TCompanySize,
+  TFrontendBackendOptions,
+  TEmployerFilterListOptions,
+  TWorkAuthOptions,
+  EmploymentTypes,
+} from 'types';
+
+// import {
+//   TCompanySize,
+//   TFrontendBackendOptions,
+//   TEmployerFilterListOptions,
+//   TWorkAuthOptions,
+//   EmploymentTypes,
+// } from '../../../../../shared/types';
+
+// import { TCompanySize } from '../../shared/types';
+
 import { TechnologiesList } from 'constants/TechnologiesList';
-import { TEmployerFilterListOptions } from 'types/employerTypes';
 import {
   companySizeOptions,
   employmentTypeOptions,
   frontendBackendOptions,
   workAuthOptions,
 } from 'constants/globalConstants';
-import { EmploymentTypes, TWorkAuthOptions } from 'types/globalTypes';
 
 import useStyles from './BottomSheetFilterContentStyles';
 
