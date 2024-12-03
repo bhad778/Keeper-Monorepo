@@ -3,6 +3,7 @@ import { View } from 'react-native';
 import Modal from 'react-native-modal';
 import { EducationEnum } from 'types';
 import { KeeperSelectButton, ModalHeader } from 'components';
+import { TAccountType } from '../../../../../shared/types';
 
 import { useStyles } from './EducationModalStyles';
 

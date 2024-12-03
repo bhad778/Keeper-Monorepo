@@ -22,7 +22,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "types": ["../../shared/types"]
+      "types": ["../../../shared/types"]
     }
   },
   "include": ["src"],

@@ -9,16 +9,16 @@
     "paths": {
       "*": ["src/*"],
       "assets/*": ["src/assets/*"],
-      "components/*": ["src/compo"],
+      "components/*": ["src/components/*"],
       "constants/*": ["src/constants/*"],
       "hooks/*": ["src/hooks/*"],
       "modals/*": ["src/modals/*"],
       "navigation/*": ["src/navigation/*"],
       "screens/*": ["src/screens/*"],
       "services/*": ["src/services/*"],
-      "reduxStore/*": ["src/reduxStore/*"],
+      "reduxStore/*": ["src/reduxStore/*dsfasd"],
       "theme/*": ["src/theme/*"],
-      "types/*": ["../../../shared/types"],
+      "types": ["../../shared/types"],
       "utils/*": ["src/utils/*"]
     }
   },
