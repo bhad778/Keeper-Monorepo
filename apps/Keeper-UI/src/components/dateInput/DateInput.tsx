@@ -37,7 +37,7 @@ const DateInput = ({ title, dateString, setDateString, isYear, titleStyles, onFo
       }
       setDateString(tempDateString);
     },
-    [setDateString],
+    [dateString.length, setDateString],
   );
 
   return (
