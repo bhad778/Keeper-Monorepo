@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { TextInput, View, Keyboard } from 'react-native';
 import { Auth } from 'aws-amplify';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { AppBoldText, KeeperSelectButton, KeeperSpinnerOverlay, AppText, BackButton } from 'components';
 import * as Sentry from 'sentry-expo';
@@ -12,8 +12,15 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { FullNameLogo } from 'keeperAssets';
 
 import useStyles from './PhoneNumberStyles';
+import { CognitoUser } from 'amazon-cognito-identity-js';
+
+type RouteParams = {
+  isLogIn?: boolean;
+  isFromBottomTabNav?: boolean;
+};
 
 const PhoneNumber = () => {
+  const route = useRoute<RouteProp<{ params: RouteParams }, 'params'>>();
   const accountType = useSelector((state: RootState) => state.loggedInUser.accountType);
 
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -22,7 +29,6 @@ const PhoneNumber = () => {
   const [isValid, setIsValid] = useState(false);
   const [isPhoneNumberCallLoading, setIsPhoneNumberCallLoading] = useState(false);
 
-  const route = useRoute();
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const styles = useStyles(isValid);
@@ -41,9 +47,9 @@ const PhoneNumber = () => {
     } else {
       setIsValid(false);
     }
-  }, [email, isPhoneNumberValid]);
+  }, [email, isLogIn, isPhoneNumberValid]);
 
-  const onChangePhoneNumber = value => {
+  const onChangePhoneNumber = (value: string) => {
     setPhoneNumber(normalizeInput(value));
     if (value.length <= 15 && value.length >= 14) {
       setIsPhoneNumberValid(true);
@@ -99,12 +105,12 @@ const PhoneNumber = () => {
 
   const signIn = (numericPhoneNumber: string) => {
     Auth.signIn(numericPhoneNumber, 'Password$4')
-      .then((signInResponse: any) => {
+      .then((signInResponse: CognitoUser) => {
         setIsPhoneNumberCallLoading(false);
 
         navigation.navigate('VerificationCode', { phoneNumber: numericPhoneNumber, signInResponse });
       })
-      .catch((error: any) => {
+      .catch((error: Error) => {
         setIsPhoneNumberCallLoading(false);
 
         if (error.message == 'Incorrect username or password.') {
