@@ -4,13 +4,14 @@ import { AppBoldText, AppHeaderText, KeeperSelectButton } from 'components';
 import { LoadingScreen, ViewCoreSignalUsers } from 'screens';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { MiscService, UsersService } from 'services';
-import { TCoreSignalSearchFilters, TCoreSignalUserData } from 'types/employeeTypes';
+import { TCoreSignalSearchFilters, TCoreSignalUserData } from 'keeperTypes';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, addLoggedInUser } from 'reduxStore';
 import Toast from 'react-native-toast-message';
 import { genericErrorMessage } from 'constants/globalConstants';
-import useStyles from './NameAndCompanyStyles';
 import { AlertModal } from 'modals';
+
+import useStyles from './NameAndCompanyStyles';
 
 const NameAndCompany = () => {
   const loggedInUserId = useSelector((state: RootState) => state.loggedInUser._id);
