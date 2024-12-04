@@ -1,6 +1,6 @@
-export { default as educationImage } from './educationImage.png';
-export { default as jobSlider1 } from './jobSlider1.png';
-export { default as jobSlider3 } from './jobSlider3.png';
-export { default as keeperAppIcon } from './keeperAppIcon.png';
-export { default as keeperLogo } from './keeperLogo.png';
-export { default as splash } from './splash.png';
+export { default as EducationImage } from './educationImage.png';
+export { default as JobSlider1 } from './jobSlider1.png';
+export { default as JobSlider3 } from './jobSlider3.png';
+export { default as KeeperAppIcon } from './keeperAppIcon.png';
+export { default as KeeperLogo } from './keeperLogo.png';
+export { default as Splash } from './splash.png';

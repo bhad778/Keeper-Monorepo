@@ -5,9 +5,6 @@
     "lib": ["ESNext", "DOM"],
     "moduleResolution": "node",
     "baseUrl": ".",
-    "paths": {
-      "types": ["shared/types"]
-    },
     "rootDir": ".",
     "outDir": "./dist",
     "strict": true,

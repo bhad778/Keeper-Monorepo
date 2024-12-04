@@ -3,13 +3,13 @@ import { TextInput, View, Keyboard } from 'react-native';
 import { Auth } from 'aws-amplify';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
-import { AppBoldText, AppHeaderText, KeeperSelectButton, KeeperSpinnerOverlay, AppText } from 'components';
+import { AppBoldText, KeeperSelectButton, KeeperSpinnerOverlay, AppText, BackButton } from 'components';
 import * as Sentry from 'sentry-expo';
-import { BackButton } from 'components';
 import { UsersService } from 'services';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, addLoggedInUser, setSwipingDataRedux } from 'reduxStore';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { FullNameLogo } from 'keeperAssets';
 
 import useStyles from './PhoneNumberStyles';
 
@@ -216,9 +216,9 @@ const PhoneNumber = () => {
         )}
         <KeeperSpinnerOverlay isLoading={isPhoneNumberCallLoading} color='white' />
 
-        {/* <View style={styles.keeperLogoContainer}>
+        <View style={styles.keeperLogoContainer}>
           <FullNameLogo style={styles.keeperLogo} />
-        </View> */}
+        </View>
 
         <View style={styles.contents}>
           {!isEmployee && !isLogIn && (

@@ -5,12 +5,10 @@ import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 import { addLoggedInUser } from 'reduxStore';
 import { warmUpEmployeeSignUp, warmUpEmployerSignUp, warmUpGetForSwiping } from 'projectUtils/globalUtils';
+import { FullNameLogo } from 'keeperAssets';
 
-import FullNameLogo from 'assets'
 import AppHeaderText from '../../components/AppHeaderText';
 import useStyles from './AccountTypeStyles';
-
-
 
 const AccountType = () => {
   const navigation = useNavigation();
@@ -48,7 +46,7 @@ const AccountType = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.keeperLogoContainer}>{/* <FullNameLogo style={styles.keeperLogo} /> */}</View>
+      <View style={styles.keeperLogoContainer}>{<FullNameLogo style={styles.keeperLogo} />}</View>
       <View style={styles.contents}>
         <View style={styles.headerTextContainer}>
           <AppHeaderText style={styles.headerText}>What will you be{'\n'} using Keeper for?</AppHeaderText>
