@@ -7,12 +7,15 @@ import {
   TBrightDataIndeedJob,
   TBrightDataLinkedInCompany,
   TBrightDataLinkedInJob,
-} from '../types/brightDataTypes';
-import { TCompensationRange, TJob, TJobCompensation } from '../types/employerTypes';
-import { EmploymentTypeEnum } from '../types/globalTypes';
-import { extractDollarNumbers, findStringsInLongString, normalizeLocation, normalizeUrl } from './globalUtils';
-import AWS from '../awsConfig';
-import { TechnologiesList } from './coreSignalUtils';
+  TCompensationRange,
+  TJob,
+  TJobCompensation,
+  EmploymentTypeEnum,
+} from 'keeperTypes';
+import { extractDollarNumbers, findStringsInLongString, normalizeLocation, normalizeUrl } from 'keeperUtils';
+import { TechnologiesList } from 'keeperConstants';
+
+import AWS from '../../../awsConfig';
 
 const sqs = new AWS.SQS();
 
@@ -21,7 +24,7 @@ const brightDataApiKey = process.env.BRIGHTDATA_API_KEY;
 export const requeueTimeout = 600; // 10 minutes
 
 const linkedInRequiredYearsOfExperienceTransformer = (
-  job_seniority_level: TBrightDataLinkedInJob['job_seniority_level']
+  job_seniority_level: TBrightDataLinkedInJob['job_seniority_level'],
 ): number => {
   switch (job_seniority_level) {
     case BrightDataSeniorityEnum.NotApplicable:
@@ -124,7 +127,7 @@ export const normalizeCompanyName = (name: string) => {
   return normalizedName;
 };
 
-export const transformGlassdoorUrlToReviews = (url) => {
+export const transformGlassdoorUrlToReviews = url => {
   if (!url || typeof url !== 'string') return null;
 
   try {
@@ -189,7 +192,7 @@ const removeQueryParams = (url: string) => {
 // typical format is this- "$150,000.00/yr - $200,000.00/yr"
 // TODO is this always per year?
 export const linkedInSalaryTransformer = (
-  job_base_pay_range: TBrightDataLinkedInJob['job_base_pay_range']
+  job_base_pay_range: TBrightDataLinkedInJob['job_base_pay_range'],
 ): TJobCompensation | undefined => {
   let compensationType: EmploymentTypeEnum = EmploymentTypeEnum.Salary;
 
@@ -208,7 +211,7 @@ export const linkedInSalaryTransformer = (
 
 // null, $30.52 - $40.69 an hour, $33,540 - $54,455 a year, From $55,000 a year, $26.13 an hour
 export const indeedSalaryTransformer = (
-  salary_formatted: TBrightDataIndeedJob['salary_formatted']
+  salary_formatted: TBrightDataIndeedJob['salary_formatted'],
 ): TJobCompensation | null => {
   if (salary_formatted) {
     let compensationType: EmploymentTypeEnum = EmploymentTypeEnum.Salary;
@@ -458,7 +461,7 @@ export const brightDataGlassdoorCompanyTransformer = (company: TBrightDataGlassd
   return transformedCompany;
 };
 
-export const checkSnapshotStatusById = async (snapshotId) => {
+export const checkSnapshotStatusById = async snapshotId => {
   try {
     const response = await axios.get(`https://api.brightdata.com/datasets/v3/progress/${snapshotId}`, {
       headers: {
@@ -473,7 +476,7 @@ export const checkSnapshotStatusById = async (snapshotId) => {
   }
 };
 
-export const fetchSnapshotArrayDataById = async (snapshotId) => {
+export const fetchSnapshotArrayDataById = async snapshotId => {
   try {
     const response = await axios.get(`https://api.brightdata.com/datasets/v3/snapshot/${snapshotId}?format=json`, {
       headers: {
@@ -510,7 +513,7 @@ export const requestSnapshotByUrlAndFilters = async (url, filters) => {
   } catch (error) {
     console.error(
       `Error requesting snapshot for with this ${url} and these filters- ${JSON.stringify(filters)}`,
-      error
+      error,
     );
     throw error; // Let the caller handle the error
   }
@@ -554,7 +557,7 @@ export const requestWithRetry = async (requestFunction, maxRetries = 3, delay = 
     } catch (error) {
       console.error(`Attempt ${attempt} failed:`, error);
       if (attempt < maxRetries) {
-        await new Promise((resolve) => setTimeout(resolve, delay * attempt)); // Exponential backoff
+        await new Promise(resolve => setTimeout(resolve, delay * attempt)); // Exponential backoff
       } else {
         throw error; // Let the caller handle the error after max retries
       }

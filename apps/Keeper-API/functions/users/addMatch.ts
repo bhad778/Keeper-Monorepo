@@ -8,7 +8,7 @@ import Employee from '../../models/Employee';
 import Job from '../../models/Job';
 import { AccountTypeSchema, TMatchSchema } from '../../schemas/globalSchemas';
 import { AccountTypeEnum } from '../../types/globalTypes';
-import AWS from '../../awsConfig';
+import AWS from '../../../../awsConfig';
 
 export const handler = async (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
   context.callbackWaitsForEmptyEventLoop = false;
@@ -46,10 +46,10 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     }
 
     // Assign a color for the match
-    const assignColor = (matches) => {
+    const assignColor = matches => {
       const colorsArray = colors;
-      const latestFiveColors = matches?.slice(-5).map((match) => match.custom.employeeColor) || [];
-      return colorsArray.find((color) => !latestFiveColors.includes(color)) || '#acfcf2';
+      const latestFiveColors = matches?.slice(-5).map(match => match.custom.employeeColor) || [];
+      return colorsArray.find(color => !latestFiveColors.includes(color)) || '#acfcf2';
     };
 
     // Update matches for both users
@@ -70,12 +70,12 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     };
 
     (loggedInUserObject.matches ??= []).push(tempLoggedInUserMatch);
-    loggedInUserObject.receivedLikes = (loggedInUserObject.receivedLikes ?? []).filter((id) => id !== otherUserId);
+    loggedInUserObject.receivedLikes = (loggedInUserObject.receivedLikes ?? []).filter(id => id !== otherUserId);
     loggedInUserObject.markModified('matches');
     loggedInUserObject.markModified('receivedLikes');
 
     (otherUserObject.matches ??= []).push(tempOtherUserMatch);
-    otherUserObject.receivedLikes = (otherUserObject.receivedLikes ?? []).filter((id) => id !== loggedInUserId);
+    otherUserObject.receivedLikes = (otherUserObject.receivedLikes ?? []).filter(id => id !== loggedInUserId);
     otherUserObject.markModified('matches');
     otherUserObject.markModified('receivedLikes');
 

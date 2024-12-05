@@ -1,6 +1,6 @@
 import { APIGatewayProxyCallback, APIGatewayEvent } from 'aws-lambda';
 
-const ValidateBody = (event: APIGatewayEvent, joiSchema, callback?: APIGatewayProxyCallback): Boolean => {
+const ValidateBody = (event: APIGatewayEvent, joiSchema, callback?: APIGatewayProxyCallback): boolean => {
   if (event.body == null) {
     if (callback) {
       callback(null, {
