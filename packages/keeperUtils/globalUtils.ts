@@ -1,16 +1,6 @@
-import * as DocumentPicker from 'expo-document-picker';
-import * as FileSystem from 'expo-file-system';
-import { Alert, Share, Image } from 'react-native';
+import * as countries from 'i18n-iso-countries';
 
-import getEnvVars from '../../environment';
-import { TEmployeeEducation, TEmployeePastJob, TJob, TMatch } from 'keeperTypes';
-import { JobsService, MiscService, UsersService } from 'services';
-
-export const numberWithCommas = (x: number | undefined): string | void => {
-  if (x) {
-    return x?.toString()?.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  }
-};
+import { TEmployeePastJob, TEmployeeSettings } from '../keeperTypes';
 
 export const getLargestNumberFromArray = (numbersArray: number[] | string[]) => {
   let largest = numbersArray[0];
@@ -22,26 +12,6 @@ export const getLargestNumberFromArray = (numbersArray: number[] | string[]) => 
   }
 
   return Number(largest);
-};
-
-// if you want to dynamically get a nested objects property based on a variable string use this
-export const getPropByString = (obj: any, propString: string) => {
-  if (!propString) return obj;
-
-  var prop,
-    props = propString.split('.');
-
-  for (var i = 0, iLen = props.length - 1; i < iLen; i++) {
-    prop = props[i];
-
-    var candidate = obj[prop];
-    if (candidate !== undefined) {
-      obj = candidate;
-    } else {
-      break;
-    }
-  }
-  return obj[props[i]];
 };
 
 export const getSmallestNumberFromArray = (numbersArray: number[] | string[]) => {
@@ -56,54 +26,204 @@ export const getSmallestNumberFromArray = (numbersArray: number[] | string[]) =>
   return Number(smallest);
 };
 
-export const extractGoodImageFromBrandFetchData = (brandFetchData: any) => {
-  let goodImg = '';
+// pass in a string and it will return an array of each string within that string that began with a $
+// argument example- $30.52 - $40.69 an hour
+// output example- [30.52, 40.69]
+export const extractDollarNumbers = (inputString: string): number[] => {
+  // Regular expression to match words starting with $
+  const dollarStrings = inputString.match(/\$\d+/g);
 
-  brandFetchData.logos.forEach((logoData: any) => {
-    if (!goodImg) {
-      logoData.formats.map((formatsData: any) => {
-        if (
-          formatsData.format === 'png' ||
-          formatsData.format === 'jpeg' ||
-          (formatsData.format === 'jpg' && formatsData.width >= 400)
-        ) {
-          goodImg = formatsData.src;
-        }
-      });
+  // Convert the matched strings to numbers after removing the $
+  const dollarNumbers = dollarStrings?.map(str => Number(str.replace('$', ''))) || [];
+
+  return dollarNumbers;
+};
+
+// returns strings in the array of strings (first param) that are in the longer string (second param)
+export const findStringsInLongString = (strings: string[], longString: string): string[] => {
+  return strings.filter(str => longString.toLowerCase().includes(str.toLowerCase()));
+};
+
+export const capitalizeFirstLetter = (text: string) => {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+};
+
+export const escapeRegex = (text: string) => {
+  return text.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&');
+};
+
+export const normalizeUrl = (url: string, removeQueryParams = false) => {
+  if (!url) return null;
+
+  try {
+    // Ensure the URL has a protocol
+    const formattedUrl = url.startsWith('http://') || url.startsWith('https://') ? url : `https://${url}`;
+
+    // Parse the URL
+    const parsedUrl = new URL(formattedUrl);
+
+    // Get the hostname and remove 'www.' prefix if present
+    const host = parsedUrl.host.replace(/^www\./, '');
+
+    // If removeQueryParams is true, return the base URL without path, query params, or fragments
+    if (removeQueryParams) {
+      return `https://www.${host}`;
+    }
+
+    // Build the base normalized URL including the pathname
+    let normalizedUrl = `https://www.${host}${parsedUrl.pathname}`.replace(/\/$/, ''); // Remove trailing slash
+
+    // Append query parameters and fragments if removeQueryParams is false
+    if (!removeQueryParams) {
+      if (parsedUrl.search) {
+        normalizedUrl += parsedUrl.search; // Add query parameters
+      }
+      if (parsedUrl.hash) {
+        normalizedUrl += parsedUrl.hash; // Add fragments
+      }
+    }
+
+    return normalizedUrl;
+  } catch (error) {
+    console.error(`Error normalizing URL: ${url}`, error);
+    return null; // Return null if URL parsing fails
+  }
+};
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+countries.registerLocale(require('i18n-iso-countries/langs/en.json'));
+
+export const normalizeLocation = (rawLocation: string) => {
+  if (!rawLocation) return null;
+
+  try {
+    // Regex to match "City, State" format
+    const locationRegex = /([\w\s]+),\s*([A-Z]{2})/;
+
+    // Attempt to match the city and state
+    const match = rawLocation.match(locationRegex);
+
+    if (match) {
+      const city = match[1].trim();
+      const state = match[2].trim();
+      return `${city}, ${state}`;
+    }
+
+    // If no match, log and return null
+    console.warn(`Could not normalize location: ${rawLocation}`);
+    return null;
+  } catch (error) {
+    console.error(`Error normalizing location: ${rawLocation}`, error);
+    return null; // Return null on failure
+  }
+};
+
+export const normalizeTitle = (text: string) => {
+  if (!text) return null;
+
+  // List of words not to capitalize unless they are the first word
+  const exceptions = new Set([
+    'a',
+    'an',
+    'and',
+    'at',
+    'but',
+    'by',
+    'for',
+    'in',
+    'nor',
+    'of',
+    'on',
+    'or',
+    'so',
+    'the',
+    'to',
+    'up',
+    'yet',
+  ]);
+
+  // Split the text into words
+  const words = text.split(/\s+/);
+
+  // Normalize each word
+  const normalizedWords = words.map((word, index) => {
+    const lowerCasedWord = word.toLowerCase();
+    if (index === 0 || !exceptions.has(lowerCasedWord)) {
+      // Capitalize the first letter if it's the first word or not in the exceptions list
+      return word.charAt(0).toUpperCase() + lowerCasedWord.slice(1);
+    }
+    // Otherwise, keep it lowercase
+    return lowerCasedWord;
+  });
+
+  // Join the words back together
+  return normalizedWords.join(' ');
+};
+
+// this takes in 02 and return 2002, 99 and returns 1999
+export const getFullYearFrom2DigitYear = (lastTwoYearDigits: string) => {
+  let firstTwoYearDigits = '';
+  if (lastTwoYearDigits.charAt(0) > '6') {
+    firstTwoYearDigits = '19';
+  } else {
+    firstTwoYearDigits = '20';
+  }
+  return firstTwoYearDigits + lastTwoYearDigits;
+};
+
+export const getYearsOfExperienceFromJobHistory = (jobHistory: TEmployeePastJob[]) => {
+  const startYearArray: string[] = [];
+  const endYearArray: any = [];
+  jobHistory.forEach((pastJob: TEmployeePastJob) => {
+    const fullStartYear = getFullYearFrom2DigitYear(pastJob.startDate.slice(-2));
+    startYearArray.push(fullStartYear);
+
+    if (pastJob.endDate === null) {
+      endYearArray.push(new Date().getFullYear());
+    } else {
+      const fullEndYear = getFullYearFrom2DigitYear(pastJob.endDate.slice(-2));
+      endYearArray.push(fullEndYear);
     }
   });
 
-  return goodImg;
+  const earliestStartYear = getSmallestNumberFromArray(startYearArray);
+  const latestEndYear = getLargestNumberFromArray(endYearArray);
+
+  const finalYearsOfExperience = latestEndYear - earliestStartYear;
+  if (finalYearsOfExperience < 0 || typeof finalYearsOfExperience != 'number' || !finalYearsOfExperience) {
+    return 0;
+  }
+
+  return latestEndYear - earliestStartYear;
 };
 
-export const checkTwoArraysEqual = (array1: string[] | number[], array2: string[] | number[]) => {
-  if (array1 && array2) {
-    return array1.sort().join(',') === array2.sort().join(',');
-  } else {
-    return false;
-  }
+// pass in one large string and an array of strings to return
+// which strings in the array are contained in the large string
+export const findContainedStrings = (largeString: string, arrayOfSmallStrings: string[]): string[] => {
+  const lowerCaseLargeString = largeString.toLowerCase();
+
+  // Filter substrings by checking if their lowercase version is included in the lowercase large string
+  return arrayOfSmallStrings.filter(smallString => lowerCaseLargeString.includes(smallString.toLowerCase()));
 };
 
-export const toTitleCase = (str: string) => {
-  let string = str;
-  if (!string) {
-    string = '';
-  }
-  return str.replace(/\w\S*/g, (txt: string) => {
-    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-  });
-};
+export const shuffleArray = (array: any[]) => {
+  const shuffledArray = [...array];
 
-export const prefetchImages = async (imageUrls: string[]) => {
-  try {
-    const tasks = imageUrls.map(url => {
-      return Image.prefetch(url);
-    });
+  let currentIndex = shuffledArray.length;
 
-    await Promise.all(tasks);
-  } catch (e) {
-    console.warn('Image prefetch error:', e);
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+    // Pick a remaining element...
+    const randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [shuffledArray[currentIndex], shuffledArray[randomIndex]] = [
+      shuffledArray[randomIndex],
+      shuffledArray[currentIndex],
+    ];
   }
+  return shuffledArray;
 };
 
 export const transformMonthToString = (month: string) => {
@@ -166,258 +286,41 @@ export const transformMonthToString = (month: string) => {
   }
 };
 
-export const deepEqualCheck = (a, b) => {
-  if (a === b) return true;
-  if (a instanceof Date && b instanceof Date) return a.getTime() === b.getTime();
-  if (!a || !b || (typeof a !== 'object' && typeof b !== 'object')) return a === b;
-  if (a === null || a === undefined || b === null || b === undefined) return false;
-  if (a.prototype !== b.prototype) return false;
-  const keys = Object.keys(a);
-  if (keys.length !== Object.keys(b).length) return false;
-  return keys.every(k => deepEqualCheck(a[k], b[k]));
-};
+// const removeDuplicateStringsFromArray = (stringArray: string[]) => {
+//   const uniq = stringArray.reduce(function (a: any, b: any) {
+//     if (a.indexOf(b) < 0) a.push(b);
+//     return a;
+//   }, []);
+//   return uniq;
+// };
 
-// example- 03 becomes 2003
-export const transformYearToString = (month: string) => {
-  let monthValue = month;
-  if (Number(monthValue) > 60) {
-    monthValue = `19${monthValue}`;
-  } else {
-    monthValue = `20${monthValue}`;
-  }
-  return monthValue;
-};
-
-export const isPastJobComplete = (
-  pastJob: TEmployeePastJob,
-  hasCheckBeenPressed: boolean,
-  hasUploadedResume?: boolean,
-) => {
-  if (!hasCheckBeenPressed && !hasUploadedResume) {
-    return true;
-  }
-
-  // if theyve selected this job is present, then endate will be null, so dont count that when checking
-  // if job is complated
-  if (pastJob?.endDate === null) {
-    return pastJob.startDate && !pastJob?.startDate.includes('00') && pastJob?.jobDescription && pastJob?.jobTitle;
-  }
-
-  return (
-    pastJob.startDate &&
-    !pastJob?.startDate.includes('00') &&
-    pastJob.endDate &&
-    !pastJob?.endDate.includes('00') &&
-    pastJob?.jobDescription &&
-    pastJob?.jobTitle
-  );
-};
-
-export const warmUpGetForSwiping = () => {
-  JobsService.getJobsForSwiping({
-    isPing: true,
-  });
-  UsersService.getEmployeesForSwiping({
-    isPing: true,
-  });
-};
-
-export const warmUpEmployeeSignUp = () => {
-  UsersService.updateUserSettings({
-    isPing: true,
-  });
-  MiscService.searchAndCollectCoreSignal({
-    isPing: true,
-  });
-  UsersService.updateUserData({
-    isPing: true,
-  });
-  UsersService.getEmployeeData({
-    isPing: true,
-  });
-};
-
-export const warmUpEmployerSignUp = () => {
-  JobsService.addJob({
-    isPing: true,
-  });
-  JobsService.getEmployersJobs({
-    isPing: true,
-  });
-  UsersService.onSelectJob({
-    isPing: true,
-  });
-  UsersService.getEmployerData({
-    isPing: true,
-  });
-};
-
-export const isEducationHistoryItemComplete = (educationItem: TEmployeeEducation) => {
-  return educationItem.endDate && educationItem.major && educationItem.school && educationItem.degree;
-};
-
-// example- the string 2019-03-27 transforms to March, 2019
-export const transformDateToText = (textDate: string) => {
-  if (!textDate) {
-    return 'PRESENT';
-  }
-  const stringArray = textDate.split('/');
-
-  return `${transformMonthToString(stringArray[0])}, ${transformYearToString(stringArray[1])}`;
-};
-
-export const isOdd = (num: number) => {
-  return num % 2;
-};
-
-export const reorderObjectArrayByDate = (objectArray: any, dateKey: string, isDescending?: boolean) => {
-  const objectArrayTemp = [...objectArray];
-  return objectArrayTemp.sort((a: any, b: any) => {
-    // Turn your strings into dates, and then subtract them
-    // to get a value that is either negative, positive, or zero.
-    if (isDescending) {
-      return new Date(a[dateKey]) - new Date(b[dateKey]);
-    } else {
-      return new Date(b[dateKey]) - new Date(a[dateKey]);
-    }
-  });
-};
-
-// we need to round odd numbers up, because if theres 3 then we need the height to be just as high
-// as if there were 4, because odd numbers make the new row because we have rows of 2, so isOdd
-// will return 1 if its odd, and 0 if its not
-export const getMatchesContainerHeight = (jobsMatchesLength: number, isJobsBubble?: boolean) => {
-  const jobsMatchesLengthRoundedUpToEven = jobsMatchesLength + isOdd(jobsMatchesLength);
-  if (jobsMatchesLengthRoundedUpToEven === 0) {
-    return 250;
-  }
-  return (jobsMatchesLengthRoundedUpToEven / 2) * 265 + (isJobsBubble ? 185 : 0);
-};
-
-export const getFirstNameAndInitialFromFullName = (fullName: string) => {
-  const fullNameArray = fullName.split(' ');
-
-  if (fullNameArray.length === 1) {
-    return fullNameArray[0];
-  } else {
-    return `${fullNameArray[0]} ${fullNameArray[1].charAt(0)}.`;
-  }
-};
-
-// pass an array of objects with a key, it will remove duplicate values of that key
-export const filterArrayOfObjectsByKey = (arr: any, key: any) => {
-  return arr.filter(
-    (v, i, a) =>
-      a.findIndex(v2 => {
-        if (typeof v2 === 'object') {
-          return v2[key].toLowerCase() === v[key].toLowerCase();
-        }
-      }) === i,
-  );
-};
-
-export const selectFile = async () => {
-  const result = await DocumentPicker.getDocumentAsync({ type: '*/*' });
-
-  if (result != null && result.assets != null) {
-    const base64 = await FileSystem.readAsStringAsync(result.assets[0].uri, { encoding: 'base64' });
-
-    return base64;
-  }
-
-  return result;
-};
+// export const getRelevantSkillsFromJobHistory = (jobHistory: TEmployeePastJob[]) => {
+//   const totalRelevantSkills: string[] = [];
+//   jobHistory.forEach((pastJob: TEmployeePastJob) => {
+//     totalRelevantSkills.push(...pastJob.jobSkills);
+//   });
+//   return removeDuplicateStringsFromArray(totalRelevantSkills);
+// };
 
 export const convertMilesToMeters = (miles: number) => {
   return Math.round(miles * 1609.344);
 };
 
-export const convertMetersToMiles = (meters: number) => {
-  return Math.round(meters * 0.000621371192);
-};
-
-export const getGeoLocationFromAddress = async (address: string) => {
-  const uriEncodedAddress = encodeURIComponent(address);
-  const { googleMapsApiKey } = getEnvVars();
-
-  try {
-    const res = await fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${uriEncodedAddress}&key=${googleMapsApiKey}`,
-    );
-
-    const data = await res.json();
-
-    const coordinates = [data.results[0].geometry.location.lng, data.results[0].geometry.location.lat];
-
-    return {
-      type: 'Point',
-      coordinates,
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      type: 'Point',
-      coordinates: [1, 2],
-    };
-  }
-};
-
-export const onShare = async (message: string) => {
-  try {
-    const result = await Share.share({
-      message,
-    });
-    if (result.action === Share.sharedAction) {
-      if (result.activityType) {
-        // shared with activity type of result.activityType
-      } else {
-        // shared
-      }
-    } else if (result.action === Share.dismissedAction) {
-      // dismissed
+export const checkIfProfileIsIncomplete = (settings: TEmployeeSettings) => {
+  let isIncomplete = false;
+  for (const [key, value] of Object.entries(settings)) {
+    if (value === 0) {
+      continue;
     }
-  } catch (error: any) {
-    Alert.alert(error.message);
+    if (key === 'jobHistory' && settings.isSeekingFirstJob === true) {
+      continue;
+    }
+    if (key === 'isSeekingFirstJob') {
+      continue;
+    }
+    if (!value) {
+      isIncomplete = true;
+    }
   }
-};
-
-export const padToTime = (promise: Promise<any> | Promise<any>[], interval: number) => {
-  // delay returns a promise that resolves after an interval
-  const delay = (interval: number) => new Promise(resolve => setTimeout(resolve, interval));
-  // caller can provide a singular or an array of promises, avoiding the extra .all
-  const promises = Array.isArray(promise) ? promise : [promise];
-  return Promise.all([...promises, delay(interval)]).then(results => results.slice(0, -1));
-};
-
-export const removeDuplicateStringsFromArray = (stringArray: string[]) => {
-  const uniq = stringArray.reduce((a, b) => {
-    if (a.indexOf(b) < 0) a.push(b);
-    return a;
-  }, []);
-  return uniq;
-};
-
-export const getRelevantSkillsFromJobHistory = (jobHistory: TEmployeePastJob[]) => {
-  const totalRelevantSkills: string[] = [];
-  if (!jobHistory) {
-    return [];
-  }
-  jobHistory.forEach((pastJob: TEmployeePastJob) => {
-    totalRelevantSkills.push(...(pastJob.jobSkills || []));
-  });
-  return removeDuplicateStringsFromArray(totalRelevantSkills || []);
-};
-
-export const getMatchesFromEmployersJobs = (employersJobs: TJob[]) => {
-  const matches: TMatch[] = [];
-  if (employersJobs && employersJobs.length > 0) {
-    employersJobs.map((job: TJob) => {
-      if (job) {
-        matches.push(...job.matches);
-      }
-    });
-  } else {
-    return [];
-  }
-  return matches;
+  return isIncomplete;
 };

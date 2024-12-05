@@ -2,7 +2,7 @@ require('dotenv').config({ path: '../variables.env' });
 
 import { SQSEvent } from 'aws-lambda';
 
-import { TBrightDataGlassdoorCompany } from '../../types/brightDataTypes';
+import { TBrightDataGlassdoorCompany } from 'keeperTypes';
 import {
   brightDataGlassdoorCompanyTransformer,
   checkSnapshotStatusById,
@@ -14,7 +14,7 @@ import {
   sendMessageToQueue,
   transformGlassdoorUrlToReviews,
 } from '../../utils/brightDataUtils';
-import { normalizeLocation, normalizeUrl } from '../../utils/globalUtils';
+import { normalizeLocation, normalizeUrl } from 'keeperUtils';
 
 const glassdoorReviewsSnapshotUrl =
   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7j1po0921hbu0ri1z&include_errors=true';
@@ -25,7 +25,7 @@ export const handler = async (event: SQSEvent) => {
 
     // Ensure database connection is established
 
-    const promises = event.Records.map(async (record) => {
+    const promises = event.Records.map(async record => {
       let snapshotId, headquarters, companyWebsiteUrl, companyName;
 
       const messageBody = JSON.parse(record.body);
@@ -39,8 +39,8 @@ export const handler = async (event: SQSEvent) => {
         if (!snapshotId) {
           console.error(
             `This message from the queue is missing a snapshotId. Skipping, but here is the message: ${JSON.stringify(
-              messageBody
-            )}`
+              messageBody,
+            )}`,
           );
           throw new Error('Missing snapshotId in the message');
         }
@@ -48,8 +48,8 @@ export const handler = async (event: SQSEvent) => {
         if (!companyWebsiteUrl && (!headquarters || !companyName)) {
           console.error(
             `This message is missing a required field. You must have a companyWebsiteUrl or both headquarters and companyName. Skipping, but here is the message: ${JSON.stringify(
-              messageBody
-            )}`
+              messageBody,
+            )}`,
           );
           return; // Skip processing this message
         }
@@ -71,7 +71,7 @@ export const handler = async (event: SQSEvent) => {
         console.info(`Fetched ${crunchbaseResults.length} Glassdoor results for snapshotId: ${snapshotId}`);
 
         // Step 3: Match Glassdoor data with the current company
-        const matchedCompany = crunchbaseResults.find((result) => {
+        const matchedCompany = crunchbaseResults.find(result => {
           if (result.error || result.error_code) {
             console.info(`Error in Glassdoor result: ${JSON.stringify(result)}. Skipping this result.`);
             return false; // Skip this result
@@ -94,8 +94,8 @@ export const handler = async (event: SQSEvent) => {
 
         console.info(
           `Matched Glassdoor company found and heres the matched company- ${JSON.stringify(
-            matchedCompany
-          )}. Transforming data.`
+            matchedCompany,
+          )}. Transforming data.`,
         );
 
         const transformedCompany = brightDataGlassdoorCompanyTransformer(matchedCompany);
@@ -106,7 +106,7 @@ export const handler = async (event: SQSEvent) => {
         }
 
         console.info(
-          `Transformed company data for ${companyWebsiteUrl}: heres the data: ${JSON.stringify(transformedCompany)}`
+          `Transformed company data for ${companyWebsiteUrl}: heres the data: ${JSON.stringify(transformedCompany)}`,
         );
 
         // Step 4: Update company data in MongoDB
@@ -123,14 +123,14 @@ export const handler = async (event: SQSEvent) => {
           },
           {
             $set: transformedCompany,
-          }
+          },
         );
 
         if (updateResult) {
           console.info(`Successfully updated Glassdoor data for company: ${companyWebsiteUrl}`);
         } else {
           console.info(
-            `No matching company found in DB for URL: ${companyWebsiteUrl} and headquarters: ${headquarters}`
+            `No matching company found in DB for URL: ${companyWebsiteUrl} and headquarters: ${headquarters}`,
           );
           return;
         }
@@ -152,13 +152,13 @@ export const handler = async (event: SQSEvent) => {
 
         const glassdoorReviewsSnapshotId = await requestSnapshotByUrlAndFilters(
           glassdoorReviewsSnapshotUrl,
-          reviewsSnapshotPayload
+          reviewsSnapshotPayload,
         );
 
         console.info(
           `Glassdoor Reviews snapshotId: ${glassdoorReviewsSnapshotId}, for reviewsUrl: ${transformGlassdoorUrlToReviews(
-            transformedCompany.glassdoorUrl as string
-          )}`
+            transformedCompany.glassdoorUrl as string,
+          )}`,
         );
 
         if (!glassdoorReviewsSnapshotId) {
@@ -172,7 +172,7 @@ export const handler = async (event: SQSEvent) => {
         };
 
         console.info(
-          `Enqueued Glassdoor Reviews snapshot ${glassdoorReviewsSnapshotId} for company: ${companyWebsiteUrl}`
+          `Enqueued Glassdoor Reviews snapshot ${glassdoorReviewsSnapshotId} for company: ${companyWebsiteUrl}`,
         );
 
         await sendMessageToQueue(process.env.GLASSDOOR_REVIEWS_QUEUE_URL, messageToReviewsQueue);
