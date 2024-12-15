@@ -8,6 +8,7 @@ import { headers } from '../../constants';
 //     "query": { "url": "https://example.com/job-posting" },
 //     "operation": "deleteOne"
 // }
+
 export const handler = async (event: APIGatewayEvent, context: Context, callback: Callback) => {
   try {
     // Validate request body

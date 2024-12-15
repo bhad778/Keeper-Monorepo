@@ -3,6 +3,13 @@ import { APIGatewayEvent, Context, Callback } from 'aws-lambda';
 import Job from '../../models/Job';
 import { headers } from '../../constants';
 
+// ex payload-
+// {
+//     "query": { "headquarters": "San Francisco, CA" },
+//     "operation": "find",
+//     "options": { "limit": 5, "sort": { "companyName": 1 } }
+//   }
+
 export const handler = async (event: APIGatewayEvent, context: Context, callback: Callback) => {
   try {
     // Validate request body
