@@ -42,3 +42,22 @@ const env: EnvConfig = {
 };
 
 export default env;
+
+export const {
+  apiUrl,
+  affindaKey,
+  affindaWorkspaceId,
+  googleMapsRootUrl,
+  googleMapsApiKey,
+  pubNubPublishKey,
+  pubNubSubscribeKey,
+  brandFetchApiKey,
+  db,
+  coreSignalApiKey,
+  brightDataApiKey,
+  jobsQueueUrl,
+  geoLocationQueueUrl,
+  sourceWebsiteCompaniesQueueUrl,
+  glassdoorCompaniesQueueUrl,
+  glassdoorReviewsQueueUrl,
+} = env;
