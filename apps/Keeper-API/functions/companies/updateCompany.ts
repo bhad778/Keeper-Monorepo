@@ -1,6 +1,17 @@
 import { APIGatewayEvent, Context, Callback } from 'aws-lambda';
+
 import Company from '../../models/Company'; // Adjust the path based on your project structure
 import { headers } from '../../constants'; // Reusable headers for responses
+
+// ex payload-
+// {
+//     "query": { "jobsUrl": "https://example.com/job-posting" },
+//     "updateData": {
+//       "companyType": "Private",
+//       "reviewsCount": 1
+//     },
+//     "operation": "updateMany"
+//   }
 
 export const handler = async (event: APIGatewayEvent, context: Context, callback: Callback) => {
   try {

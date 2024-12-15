@@ -1,6 +1,8 @@
 import { SQSEvent } from 'aws-lambda';
 import { TBrightDataGlassdoorCompany } from 'keeperTypes';
 import { normalizeLocation, normalizeUrl } from 'keeperUtils';
+import { CompaniesService } from 'keeperServices';
+
 import {
   brightDataGlassdoorCompanyTransformer,
   checkSnapshotStatusById,
@@ -105,6 +107,8 @@ export const handler = async (event: SQSEvent) => {
         console.info(
           `Transformed company data for ${companyWebsiteUrl}: heres the data: ${JSON.stringify(transformedCompany)}`,
         );
+
+        CompaniesService.updateCompany();
 
         // Step 4: Update company data in MongoDB
         // fixed

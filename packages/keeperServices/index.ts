@@ -1,4 +1,7 @@
-export * as JobsService from './JobsService';
-export * as MiscService from './JobsService';
-export * as UsersService from './JobsService';
-export * as ThirdPartService from './ThirdPartyService';
+import JobsService from './JobsService';
+import MiscService from './MiscService';
+import UsersService from './UsersService';
+import CompaniesService from './CompaniesService';
+import ThirdPartyService from './ThirdPartyService';
+
+export { JobsService, MiscService, UsersService, CompaniesService, ThirdPartyService };
