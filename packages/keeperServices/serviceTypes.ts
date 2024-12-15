@@ -10,7 +10,7 @@ export type TFindCompanyPayload = {
 
 export type TUpdateCompanyPayload = {
   query: RootFilterQuery<TCompany>; // Can contain any subset of TCompany fields
-  updateData: Partial<TCompany>; // Can contain any subset of TCompany fields
+  updateData: { [K in keyof TCompany]?: TCompany[K] };
   operation?: 'updateOne' | 'updateMany'; // Optional, defaults to undefined
 };
 
@@ -22,6 +22,7 @@ export type TFindJobPayload = {
 
 export type TUpdateJobPayload = {
   query: RootFilterQuery<TJob>; // Query can include any subset of TCompany fields
+  updateData: { [K in keyof TJob]?: TJob[K] };
   operation?: 'updateOne' | 'updateMany'; // Defaults to 'findOne'
 };
 

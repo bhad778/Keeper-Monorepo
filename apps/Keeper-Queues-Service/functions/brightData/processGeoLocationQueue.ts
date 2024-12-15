@@ -1,16 +1,11 @@
-// Import necessary modules
-require('dotenv').config({ path: '../variables.env' });
 import { SQSEvent } from 'aws-lambda';
 import axios from 'axios';
-
-import connectToDatabase from '../../db';
-import Job from '../../models/Job';
+import { JobsService } from 'packages/keeperServices';
 
 export const handler = async (event: SQSEvent) => {
   // Ensure database connection is established
-  await connectToDatabase();
 
-  const promises = event.Records.map(async (record) => {
+  const promises = event.Records.map(async record => {
     try {
       // Parse the message body
       const messageBody = JSON.parse(record.body);
@@ -37,12 +32,11 @@ export const handler = async (event: SQSEvent) => {
         return;
       }
 
+      const query = { applyLink };
+      const updateData = { geoLocation: geoLocation };
+
       // Update the job in the database with geolocation data
-      const updatedJob = await Job.findOneAndUpdate(
-        { applyLink: applyLink },
-        { geoLocation: geoLocation },
-        { new: true }
-      );
+      const updatedJob = await JobsService.updateJob({ query, updateData });
 
       if (updatedJob) {
         console.info(`Successfully updated applyLink: ${applyLink} with geolocation data.`);
@@ -64,7 +58,7 @@ const getGeoLocationFromAddress = async (address, googleMapsApiKey) => {
 
   try {
     const res = await axios.get(
-      `https://maps.googleapis.com/maps/api/geocode/json?address=${uriEncodedAddress}&key=${googleMapsApiKey}`
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${uriEncodedAddress}&key=${googleMapsApiKey}`,
     );
 
     const data = res.data;
@@ -79,8 +73,8 @@ const getGeoLocationFromAddress = async (address, googleMapsApiKey) => {
     if (!location.lat || !location.lng) {
       console.error(
         `Geolocation data is missing latitude or longitude for address: ${address}. Location data: ${JSON.stringify(
-          location
-        )}`
+          location,
+        )}`,
       );
       return null;
     }
