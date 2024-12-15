@@ -1,8 +1,6 @@
-require('dotenv').config({ path: '../variables.env' });
-
 import { SQSEvent } from 'aws-lambda';
-
 import { TBrightDataGlassdoorCompany } from 'keeperTypes';
+import { normalizeLocation, normalizeUrl } from 'keeperUtils';
 import {
   brightDataGlassdoorCompanyTransformer,
   checkSnapshotStatusById,
@@ -14,7 +12,6 @@ import {
   sendMessageToQueue,
   transformGlassdoorUrlToReviews,
 } from '../../utils/brightDataUtils';
-import { normalizeLocation, normalizeUrl } from 'keeperUtils';
 
 const glassdoorReviewsSnapshotUrl =
   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7j1po0921hbu0ri1z&include_errors=true';
