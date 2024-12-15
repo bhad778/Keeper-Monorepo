@@ -1,5 +1,6 @@
 import { TJob, TJobSettings } from 'keeperTypes';
 import { postRequest } from './serviceUtils';
+import { TDeleteJobPayload, TFindJobPayload, TUpdateJobPayload } from './serviceTypes';
 
 const JobsService = {
   getJobsForSwiping: (payload?: any) => postRequest('getJobsForSwiping', payload),
@@ -11,9 +12,9 @@ const JobsService = {
   addJob: (payload: { newJobData: TJob }) => postRequest('addJob', payload),
   updateJobPreferences: (payload: any) => postRequest('updateJobPreferences', payload),
   recordJobsSwipes: (payload: any) => postRequest('recordJobsSwipes', payload),
-  deleteJob: (payload: { jobId: string }) => postRequest('deleteJob', payload),
-  findJob: (payload: any) => postRequest('findJob', payload),
-  updateJob: (payload: any) => postRequest('updateJob', payload),
+  deleteJob: (payload: TDeleteJobPayload) => postRequest('deleteJob', payload),
+  findJob: (payload: TFindJobPayload) => postRequest('findJob', payload),
+  updateJob: (payload: TUpdateJobPayload) => postRequest('updateJob', payload),
 };
 
 export default JobsService;
