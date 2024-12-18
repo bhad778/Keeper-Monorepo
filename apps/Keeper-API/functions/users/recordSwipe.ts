@@ -76,7 +76,6 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
           TemplateData: JSON.stringify({ discoverlink: discoverLink }),
         };
 
-        // todo double check this still works and fix typings
         const ses = new AWS.SES({ apiVersion: '2010-12-01' }) as any;
 
         return ses.sendTemplatedEmail(params).promise();

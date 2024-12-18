@@ -20,6 +20,7 @@ interface EnvConfig {
   sourceWebsiteCompaniesQueueUrl: string;
   glassdoorCompaniesQueueUrl: string;
   glassdoorReviewsQueueUrl: string;
+  crunchbaseCompaniesQueueUrl: string;
 }
 
 const env: EnvConfig = {
@@ -39,6 +40,7 @@ const env: EnvConfig = {
   sourceWebsiteCompaniesQueueUrl: process.env.SOURCE_WEBSITE_COMPANIES_QUEUE_URL || '',
   glassdoorCompaniesQueueUrl: process.env.GLASSDOOR_COMPANIES_QUEUE_URL || '',
   glassdoorReviewsQueueUrl: process.env.GLASSDOOR_REVIEWS_QUEUE_URL || '',
+  crunchbaseCompaniesQueueUrl: process.env.CRUNCHBASE_COMPANIES_QUEUE_URL || '',
 };
 
 export default env;
@@ -60,4 +62,5 @@ export const {
   sourceWebsiteCompaniesQueueUrl,
   glassdoorCompaniesQueueUrl,
   glassdoorReviewsQueueUrl,
+  crunchbaseCompaniesQueueUrl,
 } = env;

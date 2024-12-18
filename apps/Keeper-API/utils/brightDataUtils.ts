@@ -188,7 +188,6 @@ const removeQueryParams = (url: string) => {
 };
 
 // typical format is this- "$150,000.00/yr - $200,000.00/yr"
-// TODO is this always per year?
 export const linkedInSalaryTransformer = (
   job_base_pay_range: TBrightDataLinkedInJob['job_base_pay_range'],
 ): TJobCompensation | undefined => {

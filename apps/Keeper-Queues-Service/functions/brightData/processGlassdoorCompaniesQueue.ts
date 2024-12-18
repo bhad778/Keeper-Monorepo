@@ -14,7 +14,7 @@ import {
   sendMessageToQueue,
   transformGlassdoorUrlToReviews,
 } from 'keeperUtils/brightDataUtils';
-import { glassdoorReviewsQueueUrl, glassdoorCompaniesQueueUrl } from 'keeperEnvironment';
+import { glassdoorReviewsQueueUrl, glassdoorCompaniesQueueUrl, crunchbaseCompaniesQueueUrl } from 'keeperEnvironment';
 
 const glassdoorReviewsSnapshotUrl =
   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7j1po0921hbu0ri1z&include_errors=true';
@@ -201,8 +201,7 @@ export const handler = async (event: SQSEvent) => {
           const newMessageBody = { ...messageBody, snapshotId: crunchbaseSnapshotId, retries: retries + 1 };
 
           console.info(`Retrying Glassdoor snapshot for ${messageBody.companyName}. Retry count: ${retries + 1}`);
-          // TODO- get real queue url
-          await sendMessageToQueue('crunchbaseQueueUrl', newMessageBody);
+          await sendMessageToQueue(crunchbaseCompaniesQueueUrl, newMessageBody);
         } else {
           const glassdoorFilters = [
             {

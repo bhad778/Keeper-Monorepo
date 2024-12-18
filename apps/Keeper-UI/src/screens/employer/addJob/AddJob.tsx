@@ -231,8 +231,6 @@ const AddJob = ({
     }
     // editJobData will always have an _id field, were just doing this to satisfy typescript
     if (editJobData?._id) {
-      // TODO- make it so if only address has changed then get new geoLocation
-      // for example = only if addJobState.address != jobPreferencesRedux.address
       // const newGeoLocation = await getGeoLocationFromAddress(addJobState.address || '');
 
       try {

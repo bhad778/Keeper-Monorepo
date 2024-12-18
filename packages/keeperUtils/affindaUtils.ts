@@ -121,7 +121,6 @@ export const affindaResumeTransformer = (jsonResume: ResumeData) => {
   //   jobHistory: [],
   // };
   // if (jsonResume?.location) {
-  //   // TODO- make state GA from Georgia, which it naturally is from affinda
   //   transformedJsonResume.address = jsonResume.location.city + ', ' + jsonResume.location.state;
   // }
   // if (jsonResume?.name?.first) {

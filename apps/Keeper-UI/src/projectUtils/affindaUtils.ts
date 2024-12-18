@@ -108,9 +108,8 @@ const convertDatetoYYYY = (date: string) => {
 
 export const affindaResumeTransformer = (jsonResume: ResumeData) => {
   // extra data that we can use thats not in resume- geolocation, phoneNumber
-  const transformedJsonResume: TEmployeeSettings = {};
+  // const transformedJsonResume: TEmployeeSettings = {};
   // if (jsonResume?.location) {
-  //   // TODO- make state GA from Georgia, which it naturally is from affinda
   //   transformedJsonResume.address = jsonResume.location.city + ', ' + jsonResume.location.state;
   // }
   // if (jsonResume?.name?.first) {

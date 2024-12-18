@@ -88,7 +88,6 @@ const PhoneNumber = () => {
         setIsLoading(false);
       }
     } else {
-      // todo: handle possible errors with signUpResponse
       setIsLoading(true);
 
       signUp(numericPhoneNumber);

@@ -70,8 +70,6 @@ const BottomSheetFilterContent = ({ selectedFilter, applyFilters }: BottomSheetF
 
   useEffect(() => {
     // every time the bottomSheet is opened we sync our local state with redux state,
-    // TODO make a syncLocalPreferencesStateWithRedux function
-    // TODO make the skills and other filter UIs
     if (selectedFilter) {
       setLocalPreferencesToReduxData();
     }

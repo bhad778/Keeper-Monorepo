@@ -219,7 +219,6 @@ export const handler = async (event: SQSEvent) => {
         // Loop through each job to validate
         for (const jobData of jobsToInsertInDB) {
           // Create a new Job instance (if not already an instance)
-          // TODO: dont use job model and hit the api like in the other functions
           const job = new Job(jobData);
 
           const validationError = job.validateSync();

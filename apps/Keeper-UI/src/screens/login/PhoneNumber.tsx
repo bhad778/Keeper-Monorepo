@@ -193,7 +193,6 @@ const PhoneNumber = () => {
         Sentry.Native.captureException(error);
       }
     } else {
-      // todo: handle possible errors with signUpResponse
       setIsPhoneNumberCallLoading(true);
 
       signUp(numericPhoneNumber);
