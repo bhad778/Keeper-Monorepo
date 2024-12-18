@@ -1,7 +1,7 @@
 import { SQSEvent } from 'aws-lambda';
 import { JobSourceWebsiteEnum } from 'keeperTypes';
 import { CompaniesService } from 'keeperServices';
-
+import { glassdoorCompaniesQueueUrl, sourceWebsiteCompaniesQueueUrl } from 'keeperEnvironment';
 import {
   brightDataIndeedCompanyTransformer,
   brightDataLinkedInCompanyTransformer,
@@ -44,7 +44,7 @@ export const handler = async (event: SQSEvent) => {
       const status = await checkSnapshotStatusById(snapshotId);
       if (status !== 'ready') {
         console.info(`Snapshot ${snapshotId} is not ready. Requeuing.`);
-        await requeueMessage(process.env.SOURCE_WEBSITE_COMPANIES_QUEUE_URL, messageBody, requeueTimeout);
+        await requeueMessage(sourceWebsiteCompaniesQueueUrl, messageBody, requeueTimeout);
         return;
       }
 
@@ -125,7 +125,7 @@ export const handler = async (event: SQSEvent) => {
       );
 
       // Step 5: Send the company snapshot ID to the source website queue
-      await sendMessageToQueue(process.env.GLASSDOOR_COMPANIES_QUEUE_URL, {
+      await sendMessageToQueue(glassdoorCompaniesQueueUrl, {
         snapshotId: companySnapshotId,
         headquarters: transformedCompany.headquarters,
         companyWebsiteUrl: transformedCompany.companyWebsiteUrl,

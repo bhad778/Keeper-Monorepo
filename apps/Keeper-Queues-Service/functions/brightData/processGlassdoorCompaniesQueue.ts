@@ -1,7 +1,7 @@
 import { SQSEvent } from 'aws-lambda';
 import { TBrightDataGlassdoorCompany } from 'keeperTypes';
 import { normalizeLocation, normalizeUrl } from 'keeperUtils';
-import { CompaniesService } from 'packages/keeperServices';
+import { CompaniesService } from 'keeperServices';
 
 import {
   brightDataGlassdoorCompanyTransformer,
@@ -14,6 +14,7 @@ import {
   sendMessageToQueue,
   transformGlassdoorUrlToReviews,
 } from 'keeperUtils/brightDataUtils';
+import { glassdoorReviewsQueueUrl, glassdoorCompaniesQueueUrl } from 'keeperEnvironment';
 
 const glassdoorReviewsSnapshotUrl =
   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7j1po0921hbu0ri1z&include_errors=true';
@@ -67,7 +68,7 @@ export const handler = async (event: SQSEvent) => {
         const status = await checkSnapshotStatusById(snapshotId);
         if (status !== 'ready') {
           console.info(`Snapshot ${snapshotId} is not ready. Requeuing.`);
-          await requeueMessage(process.env.GLASSDOOR_COMPANIES_QUEUE_URL, messageBody, requeueTimeout);
+          await requeueMessage(glassdoorCompaniesQueueUrl, messageBody, requeueTimeout);
           return;
         }
 
@@ -177,7 +178,7 @@ export const handler = async (event: SQSEvent) => {
           `Enqueued Glassdoor Reviews snapshot ${glassdoorReviewsSnapshotId} for company: ${companyWebsiteUrl}`,
         );
 
-        await sendMessageToQueue(process.env.GLASSDOOR_REVIEWS_QUEUE_URL, messageToReviewsQueue);
+        await sendMessageToQueue(glassdoorReviewsQueueUrl, messageToReviewsQueue);
       } catch (error) {
         console.error(`Error processing Glassdoor snapshotId ${snapshotId} for company ${companyWebsiteUrl}:`, error);
 
@@ -200,7 +201,8 @@ export const handler = async (event: SQSEvent) => {
           const newMessageBody = { ...messageBody, snapshotId: crunchbaseSnapshotId, retries: retries + 1 };
 
           console.info(`Retrying Glassdoor snapshot for ${messageBody.companyName}. Retry count: ${retries + 1}`);
-          await sendMessageToQueue(crunchbaseQueueUrl, newMessageBody);
+          // TODO- get real queue url
+          await sendMessageToQueue('crunchbaseQueueUrl', newMessageBody);
         } else {
           const glassdoorFilters = [
             {
@@ -218,7 +220,7 @@ export const handler = async (event: SQSEvent) => {
 
           const newMessageBody = { ...messageBody, snapshotId: glassdoorSnapshotId, retries: retries + 1 };
 
-          await sendMessageToQueue(process.env.GLASSDOOR_COMPANIES_QUEUE_URL, newMessageBody);
+          await sendMessageToQueue(glassdoorCompaniesQueueUrl, newMessageBody);
 
           console.info(`Max retries reached. Sending ${companyName} to Crunchbase queue.`);
         }

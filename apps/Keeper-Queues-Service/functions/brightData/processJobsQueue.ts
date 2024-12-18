@@ -1,7 +1,5 @@
-import Job from 'apps/Keeper-API/models/Job';
 import { SQSEvent } from 'aws-lambda';
 import { TJob, JobSourceWebsiteEnum } from 'keeperTypes';
-
 import {
   checkSnapshotStatusById,
   fetchSnapshotArrayDataById,
@@ -12,7 +10,10 @@ import {
   requeueTimeout,
   sendMessageToQueue,
 } from 'keeperUtils/brightDataUtils';
-import { CompaniesService, JobsService } from 'packages/keeperServices';
+import { CompaniesService, JobsService } from 'keeperServices';
+import { jobsQueueUrl, sourceWebsiteCompaniesQueueUrl, geoLocationQueueUrl } from 'keeperEnvironment';
+
+import Job from '../../../Keeper-API/models/Job';
 
 const getLinkedInCompanySnapshotUrl =
   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1vikfnt1wgvvqz95w&include_errors=true';
@@ -51,7 +52,7 @@ export const handler = async (event: SQSEvent) => {
       const status = await checkSnapshotStatusById(snapshotId);
       if (status !== 'ready') {
         console.info(`Snapshot ${snapshotId} is not ready. Requeuing.`);
-        await requeueMessage(process.env.JOBS_QUEUE_URL, messageBody, requeueTimeout);
+        await requeueMessage(jobsQueueUrl, messageBody, requeueTimeout);
         return;
       }
 
@@ -182,7 +183,7 @@ export const handler = async (event: SQSEvent) => {
             );
 
             // Step 5: Send the company snapshot ID to the source website queue
-            await sendMessageToQueue(process.env.SOURCE_WEBSITE_COMPANIES_QUEUE_URL, {
+            await sendMessageToQueue(sourceWebsiteCompaniesQueueUrl, {
               snapshotId: companySnapshotId,
               sourceWebsite,
             });
@@ -195,7 +196,7 @@ export const handler = async (event: SQSEvent) => {
             }
 
             // Step 6: Send to geoLocation queue if job has jobLocation
-            await sendMessageToQueue(process.env.GEOLOCATION_QUEUE_URL, {
+            await sendMessageToQueue(geoLocationQueueUrl, {
               applyLink: transformedJob.applyLink,
               jobLocation: transformedJob.jobLocation,
             });

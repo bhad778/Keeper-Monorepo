@@ -1,7 +1,9 @@
-import { headers } from 'apps/Keeper-API/constants';
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import { JobSourceWebsiteEnum, TJobsQueueMessage } from 'keeperTypes';
-import { requestSnapshotByUrlAndFilters, sendMessageToQueue } from 'keeperUtils/brightDataUtils';
+import { requestSnapshotByUrlAndFilters, sendMessageToQueue } from 'keeperUtils';
+import { jobsQueueUrl } from 'keeperEnvironment';
+
+import { headers } from '../../../Keeper-API/constants';
 
 const getLinkedInJobSnapshotUrl =
   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_lpfll7v5hcqtkxl6l&type=discover_new&discover_by=url&limit_per_input=30';
@@ -99,9 +101,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     // Send messages to Jobs Queue
     try {
       console.info('Sending messages to the Jobs Queue.');
-      await Promise.all(
-        jobsQueueMessages.map(message => sendMessageToQueue(process.env.JOBS_QUEUE_URL as string, message)),
-      );
+      await Promise.all(jobsQueueMessages.map(message => sendMessageToQueue(jobsQueueUrl as string, message)));
       console.info('Successfully sent messages to the Jobs Queue.');
     } catch (error) {
       console.error('Error sending messages to the Jobs Queue:', error);

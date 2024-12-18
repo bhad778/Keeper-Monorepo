@@ -2,7 +2,6 @@ import { SQSEvent } from 'aws-lambda';
 import { TBrightDataGlassdoorCompany } from 'keeperTypes';
 import { normalizeLocation, normalizeUrl } from 'keeperUtils';
 import { CompaniesService } from 'keeperServices';
-
 import {
   brightDataGlassdoorCompanyTransformer,
   checkSnapshotStatusById,
@@ -14,6 +13,7 @@ import {
   sendMessageToQueue,
   transformGlassdoorUrlToReviews,
 } from 'keeperUtils/brightDataUtils';
+import { glassdoorReviewsQueueUrl, glassdoorCompaniesQueueUrl } from 'keeperEnvironment';
 
 const glassdoorReviewsSnapshotUrl =
   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7j1po0921hbu0ri1z&include_errors=true';
@@ -59,7 +59,7 @@ export const handler = async (event: SQSEvent) => {
         const status = await checkSnapshotStatusById(snapshotId);
         if (status !== 'ready') {
           console.info(`Snapshot ${snapshotId} is not ready. Requeuing.`);
-          await requeueMessage(process.env.GLASSDOOR_COMPANIES_QUEUE_URL, messageBody, requeueTimeout);
+          await requeueMessage(glassdoorCompaniesQueueUrl, messageBody, requeueTimeout);
           return;
         }
 
@@ -174,7 +174,7 @@ export const handler = async (event: SQSEvent) => {
           `Enqueued Glassdoor Reviews snapshot ${glassdoorReviewsSnapshotId} for company: ${companyWebsiteUrl}`,
         );
 
-        await sendMessageToQueue(process.env.GLASSDOOR_REVIEWS_QUEUE_URL, messageToReviewsQueue);
+        await sendMessageToQueue(glassdoorReviewsQueueUrl, messageToReviewsQueue);
       } catch (error) {
         console.error(`Error processing Glassdoor snapshotId ${snapshotId} for company ${companyWebsiteUrl}:`, error);
         throw error; // Let SQS handle retries and DLQ

@@ -1,6 +1,7 @@
 import { SQSEvent } from 'aws-lambda';
 import axios from 'axios';
 import { JobsService } from 'keeperServices';
+import { googleMapsApiKey } from 'keeperEnvironment';
 
 export const handler = async (event: SQSEvent) => {
   // Ensure database connection is established
@@ -19,7 +20,6 @@ export const handler = async (event: SQSEvent) => {
       console.info(`Processing geolocation for applyLink: ${applyLink}, jobLocation: ${jobLocation}`);
 
       // Fetch geolocation data from Google Maps Geocoding API
-      const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
       if (!googleMapsApiKey) {
         throw new Error('Server Error: Google Maps API key is not configured.');
       }
