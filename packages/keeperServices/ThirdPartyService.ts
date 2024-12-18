@@ -14,8 +14,8 @@ const useThirdPartyService = () => {
         accept: 'application/json',
         authorization: `Bearer ${affindaKey}`,
       },
+      body: form,
     };
-    options.body = form;
     return fetch('https://api.affinda.com/v3/documents', options)
       .then(response => response.json())
       .then(data => {

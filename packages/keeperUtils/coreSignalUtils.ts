@@ -1,4 +1,3 @@
-import { TechnologiesList } from 'constants/TechnologiesList';
 import {
   TCoreSignalEducation,
   TCoreSignalExperience,
@@ -7,9 +6,11 @@ import {
   TEmployeeEducation,
   TEmployeePastJob,
   TEmployeeSettings,
-} from 'types/employeeTypes';
-import { transformMonthToString } from 'projectUtils';
+} from 'keeperTypes';
 import { v4 as uuidv4 } from 'uuid';
+import { TechnologiesList } from 'keeperConstants';
+
+import { transformMonthToString } from './globalUtils';
 
 // we check if the companyName has already been added
 // because coreSignal has lots of duplicate data with job history

@@ -1,6 +1,6 @@
-import { ResumeData, Education, ResumeDataWorkExperienceItem, ResumeDataSkillsItem } from '@affinda/affinda';
-import { TEmployeeEducation, TEmployeePastJob, TEmployeeSettings } from 'keeperTypes';
-import { v4 as uuidv4 } from 'uuid';
+import { ResumeData, ResumeDataWorkExperienceItem, ResumeDataSkillsItem } from '@affinda/affinda';
+// import { TEmployeeEducation, TEmployeePastJob, TEmployeeSettings } from 'keeperTypes';
+// import { v4 as uuidv4 } from 'uuid';
 
 import { TechnologiesList } from '../keeperConstants';
 
@@ -22,12 +22,12 @@ export const addAffindaSkillsToJobHistoryItem = (
           // will match Nodejs and also will match node js
           {
             const noCaseSkillName = skill.name
-              ?.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
+              ?.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '')
               .replace(/\s/, '')
               .toLowerCase();
 
             const noCaseKeeperSkill = keeperSkill
-              .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
+              .replace(/[.,/#!$%^&*;:{}=_`~()-]/g, '')
               .replace(/\s/, '')
               .toLowerCase();
 
@@ -63,12 +63,12 @@ export const affindaSkillsTransformer = (affindaSkills: ResumeDataSkillsItem[]) 
         // will match Nodejs and also will match node js
         {
           const noCaseSkillName = skill.name
-            ?.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
+            ?.replace(/[.,/#!$%^&*;:{}=_`~()-]/g, '')
             .replace(/\s/, '')
             .toLowerCase();
 
           const noCaseKeeperSkill = keeperSkill
-            .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '')
+            .replace(/[.,/#!$%^&*;:{}=_`~()-]/g, '')
             .replace(/\s/, '')
             .toLowerCase();
 
@@ -92,24 +92,34 @@ export const affindaSkillsTransformer = (affindaSkills: ResumeDataSkillsItem[]) 
   return transformedSkills;
 };
 
-const convertDateToMMYY = (date: string) => {
-  if (date && typeof date === 'string') {
-    const splitDate = date.split('-');
-    const month = splitDate[1];
-    const year = splitDate[0].slice(-2);
-    return `${month}/${year}`;
-  } else {
-    return '00/00';
-  }
-};
+// const convertDateToMMYY = (date: string | Date) => {
+//   if (date && typeof date === 'string') {
+//     const splitDate = date.split('-');
+//     const month = splitDate[1];
+//     const year = splitDate[0].slice(-2);
+//     return `${month}/${year}`;
+//   } else {
+//     return '00/00';
+//   }
+// };
 
-const convertDatetoYYYY = (date: string) => {
-  return date.split('-')[0];
-};
+// const convertDatetoYYYY = (date: string) => {
+//   return date.split('-')[0];
+// };
 
 export const affindaResumeTransformer = (jsonResume: ResumeData) => {
   // extra data that we can use thats not in resume- geolocation, phoneNumber
-  const transformedJsonResume: TEmployeeSettings = {};
+  // const transformedJsonResume: TEmployeeSettings = {
+  //   firstName: '',
+  //   lastName: '',
+  //   img: '',
+  //   address: '',
+  //   jobTitle: '',
+  //   yearsOfExperience: 0,
+  //   relevantSkills: [],
+  //   educationHistory: [],
+  //   jobHistory: [],
+  // };
   // if (jsonResume?.location) {
   //   // TODO- make state GA from Georgia, which it naturally is from affinda
   //   transformedJsonResume.address = jsonResume.location.city + ', ' + jsonResume.location.state;
@@ -127,37 +137,37 @@ export const affindaResumeTransformer = (jsonResume: ResumeData) => {
   //   transformedJsonResume.jobTitle = jsonResume.profession;
   //   transformedJsonResume.jobTitle = '';
   // }
-  if (jsonResume?.skills) {
-    transformedJsonResume.relevantSkills = affindaSkillsTransformer(jsonResume?.skills);
-  }
+  // if (jsonResume?.skills) {
+  //   transformedJsonResume.relevantSkills = affindaSkillsTransformer(jsonResume?.skills);
+  // }
   if (jsonResume?.education?.length) {
-    const transformedEducationHistory: TEmployeeEducation[] = [];
-    jsonResume?.education.map((educationItem: Education) => {
-      transformedEducationHistory.push({
-        uuid: educationItem.id || uuidv4(),
-        school: educationItem.organization || '',
-        major: educationItem.accreditation?.education || '',
-        startDate: convertDatetoYYYY(educationItem?.dates?.startDate || ''),
-        endDate: convertDatetoYYYY(educationItem?.dates?.completionDate || ''),
-        degree: `Bachelor's`,
-      });
-    });
-    transformedJsonResume.educationHistory = transformedEducationHistory;
+    // const transformedEducationHistory: TEmployeeEducation[] = [];
+    // jsonResume?.education.map((educationItem: Education) => {
+    //   transformedEducationHistory.push({
+    //     uuid: educationItem.id || uuidv4(),
+    //     school: educationItem.organization || '',
+    //     major: educationItem.accreditation?.education || '',
+    //     startDate: convertDatetoYYYY(educationItem?.dates?.startDate || ''),
+    //     endDate: convertDatetoYYYY(educationItem?.dates?.completionDate || ''),
+    //     degree: `Bachelor's`,
+    //   });
+    // });
+    // transformedJsonResume.educationHistory = transformedEducationHistory;
   }
   if (jsonResume?.workExperience?.length) {
-    const transformedWorkHistory: TEmployeePastJob[] = [];
-    jsonResume?.workExperience.map((workItem: ResumeDataWorkExperienceItem) => {
-      transformedWorkHistory.push({
-        uuid: workItem.id || uuidv4(),
-        jobTitle: workItem.jobTitle || '',
-        company: workItem.organization || '',
-        jobDescription: workItem.jobDescription || '',
-        startDate: convertDateToMMYY(workItem?.dates?.startDate),
-        endDate: convertDateToMMYY(workItem?.dates?.endDate),
-        // do we need location?
-      });
-    });
-    transformedJsonResume.jobHistory = transformedWorkHistory;
+    // const transformedWorkHistory: TEmployeePastJob[] = [];
+    // jsonResume?.workExperience.map((workItem: ResumeDataWorkExperienceItem) => {
+    //   transformedWorkHistory.push({
+    //     uuid: workItem.id || uuidv4(),
+    //     jobTitle: workItem.jobTitle || '',
+    //     company: workItem.organization || '',
+    //     jobDescription: workItem.jobDescription || '',
+    //     startDate: convertDateToMMYY(workItem?.dates?.startDate),
+    //     endDate: convertDateToMMYY(workItem?.dates?.endDate),
+    //     // do we need location?
+    //   });
+    // });
+    // transformedJsonResume.jobHistory = transformedWorkHistory;
   }
-  return transformedJsonResume;
+  // return transformedJsonResume;
 };

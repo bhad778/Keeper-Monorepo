@@ -9,7 +9,7 @@ export default {
   entry: slsw.lib.entries, // Automatically resolve entry points from serverless.yml
   target: 'node',
   mode: stage === 'production' ? 'production' : 'development', // Use production optimizations for prod
-  externals: [nodeExternals()], // Exclude Node.js modules
+  externals: [nodeExternals(), 'aws-sdk'], // Exclude Node.js modules
   output: {
     libraryTarget: 'commonjs2',
     path: path.resolve(__dirname, '.webpack'),
@@ -27,5 +27,13 @@ export default {
       },
     ],
   },
-  devtool: stage === 'production' ? false : 'source-map', // Include source maps only for development
+  cache: {
+    type: 'filesystem', // Enables filesystem caching
+  },
+  devtool: false, // Disables source maps to reduce build size and memory usage,
+  optimization: {
+    splitChunks: {
+      chunks: 'all', // Splits code into smaller chunks
+    },
+  },
 };

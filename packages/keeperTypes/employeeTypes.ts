@@ -1,10 +1,10 @@
+import { TOnsiteSchedule } from './employerTypes';
 import {
   TGeoLocation,
   TAccountType,
   EmptyObject,
   TMatch,
   EmploymentTypes,
-  TOnsiteSchedule,
   TFrontendBackendOptions,
   TCompanySize,
 } from './globalTypes';

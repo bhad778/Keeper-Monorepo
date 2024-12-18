@@ -7,7 +7,7 @@ import ValidateBody from '../validateBody';
 
 const s3 = new S3();
 
-export const handler = async (event) => {
+export const handler = async event => {
   const body = JSON.parse(event.body);
 
   const imageUpload = Joi.object({
@@ -28,7 +28,7 @@ export const handler = async (event) => {
       };
     }
 
-    let imageData = body.image;
+    const imageData = body.image;
     // if (body.image.substr(0, 7) === "base64,") {
     //   imageData = body.image.substr(7, body.image.length);
     // }
@@ -61,7 +61,7 @@ export const handler = async (event) => {
       statusCode: 400,
       headers,
       body: JSON.stringify({
-        message: error.message || 'failed to upload image',
+        message: error || 'failed to upload image',
       }),
     };
   }

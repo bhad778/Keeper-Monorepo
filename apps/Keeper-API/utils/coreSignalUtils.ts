@@ -273,8 +273,7 @@ export const coreSignalResumeTransformer = (coreSignalUserData: TCoreSignalUserD
 };
 
 export const getYearsOfExperienceFromSeniorityLevel = (seniority: string) => {
-  let yearsOfExperience: number;
-
+  // let yearsOfExperience: number;
   // if(seniority.includes('Not Applicable')) {
   //   yearsOfExperience
   // }

@@ -50,8 +50,6 @@ export enum EmploymentTypeEnum {
   'Contract',
 }
 
-export type TOnsiteSchedule = 'Remote' | 'Hybrid' | 'Office';
-
 export type TCompanySize = 'Startup' | 'Mid-Size' | 'Large';
 
 export type TFrontendBackendOptions = 'Only Frontend' | 'Full Stack' | 'Only Backend';

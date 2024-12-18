@@ -1,17 +1,24 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "preserveConstEnums": true,
-    "strictNullChecks": true,
-    "noEmitOnError": true,
-    "sourceMap": true,
-    "allowJs": true,
-    "target": "es2015",
-    "outDir": ".build",
-    "moduleResolution": "node",
-    "lib": ["es2015"],
-    "rootDir": "./"
+    "rootDir": "../../", // Set to the monorepo root to include all relevant files
+    "baseUrl": "./", // Base URL for module resolution
+    "paths": {
+      "*": ["../../packages/*"] // Map all packages in the `packages` directory
+    },
+    "outDir": "./dist", // Ensure compiled output is placed in the correct directory
+    "strict": true, // Enable strict type checking
+    "esModuleInterop": true, // Enable ES module compatibility
+    "skipLibCheck": true // Skip type checking for declaration files
   },
-
-  "include": ["functions/**/*", "webpack.config.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src/**/*", // Include app source files
+    "../../packages/**/*", // Include all files from the `packages` directory
+    "../../global.d.ts"
+  ],
+  "exclude": [
+    "node_modules", // Exclude node_modules
+    "dist", // Exclude build directory
+    "**/*.test.ts" // Exclude test files
+  ]
 }
