@@ -14,9 +14,6 @@
   "include": [
     "utils/**/*",
     "functions/**/*",
-    "types/**/*",
-    "models/**/*",
-    "schemas/**/*",
     "../../packages/**/*", // Include all files from the `packages` directory
     "../../global.d.ts"
   ],
