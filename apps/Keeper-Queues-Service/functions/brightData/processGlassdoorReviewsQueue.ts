@@ -1,5 +1,5 @@
 import { SQSEvent } from 'aws-lambda';
-import axios from 'axios';
+import { CompaniesService } from 'keeperServices';
 
 import { requeueMessage, checkSnapshotStatusById, fetchSnapshotArrayDataById } from '../../utils/brightDataUtils';
 
@@ -7,9 +7,7 @@ export const handler = async (event: SQSEvent) => {
   try {
     console.info('Starting batch processing for Glassdoor reviews.');
 
-    await connectToDatabase();
-
-    const promises = event.Records.map(async (record) => {
+    const promises = event.Records.map(async record => {
       const messageBody = JSON.parse(record.body);
       const { snapshotId, glassdoorUrl } = messageBody;
 
@@ -38,27 +36,25 @@ export const handler = async (event: SQSEvent) => {
       console.info(`Fetched ${reviewsArray.length} reviews for snapshotId: ${snapshotId}`);
 
       // Step 3: Update company data using the updateCompany Lambda
-      const updateCompanyUrl = process.env.UPDATE_COMPANY_LAMBDA_URL; // Replace with your API Gateway URL for updateCompany
       const updatePayload = {
         query: { sourceWebsiteUrl: glassdoorUrl }, // Match by sourceWebsiteUrl
         updateData: { reviews: reviewsArray }, // Update the reviews field
-        operation: 'updateOne',
       };
 
       try {
-        const updateResponse = await axios.post(updateCompanyUrl, updatePayload);
+        const updateResponse = await CompaniesService.updateCompany(updatePayload);
 
         if (updateResponse.data.success) {
           console.info(`Successfully updated reviews for company with URL: ${glassdoorUrl}`);
         } else {
           console.error(
             `Failed to update reviews for company with URL: ${glassdoorUrl}. Response: ${JSON.stringify(
-              updateResponse.data
-            )}`
+              updateResponse.data,
+            )}`,
           );
         }
       } catch (updateError) {
-        console.error(`Error calling updateCompany Lambda for URL: ${glassdoorUrl}. Error: ${updateError.message}`);
+        console.error(`Error calling updateCompany Lambda for URL: ${glassdoorUrl}. Error: ${updateError}`);
       }
     });
 

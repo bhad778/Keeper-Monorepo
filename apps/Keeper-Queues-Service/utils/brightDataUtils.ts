@@ -11,12 +11,12 @@ import {
   TJob,
   TJobCompensation,
   EmploymentTypeEnum,
+  TCompany,
 } from 'keeperTypes';
 import { extractDollarNumbers, findStringsInLongString, normalizeLocation, normalizeUrl } from 'keeperUtils';
 import { TechnologiesList } from 'keeperConstants';
 
 import AWS from '../../../awsConfig';
-import { TCompany } from 'apps/Keeper-API/models/Company';
 
 const sqs = new AWS.SQS();
 

@@ -2,6 +2,7 @@ import { APIGatewayEvent, Context, Callback } from 'aws-lambda';
 
 import Job from '../../models/Job';
 import { headers } from '../../constants';
+import { OperationEnum } from 'keeperTypes';
 
 // ex payload-
 // {
@@ -16,7 +17,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       throw new Error('Missing request body.');
     }
 
-    const { query, operation = 'deleteOne' } = JSON.parse(event.body);
+    const { query, operation = OperationEnum.One } = JSON.parse(event.body);
 
     if (!query || typeof query !== 'object') {
       throw new Error('Invalid or missing query object.');
@@ -24,7 +25,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
 
     let deleteResult;
 
-    if (operation === 'deleteOne') {
+    if (operation === OperationEnum.One) {
       // Delete a single job
       deleteResult = await Job.deleteOne(query);
       if (deleteResult.deletedCount === 0) {
@@ -39,7 +40,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
         });
       }
       console.info(`Deleted one job matching query: ${JSON.stringify(query)}`);
-    } else if (operation === 'deleteMany') {
+    } else if (operation === OperationEnum.Many) {
       // Delete multiple jobs
       deleteResult = await Job.deleteMany(query);
       if (deleteResult.deletedCount === 0) {

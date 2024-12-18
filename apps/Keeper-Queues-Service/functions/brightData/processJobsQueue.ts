@@ -1,9 +1,6 @@
-require('dotenv').config({ path: '../variables.env' });
-
 import { SQSEvent } from 'aws-lambda';
-import connectToDatabase from '../../db';
-import Company from '../../models/Company';
-import { JobSourceWebsiteEnum } from '../../types/brightDataTypes';
+import { TJob, JobSourceWebsiteEnum } from 'keeperTypes';
+
 import {
   checkSnapshotStatusById,
   fetchSnapshotArrayDataById,
@@ -14,8 +11,6 @@ import {
   requeueTimeout,
   sendMessageToQueue,
 } from '../../utils/brightDataUtils';
-import Job from '../../models/Job';
-import { TJob } from '../../types/employerTypes';
 
 const getLinkedInCompanySnapshotUrl =
   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1vikfnt1wgvvqz95w&include_errors=true';
@@ -28,13 +23,12 @@ const getIndeedCompanySnapshotUrl =
 // brightData and sends that snapshotId to the companies queue
 export const handler = async (event: SQSEvent) => {
   // Ensure database connection is established
-  await connectToDatabase();
 
   const seenCompanyUrls = new Set<string>();
   const BATCH_SIZE = 10; // Number of jobs to process concurrently in a batch
 
   // There's typically only going to be 2 snapshots in the queue at a time, one from LinkedIn and one from Indeed
-  const promises = event.Records.map(async (record) => {
+  const promises = event.Records.map(async record => {
     let snapshotId, sourceWebsite;
     const messageBody = JSON.parse(record.body);
 
@@ -44,7 +38,7 @@ export const handler = async (event: SQSEvent) => {
 
       if (!snapshotId || !sourceWebsite) {
         console.error(
-          `This message from the queue is missing one of these: snapshotId: ${snapshotId}, sourceWebsite: ${sourceWebsite}`
+          `This message from the queue is missing one of these: snapshotId: ${snapshotId}, sourceWebsite: ${sourceWebsite}`,
         );
         return; // Skip processing this message
       }
@@ -63,7 +57,7 @@ export const handler = async (event: SQSEvent) => {
       const jobsArray = await fetchSnapshotArrayDataById(snapshotId);
       console.info(`Fetched ${jobsArray.length} jobs for snapshotId: ${snapshotId}`);
 
-      const transformJob = (job) => {
+      const transformJob = job => {
         if (sourceWebsite === JobSourceWebsiteEnum.Indeed) {
           return indeedJobTransformer(job);
         } else if (sourceWebsite === JobSourceWebsiteEnum.LinkedIn) {
@@ -76,10 +70,10 @@ export const handler = async (event: SQSEvent) => {
       const jobsToInsertInDB: TJob[] = [];
 
       // Function to process jobs in a single batch
-      const processBatch = async (batch) => {
+      const processBatch = async batch => {
         console.info(`Processing batch: ${batch} of ${batch.length} jobs.`);
         await Promise.all(
-          batch.map(async (job) => {
+          batch.map(async job => {
             // Transform jobs from Indeed or LinkedIn into our job schema
             const transformedJob = transformJob(job);
 
@@ -91,7 +85,7 @@ export const handler = async (event: SQSEvent) => {
             if (!transformedJob.applyLink) {
               console.info(
                 `This job doesnt have an applyLink. Skipping, but here is the
-                 job were skipping- ${JSON.stringify(transformedJob)}.`
+                 job were skipping- ${JSON.stringify(transformedJob)}.`,
               );
               return;
             }
@@ -102,7 +96,7 @@ export const handler = async (event: SQSEvent) => {
             if (jobExists) {
               console.info(
                 `Job with this apply link already exists. Skipping, but here is the
-                 job were skipping- ${JSON.stringify(transformedJob)}.`
+                 job were skipping- ${JSON.stringify(transformedJob)}.`,
               );
               return;
             }
@@ -148,7 +142,7 @@ export const handler = async (event: SQSEvent) => {
 
             if (!transformedJob.sourceWebsiteCompanyUrl) {
               console.info(
-                `This job doesn't have a sourceWebsiteCompanyUrl with which to get a snapshot for the company data. Skipping.`
+                `This job doesn't have a sourceWebsiteCompanyUrl with which to get a snapshot for the company data. Skipping.`,
               );
               console.info('job that didnt have sourceWebsiteCompanyUrl:', JSON.stringify(transformedJob));
               return;
@@ -172,13 +166,13 @@ export const handler = async (event: SQSEvent) => {
 
             if (!companySnapshotId) {
               console.error(
-                `requestSnapshotByUrlAndFilters did not return a valid companySnapshotId for URL: ${transformedJob.sourceWebsiteCompanyUrl}. Skipping.`
+                `requestSnapshotByUrlAndFilters did not return a valid companySnapshotId for URL: ${transformedJob.sourceWebsiteCompanyUrl}. Skipping.`,
               );
               return; // Skip further processing for this job
             }
 
             console.info(
-              `Successfully got company snapshot data for snapshot- ${companySnapshotId} and for company URL- ${transformedJob.sourceWebsiteCompanyUrl}.`
+              `Successfully got company snapshot data for snapshot- ${companySnapshotId} and for company URL- ${transformedJob.sourceWebsiteCompanyUrl}.`,
             );
 
             // Step 5: Send the company snapshot ID to the source website queue
@@ -200,7 +194,7 @@ export const handler = async (event: SQSEvent) => {
               jobLocation: transformedJob.jobLocation,
             });
             console.info(`Enqueued ${transformedJob.applyLink} to geoLocation queue.`);
-          })
+          }),
         );
       };
 

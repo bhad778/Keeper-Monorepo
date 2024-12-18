@@ -1,6 +1,6 @@
 import { SQSEvent } from 'aws-lambda';
 import axios from 'axios';
-import { JobsService } from 'packages/keeperServices';
+import { JobsService } from 'keeperServices';
 
 export const handler = async (event: SQSEvent) => {
   // Ensure database connection is established

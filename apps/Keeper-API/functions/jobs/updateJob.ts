@@ -1,4 +1,5 @@
 import { APIGatewayEvent, Context, Callback } from 'aws-lambda';
+import { OperationEnum } from 'keeperTypes';
 
 import Job from '../../models/Job';
 import { headers } from '../../constants';
@@ -20,7 +21,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       throw new Error('Missing request body.');
     }
 
-    const { query, updateData, operation = 'updateOne' } = JSON.parse(event.body);
+    const { query, updateData, operation = OperationEnum.One, options = {} } = JSON.parse(event.body);
 
     if (!query || typeof query !== 'object') {
       throw new Error('Invalid or missing query object.');
@@ -32,9 +33,9 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
 
     let updateResult;
 
-    if (operation === 'updateOne') {
+    if (operation === OperationEnum.One) {
       // Update a single job
-      updateResult = await Job.findOneAndUpdate(query, updateData, { new: true });
+      updateResult = await Job.findOneAndUpdate(query, updateData, { new: true, ...options });
       if (!updateResult) {
         console.info(`No job found matching query: ${JSON.stringify(query)}`);
         return callback(null, {
@@ -47,9 +48,9 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
         });
       }
       console.info(`Updated one job matching query: ${JSON.stringify(query)}`);
-    } else if (operation === 'updateMany') {
+    } else if (operation === OperationEnum.Many) {
       // Update multiple jobs
-      updateResult = await Job.updateMany(query, updateData);
+      updateResult = await Job.updateMany(query, updateData, options);
       if (updateResult.matchedCount === 0) {
         console.info(`No jobs found matching query: ${JSON.stringify(query)}`);
         return callback(null, {

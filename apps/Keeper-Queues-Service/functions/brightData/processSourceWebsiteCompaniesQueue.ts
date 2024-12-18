@@ -1,9 +1,7 @@
-require('dotenv').config({ path: '../variables.env' });
-
 import { SQSEvent } from 'aws-lambda';
-import connectToDatabase from '../../db';
-import Company from '../../models/Company';
-import { JobSourceWebsiteEnum } from '../../types/brightDataTypes';
+import { JobSourceWebsiteEnum } from 'keeperTypes';
+import { CompaniesService } from 'keeperServices';
+
 import {
   brightDataIndeedCompanyTransformer,
   brightDataLinkedInCompanyTransformer,
@@ -22,9 +20,7 @@ const glassdoorSearchUrl = 'https://www.glassdoor.com/Search/results.htm?keyword
 
 // the companies queue holds messages that are just snapshotIds, and these snapshotIds hold data
 export const handler = async (event: SQSEvent) => {
-  await connectToDatabase();
-
-  const promises = event.Records.map(async (record) => {
+  const promises = event.Records.map(async record => {
     let snapshotId, sourceWebsite;
 
     const messageBody = JSON.parse(record.body);
@@ -37,7 +33,7 @@ export const handler = async (event: SQSEvent) => {
         console.error(
           `Skipping. This message from the queue is missing one of these: 
            snapshotId: ${snapshotId}, sourceWebsite: ${sourceWebsite}. Here is the message
-           that was missing it- ${messageBody}`
+           that was missing it- ${messageBody}`,
         );
         return; // Skip processing this message
       }
@@ -71,7 +67,7 @@ export const handler = async (event: SQSEvent) => {
 
       console.log('brightDataCompany', JSON.stringify(brightDataCompany));
 
-      const transformCompany = (company) => {
+      const transformCompany = company => {
         if (sourceWebsite === JobSourceWebsiteEnum.Indeed) {
           return brightDataIndeedCompanyTransformer(company);
         } else if (sourceWebsite === JobSourceWebsiteEnum.LinkedIn) {
@@ -90,7 +86,7 @@ export const handler = async (event: SQSEvent) => {
       if (!transformedCompany) {
         console.info(
           `Skipping company as transformCompany returned undefined. Here is what the company
-           was- ${brightDataCompany} and here is what sourceWebsite was- ${sourceWebsite}`
+           was- ${brightDataCompany} and here is what sourceWebsite was- ${sourceWebsite}`,
         );
         return;
       }
@@ -98,21 +94,21 @@ export const handler = async (event: SQSEvent) => {
       console.info(`Company data for ${transformedCompany.companyName} processed successfully.`);
 
       // Step 3: Upsert company data in the MongoDB database
-      await Company.findOneAndUpdate(
-        {
+      await CompaniesService.updateCompany({
+        query: {
           $or: [
             { sourceWebsiteUrl: transformedCompany.sourceWebsiteUrl }, // Match by `sourceWebsiteUrl`
             { companyName: transformedCompany.companyName }, // Match by `companyName`
           ],
         },
-        { $set: transformedCompany }, // Update with new data
-        { upsert: true }
-      );
+        updateData: transformedCompany,
+        options: { upsert: true }, // Ensure upsert behavior
+      });
 
       const glassdoorFilters = [
         {
-          'search_url': `${glassdoorSearchUrl}${encodeURIComponent(transformedCompany?.companyName as string)}`,
-          'max_search_results': 5,
+          search_url: `${glassdoorSearchUrl}${encodeURIComponent(transformedCompany?.companyName as string)}`,
+          max_search_results: 5,
         },
       ];
 
@@ -120,12 +116,12 @@ export const handler = async (event: SQSEvent) => {
       // return 5 results and we will have to determine if one matches
       const companySnapshotId = await requestSnapshotByUrlAndFilters(
         getGlassdoorCompanyInfoSnapshotUrl,
-        glassdoorFilters
+        glassdoorFilters,
       );
 
       console.info(
         `Successfully got glassdoor company snapshot ID ${companySnapshotId} for
-         company ${transformedCompany.companyName}.`
+         company ${transformedCompany.companyName}.`,
       );
 
       // Step 5: Send the company snapshot ID to the source website queue

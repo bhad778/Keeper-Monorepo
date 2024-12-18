@@ -1,4 +1,5 @@
 import { APIGatewayEvent, Context, Callback } from 'aws-lambda';
+import { OperationEnum } from 'keeperTypes';
 
 import Company from '../../models/Company';
 import { headers } from '../../constants';
@@ -17,7 +18,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       throw new Error('Missing request body.');
     }
 
-    const { query, operation = 'findOne', options = {} } = JSON.parse(event.body);
+    const { query, operation = OperationEnum.One, options = {} } = JSON.parse(event.body);
 
     if (!query || typeof query !== 'object') {
       throw new Error('Invalid or missing query object.');
@@ -25,14 +26,14 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
 
     let result;
 
-    if (operation === 'findOne') {
+    if (operation === OperationEnum.One) {
       // Perform a findOne query
       result = await Company.findOne(query);
-    } else if (operation === 'find') {
+    } else if (operation === OperationEnum.Many) {
       // Perform a find query
       result = await Company.find(query, null, options);
     } else {
-      throw new Error('Invalid operation. Supported operations are "findOne" and "find".');
+      throw new Error('Invalid operation. Supported operations are "One" and "Many".');
     }
 
     if (!result || (Array.isArray(result) && result.length === 0)) {

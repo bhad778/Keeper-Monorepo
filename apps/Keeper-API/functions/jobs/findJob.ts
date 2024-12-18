@@ -2,6 +2,7 @@ import { APIGatewayEvent, Context, Callback } from 'aws-lambda';
 
 import Job from '../../models/Job';
 import { headers } from '../../constants';
+import { OperationEnum } from 'keeperTypes';
 
 // ex payload-
 // {
@@ -17,7 +18,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       throw new Error('Missing request body.');
     }
 
-    const { query, operation = 'findOne', options = {} } = JSON.parse(event.body);
+    const { query, operation = OperationEnum.One, options = {} } = JSON.parse(event.body);
 
     if (!query || typeof query !== 'object') {
       throw new Error('Invalid or missing query object.');
@@ -26,10 +27,10 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     let result;
 
     // Determine operation type
-    if (operation === 'findOne') {
+    if (operation === OperationEnum.One) {
       // Perform a findOne query
       result = await Job.findOne(query);
-    } else if (operation === 'find') {
+    } else if (operation === OperationEnum.Many) {
       // Perform a find query
       result = await Job.find(query, null, options);
     } else {

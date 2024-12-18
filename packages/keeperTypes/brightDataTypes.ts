@@ -174,3 +174,8 @@ export enum BrightDataSnapshotTypeEnum {
   SourceWebsiteCompanyDetails = 'SourceWebsiteCompanyDetails',
   GlassdoorCompanyDetails = 'GlassdoorCompanyDetails',
 }
+
+export enum OperationEnum {
+  One,
+  Many,
+}
