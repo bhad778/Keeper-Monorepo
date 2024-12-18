@@ -11,7 +11,7 @@ import {
   requeueMessage,
   requeueTimeout,
   sendMessageToQueue,
-} from '../../utils/brightDataUtils';
+} from 'keeperUtils/brightDataUtils';
 
 const getGlassdoorCompanyInfoSnapshotUrl =
   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7j0bx501ockwldaqf&include_errors=true&type=discover_new&discover_by=keyword';

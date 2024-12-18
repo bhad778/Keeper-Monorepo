@@ -1,10 +1,7 @@
-require('dotenv').config({ path: '../variables.env' });
-
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
+import { JobSourceWebsiteEnum, TJobsQueueMessage } from 'keeperTypes';
 
-import { headers } from '../../constants';
-import { JobSourceWebsiteEnum, TJobsQueueMessage } from '../../types/brightDataTypes';
-import { requestSnapshotByUrlAndFilters, sendMessageToQueue } from '../../utils/brightDataUtils';
+import { requestSnapshotByUrlAndFilters, sendMessageToQueue } from 'keeperUtils/brightDataUtils';
 
 const getLinkedInJobSnapshotUrl =
   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_lpfll7v5hcqtkxl6l&type=discover_new&discover_by=url&limit_per_input=30';
@@ -31,29 +28,29 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     ];
 
     const indeedFilters = [
-      { 'country': 'US', 'domain': 'indeed.com', 'keyword_search': 'software engineer', 'location': 'Atlanta, GA' },
-      { 'country': 'US', 'domain': 'indeed.com', 'keyword_search': 'software engineer', 'location': 'Los Angeles, CA' },
-      { 'country': 'US', 'domain': 'indeed.com', 'keyword_search': 'software engineer', 'location': 'New York, NY' },
-      { 'country': 'US', 'domain': 'indeed.com', 'keyword_search': 'software engineer', 'location': 'Chicago, IL' },
-      { 'country': 'US', 'domain': 'indeed.com', 'keyword_search': 'software engineer', 'location': 'Austin, TX' },
-      { 'country': 'US', 'domain': 'indeed.com', 'keyword_search': 'software engineer', 'location': 'Boston, MA' },
-      { 'country': 'US', 'domain': 'indeed.com', 'keyword_search': 'software engineer', 'location': 'Seattle, WA' },
+      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Atlanta, GA' },
+      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Los Angeles, CA' },
+      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'New York, NY' },
+      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Chicago, IL' },
+      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Austin, TX' },
+      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Boston, MA' },
+      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Seattle, WA' },
       {
-        'country': 'US',
-        'domain': 'indeed.com',
-        'keyword_search': 'software engineer',
-        'location': 'San Francisco, CA',
+        country: 'US',
+        domain: 'indeed.com',
+        keyword_search: 'software engineer',
+        location: 'San Francisco, CA',
       },
-      { 'country': 'US', 'domain': 'indeed.com', 'keyword_search': 'software engineer', 'location': 'Washington, DC' },
-      { 'country': 'US', 'domain': 'indeed.com', 'keyword_search': 'software engineer', 'location': 'Denver, CO' },
-      { 'country': 'US', 'domain': 'indeed.com', 'keyword_search': 'software engineer', 'location': 'Miami, FL' },
-      { 'country': 'US', 'domain': 'indeed.com', 'keyword_search': 'software engineer', 'location': 'San Jose, CA' },
-      { 'country': 'US', 'domain': 'indeed.com', 'keyword_search': 'software engineer', 'location': 'Boulder, CO' },
-      { 'country': 'US', 'domain': 'indeed.com', 'keyword_search': 'software engineer', 'location': 'Durham, NC' },
-      { 'country': 'US', 'domain': 'indeed.com', 'keyword_search': 'software engineer', 'location': 'Bloomington, IL' },
-      { 'country': 'US', 'domain': 'indeed.com', 'keyword_search': 'software engineer', 'location': 'Huntsville, AL' },
-      { 'country': 'US', 'domain': 'indeed.com', 'keyword_search': 'software engineer', 'location': 'Charlotte, NC' },
-      { 'country': 'US', 'domain': 'indeed.com', 'keyword_search': 'software engineer', 'location': 'Baltimore, MD' },
+      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Washington, DC' },
+      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Denver, CO' },
+      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Miami, FL' },
+      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'San Jose, CA' },
+      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Boulder, CO' },
+      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Durham, NC' },
+      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Bloomington, IL' },
+      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Huntsville, AL' },
+      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Charlotte, NC' },
+      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Baltimore, MD' },
     ];
 
     // Fetch snapshots for LinkedIn and Indeed concurrently
@@ -68,20 +65,20 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     } catch (error) {
       console.error('Error fetching snapshots from BrightData:', error);
       throw new Error(
-        `Error with Promise.all getting snapshots from BrightData for LinkedIn and Indeed jobs data: ${error.message}`
+        `Error with Promise.all getting snapshots from BrightData for LinkedIn and Indeed jobs data: ${error.message}`,
       );
     }
 
     if (!linkedInSnapshotId) {
       console.error(
-        `This resposne for LinkedIn ${linkedInSnapshotId?.data} does not have a snapshot id- ${linkedInSnapshotId}.`
+        `This resposne for LinkedIn ${linkedInSnapshotId?.data} does not have a snapshot id- ${linkedInSnapshotId}.`,
       );
       throw new Error('LinkedIn snapshot ID is missing or invalid.');
     }
 
     if (!indeedSnapshotId) {
       console.error(
-        `This resposne for Indeed ${indeedSnapshotId?.data} does not have a snapshot id- ${indeedSnapshotId}.`
+        `This resposne for Indeed ${indeedSnapshotId?.data} does not have a snapshot id- ${indeedSnapshotId}.`,
       );
       throw new Error('Indeed snapshot ID is missing or invalid.');
     }
@@ -103,7 +100,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     try {
       console.info('Sending messages to the Jobs Queue.');
       await Promise.all(
-        jobsQueueMessages.map((message) => sendMessageToQueue(process.env.JOBS_QUEUE_URL as string, message))
+        jobsQueueMessages.map(message => sendMessageToQueue(process.env.JOBS_QUEUE_URL as string, message)),
       );
       console.info('Successfully sent messages to the Jobs Queue.');
     } catch (error) {

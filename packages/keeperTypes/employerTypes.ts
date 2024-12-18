@@ -1,11 +1,11 @@
+import { JobSourceWebsiteEnum } from './brightDataTypes';
 import {
   TMatch,
   TGeoLocation,
-  EmploymentTypes,
-  TOnsiteSchedule,
   TFrontendBackendOptions,
   TCompanySize,
   TWorkAuthOptions,
+  EmploymentTypeEnum,
 } from './globalTypes';
 
 export type TEmployer = {
@@ -21,35 +21,39 @@ export type TEmployer = {
   hasReceivedLikeNotification?: boolean;
 };
 
+// job in our database
 export type TJob = {
-  _id?: string;
-  expoPushToken: string | null;
-  ownerId: string;
-  ownerEmail: string;
+  expoPushToken?: string | null;
+  requiredYearsOfExperience: number;
+  relevantSkills: string[];
   createdAt: Date;
-  lastUpdatedOnWeb: boolean;
-  matches: TMatch[];
-  color: string;
-  geoLocation: TGeoLocation;
-  settings: TJobSettings;
-  preferences: TJobPreferences;
   receivedLikes: string[];
-  publicJobTakenCount: number;
-  publicTakers: string[];
+  matches: TMatch[];
+  geoLocation?: TGeoLocation;
+  hasGottenToEditProfileScreen?: boolean;
+  hasReceivedLikeNotification?: boolean;
+  compensation: TJobCompensation | null;
+  sourceWebsite: JobSourceWebsiteEnum;
+
+  sourceWebsiteApplicationUrl: string;
+  jobTitle: string;
+  companyName: string;
+  companyLogo: string | null;
+  jobLocation: string;
+  jobSummary: string;
+  jobEmploymentType: string;
+  sourceWebsiteCompanyUrl: string;
+  // this is the actual date object
+  jobPostedDate: string | null;
+  applyLink: string;
 };
 
 export type TBenefitOptions = 'None' | 'Dental' | 'Vision' | 'Health Care' | '401k';
 
-export type TEmployerFilterListOptions =
-  | 'Experience'
-  | 'Skills'
-  | 'Company Size'
-  | 'Frontend/Backend'
-  | 'Work Auth'
-  | 'Salary/Contract';
+export type TOnsiteSchedule = 'Remote' | 'Hybrid' | 'Office';
 
 export type TJobCompensation = {
-  type: EmploymentTypes;
+  type: EmploymentTypeEnum;
   payRange?: TCompensationRange;
   salaryConversionRange?: TCompensationRange;
 };
@@ -59,11 +63,6 @@ export type TCompensationRange = {
   max: number;
 };
 
-// export type TLocation = {
-//   address: string;
-//   geoLocation: TGeoLocation;
-// };
-
 export type TJobPreferences = {
   searchRadius: number | undefined;
   yearsOfExperience: number | undefined;
@@ -72,7 +71,7 @@ export type TJobPreferences = {
   isRemote: boolean | undefined;
   frontendBackendOptionsOpenTo: TFrontendBackendOptions[] | undefined;
   companySizeOptionsOpenTo: TCompanySize[] | undefined;
-  employmentTypeOptionsOpenTo: EmploymentTypes[] | undefined;
+  employmentTypeOptionsOpenTo: EmploymentTypeEnum[] | undefined;
   workAuthOptionsOpenTo: TWorkAuthOptions[] | undefined;
 };
 

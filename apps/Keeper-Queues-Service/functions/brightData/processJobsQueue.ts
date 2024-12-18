@@ -10,7 +10,7 @@ import {
   requeueMessage,
   requeueTimeout,
   sendMessageToQueue,
-} from '../../utils/brightDataUtils';
+} from 'keeperUtils/brightDataUtils';
 
 const getLinkedInCompanySnapshotUrl =
   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1vikfnt1wgvvqz95w&include_errors=true';

@@ -12,11 +12,13 @@ import {
   TJobCompensation,
   EmploymentTypeEnum,
   TCompany,
+  TGeoLocation,
 } from 'keeperTypes';
 import { extractDollarNumbers, findStringsInLongString, normalizeLocation, normalizeUrl } from 'keeperUtils';
 import { TechnologiesList } from 'keeperConstants';
+import { CompaniesService } from 'keeperServices';
 
-import AWS from '../../../awsConfig';
+import AWS from '../../awsConfig';
 
 const sqs = new AWS.SQS();
 
@@ -46,7 +48,7 @@ const linkedInRequiredYearsOfExperienceTransformer = (
 };
 
 const brightDataRequiredSkillsTransformer = (job_summary: string): string[] => {
-  let foundSkills: string[] = findStringsInLongString(TechnologiesList, job_summary);
+  const foundSkills: string[] = findStringsInLongString(TechnologiesList, job_summary);
   if (foundSkills && foundSkills.length > 0) {
     return foundSkills;
   } else {
@@ -269,7 +271,7 @@ export const linkedInJobTransformer = (brightDataJob: TBrightDataLinkedInJob): T
     createdAt: new Date(),
     receivedLikes: [],
     matches: [],
-    geoLocation: undefined,
+    geoLocation: null as unknown as TGeoLocation,
     hasGottenToEditProfileScreen: false,
     hasReceivedLikeNotification: false,
     requiredYearsOfExperience: linkedInRequiredYearsOfExperienceTransformer(brightDataJob.job_seniority_level),
@@ -494,7 +496,11 @@ export const fetchSnapshotArrayDataById = async snapshotId => {
 
 export const checkIfCompanyExistsInDatabase = async (sourceWebsiteUrl: string) => {
   try {
-    const company = await Company.findOne({ sourceWebsiteUrl: sourceWebsiteUrl });
+    const queryPayload = {
+      query: { sourceWebsiteUrl },
+    };
+
+    const company = await CompaniesService.findCompany(queryPayload);
     return !!company; // Returns true if the company exists, false otherwise
   } catch (error) {
     console.error(`Error checking company ${sourceWebsiteUrl} in database:`, error);

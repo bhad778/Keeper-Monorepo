@@ -13,7 +13,7 @@ import {
   requeueTimeout,
   sendMessageToQueue,
   transformGlassdoorUrlToReviews,
-} from '../../utils/brightDataUtils';
+} from 'keeperUtils/brightDataUtils';
 
 const glassdoorReviewsSnapshotUrl =
   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7j1po0921hbu0ri1z&include_errors=true';

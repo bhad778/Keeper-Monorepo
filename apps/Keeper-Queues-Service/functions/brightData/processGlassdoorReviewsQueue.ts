@@ -1,7 +1,7 @@
 import { SQSEvent } from 'aws-lambda';
 import { CompaniesService } from 'keeperServices';
 
-import { requeueMessage, checkSnapshotStatusById, fetchSnapshotArrayDataById } from '../../utils/brightDataUtils';
+import { requeueMessage, checkSnapshotStatusById, fetchSnapshotArrayDataById } from 'keeperUtils/brightDataUtils';
 
 export const handler = async (event: SQSEvent) => {
   try {
