@@ -11,6 +11,7 @@ import {
   requeueTimeout,
   sendMessageToQueue,
 } from 'keeperUtils/brightDataUtils';
+import { CompaniesService, JobsService } from 'packages/keeperServices';
 
 const getLinkedInCompanySnapshotUrl =
   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1vikfnt1wgvvqz95w&include_errors=true';
@@ -91,7 +92,10 @@ export const handler = async (event: SQSEvent) => {
             }
 
             // Check if the job already exists in the database
-            const jobExists = await Job.findOne({ applyLink: transformedJob.applyLink }); // Use unique identifier
+            const jobPayload = {
+              query: { applyLink: transformedJob.applyLink },
+            };
+            const jobExists = await JobsService.findJob(jobPayload); // Use unique identifier
 
             if (jobExists) {
               console.info(
@@ -104,9 +108,10 @@ export const handler = async (event: SQSEvent) => {
             jobsToInsertInDB.push(transformedJob); // Add to batch for insertion
 
             // Check if company URL exists in the database
-            const companyExists = await Company.findOne({
-              sourceWebsiteUrl: transformedJob.sourceWebsiteCompanyUrl,
-            });
+            const companyPayload = {
+              query: { sourceWebsiteUrl: transformedJob.sourceWebsiteCompanyUrl },
+            };
+            const companyExists = await CompaniesService.findCompany(companyPayload);
 
             if (companyExists) {
               console.info(`Company with URL ${transformedJob.sourceWebsiteCompanyUrl} already exists. Skipping.`);

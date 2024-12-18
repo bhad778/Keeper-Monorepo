@@ -32,11 +32,13 @@ export const handler = async (event: SQSEvent) => {
         return;
       }
 
-      const query = { applyLink };
-      const updateData = { geoLocation: geoLocation };
+      const payload = {
+        query: { applyLink },
+        updateData: { geoLocation: geoLocation },
+      };
 
       // Update the job in the database with geolocation data
-      const updatedJob = await JobsService.updateJob({ query, updateData });
+      const updatedJob = await JobsService.updateJob(payload);
 
       if (updatedJob) {
         console.info(`Successfully updated applyLink: ${applyLink} with geolocation data.`);
