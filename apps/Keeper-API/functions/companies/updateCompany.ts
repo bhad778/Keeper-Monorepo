@@ -1,5 +1,6 @@
 import { APIGatewayEvent, Context, Callback } from 'aws-lambda';
 import { OperationEnum } from 'keeperTypes';
+import { extractErrorMessage } from 'keeperUtils';
 
 import Company from '../../models/Company'; // Adjust the path based on your project structure
 import { headers } from '../../constants'; // Reusable headers for responses
@@ -77,13 +78,15 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       }),
     });
   } catch (error) {
-    console.error(`Error updating company/companies: ${error.message}`);
+    const errorMessage = extractErrorMessage(error);
+
+    console.error(`Error updating company/companies: ${errorMessage}`);
     callback(null, {
       statusCode: 500,
       headers,
       body: JSON.stringify({
         success: false,
-        error: error.message,
+        error: errorMessage,
       }),
     });
   }

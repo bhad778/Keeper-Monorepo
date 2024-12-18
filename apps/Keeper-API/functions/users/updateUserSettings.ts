@@ -2,13 +2,14 @@ import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import * as Joi from 'joi';
 import { HydratedDocument } from 'mongoose';
 import axios from 'axios';
+import { extractErrorMessage } from 'keeperUtils';
 
 import { headers } from '../../constants';
 import connectToDatabase from '../../db';
 import ValidateBody from '../validateBody';
 import Employee from '../../models/Employee';
 import { AccountTypeSchema } from '../../schemas/globalSchemas';
-import { AccountTypeEnum, EducationEnum } from '../../types/globalTypes';
+import { AccountTypeEnum } from '../../types/globalTypes';
 import { getGeoLocationFromAddress } from '../../utils/geoLocationUtils';
 import { TEmployee } from '../../types/employeeTypes';
 
@@ -130,14 +131,16 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       }),
     });
   } catch (error) {
-    console.error('Error in updateUserSettings:', error.message || error);
+    const errorMessage = extractErrorMessage(error);
+
+    console.error('Error in updateUserSettings:', errorMessage || error);
 
     // Return error response
     callback(null, {
       statusCode: 400,
       headers,
       body: JSON.stringify({
-        error: error.message || 'An unexpected error occurred.',
+        error: errorMessage || 'An unexpected error occurred.',
       }),
     });
   }

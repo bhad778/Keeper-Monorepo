@@ -1,6 +1,8 @@
-import connectToDatabase from '../../db';
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
+import { extractErrorMessage } from 'keeperUtils';
 import * as Joi from 'joi';
+
+import connectToDatabase from '../../db';
 import { EmployeePreferencesSchema } from '../../schemas/globalSchemas';
 import ValidateBody from '../validateBody';
 import Job from '../../models/Job';
@@ -12,7 +14,7 @@ import Swipe from '../../models/Swipe';
 module.exports.getJobsForSwiping = async (
   event: APIGatewayEvent,
   context: Context,
-  callback: APIGatewayProxyCallback
+  callback: APIGatewayProxyCallback,
 ) => {
   context.callbackWaitsForEmptyEventLoop = false;
 
@@ -57,11 +59,11 @@ module.exports.getJobsForSwiping = async (
     }
 
     if (preferences) {
-      const { searchRadius, requiredYearsOfExperience, geoLocation, relevantSkills, isRemote, isNew } = preferences;
+      const { requiredYearsOfExperience, relevantSkills, isNew } = preferences;
 
       // Fetch swipes to exclude already swiped jobs
       const swipes = await Swipe.find({ ownerId: userId });
-      const alreadySwipedOnIds = swipes.map((swipe) => (swipe as TSwipe).receiverId || '');
+      const alreadySwipedOnIds = swipes.map(swipe => (swipe as TSwipe).receiverId || '');
 
       // Create case-insensitive regex for relevant skills
       const caseInsensitiveSkillsRegExArray = relevantSkills.map((text: string) => new RegExp(escapeRegex(text), 'i'));
@@ -118,12 +120,14 @@ module.exports.getJobsForSwiping = async (
       body: JSON.stringify(jobs),
     });
   } catch (error) {
-    console.error('Error in getJobsForSwiping:', error.message || error);
+    const errorMessage = extractErrorMessage(error);
+
+    console.error('Error in getJobsForSwiping:', errorMessage || error);
 
     callback(null, {
       statusCode: 400,
       headers,
-      body: JSON.stringify({ message: error.message || 'An unexpected error occurred.' }),
+      body: JSON.stringify({ message: errorMessage || 'An unexpected error occurred.' }),
     });
   }
 };

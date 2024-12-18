@@ -306,6 +306,13 @@ export const convertMilesToMeters = (miles: number) => {
   return Math.round(miles * 1609.344);
 };
 
+export const extractErrorMessage = (error: unknown): string => {
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return 'An unexpected error occurred.';
+};
+
 export const checkIfProfileIsIncomplete = (settings: TEmployeeSettings) => {
   let isIncomplete = false;
   for (const [key, value] of Object.entries(settings)) {

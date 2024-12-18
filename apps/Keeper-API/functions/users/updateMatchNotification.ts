@@ -1,5 +1,6 @@
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import * as Joi from 'joi';
+import { extractErrorMessage } from 'keeperUtils';
 
 import { headers } from '../../constants';
 import connectToDatabase from '../../db';
@@ -42,7 +43,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     if (!saveObject.matches) {
       throw new Error('Matches not found.');
     }
-    const matchIndex = saveObject.matches.findIndex((match) => match.id === matchId);
+    const matchIndex = saveObject.matches.findIndex(match => match.id === matchId);
     if (matchIndex === -1) {
       throw new Error('Match not found.');
     }
@@ -60,14 +61,16 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       body: JSON.stringify({ message: 'Success' }),
     });
   } catch (error) {
-    console.error('Error in updateMatchNotification:', error.message || error);
+    const errorMessage = extractErrorMessage(error);
+
+    console.error('Error in updateMatchNotification:', errorMessage || error);
 
     // Return error response
     callback(null, {
       statusCode: 400,
       headers,
       body: JSON.stringify({
-        error: error.message || 'An unexpected error occurred.',
+        error: errorMessage || 'An unexpected error occurred.',
       }),
     });
   }

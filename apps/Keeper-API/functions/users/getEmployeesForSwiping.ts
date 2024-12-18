@@ -1,8 +1,8 @@
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
+import { extractErrorMessage } from 'keeperUtils';
 
 import { getItemsForSwipingLimit, headers, seniorDevYearsOfEpxerience } from '../../constants';
 import connectToDatabase from '../../db';
-import Employer from '../../models/Employer';
 import * as Joi from 'joi';
 import { JobPreferencesSchema } from '../../schemas/globalSchemas';
 import ValidateBody from '../validateBody';
@@ -63,7 +63,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
 
       // Retrieve already swiped-on IDs
       const swipes = await Swipe.find({ ownerId: jobId });
-      const alreadySwipedOnIds = swipes.map((swipe) => (swipe as TSwipe).receiverId);
+      const alreadySwipedOnIds = swipes.map(swipe => (swipe as TSwipe).receiverId);
 
       // Build skill regex filters
       const caseInsensitiveSkillsRegExArray = relevantSkills.map((text: string) => new RegExp(escapeRegex(text), 'i'));
@@ -138,12 +138,14 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       body: JSON.stringify(shuffleArray(employees)),
     });
   } catch (error) {
-    console.error('Error in getEmployeesForSwiping:', error.message || error);
+    const errorMessage = extractErrorMessage(error);
+
+    console.error('Error in getEmployeesForSwiping:', errorMessage || error);
     callback(null, {
       statusCode: 400,
       headers,
       body: JSON.stringify({
-        error: error.message || 'An unexpected error occurred.',
+        error: errorMessage || 'An unexpected error occurred.',
       }),
     });
   }

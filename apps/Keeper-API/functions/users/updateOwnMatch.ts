@@ -1,5 +1,6 @@
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import * as Joi from 'joi';
+import { extractErrorMessage } from 'keeperUtils';
 
 import { headers } from '../../constants';
 import connectToDatabase from '../../db';
@@ -30,7 +31,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     const { userId, accountType, matchToUpdate } = JSON.parse(event.body);
 
     // Extract other user IDs (if needed in the future)
-    const idsArray = matchToUpdate.id.split('-').filter((id) => !id.includes(userId));
+    // const idsArray = matchToUpdate.id.split('-').filter(id => !id.includes(userId));
 
     await connectToDatabase();
 
@@ -48,7 +49,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     if (!loggedInUserObject.matches) {
       throw new Error('Matches not found.');
     }
-    const matchIndex = loggedInUserObject.matches.findIndex((match) => match.id === matchToUpdate.id);
+    const matchIndex = loggedInUserObject.matches.findIndex(match => match.id === matchToUpdate.id);
     if (matchIndex === -1) {
       throw new Error('Match not found.');
     }
@@ -75,14 +76,16 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       body: JSON.stringify({ message: 'Match successfully updated' }),
     });
   } catch (error) {
-    console.error('Error in updateOwnMatch:', error.message || error);
+    const errorMessage = extractErrorMessage(error);
+
+    console.error('Error in updateOwnMatch:', errorMessage || error);
 
     // Return error response
     callback(null, {
       statusCode: 400,
       headers,
       body: JSON.stringify({
-        error: error.message || 'An unexpected error occurred.',
+        error: errorMessage || 'An unexpected error occurred.',
       }),
     });
   }

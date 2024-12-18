@@ -1,5 +1,5 @@
 import axios from 'axios';
-import * as PubNub from 'pubnub';
+import PubNub from 'pubnub';
 import * as Joi from 'joi';
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 
@@ -58,13 +58,13 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       body: JSON.stringify({ response: 'Successfully sent push notification' }),
     });
   } catch (error) {
-    console.error('Error in sendPubnubNotification:', error.message || error);
+    console.error('Error in sendPubnubNotification:', error || error);
 
     callback(null, {
       statusCode: 400,
       headers,
       body: JSON.stringify({
-        error: error.message || 'An unexpected error occurred.',
+        error: error || 'An unexpected error occurred.',
       }),
     });
   }

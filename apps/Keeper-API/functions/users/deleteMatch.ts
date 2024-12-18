@@ -1,5 +1,6 @@
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import * as Joi from 'joi';
+import { extractErrorMessage } from 'keeperUtils';
 
 import { headers } from '../../constants';
 import connectToDatabase from '../../db';
@@ -42,7 +43,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     }
 
     // Filter out the match to delete
-    const updatedMatches = (loggedInUserObject.matches || []).filter((match) => match.id !== matchToDeleteId);
+    const updatedMatches = (loggedInUserObject.matches || []).filter(match => match.id !== matchToDeleteId);
 
     loggedInUserObject.matches = updatedMatches;
     loggedInUserObject.markModified('matches');
@@ -60,14 +61,16 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       }),
     });
   } catch (error) {
-    console.error('Error in deleteMatch:', error.message || error);
+    const errorMessage = extractErrorMessage(error);
+
+    console.error('Error in deleteMatch:', errorMessage || error);
 
     // Return error response
     callback(null, {
       statusCode: 400,
       headers,
       body: JSON.stringify({
-        error: error.message || 'An unexpected error occurred.',
+        error: errorMessage || 'An unexpected error occurred.',
       }),
     });
   }

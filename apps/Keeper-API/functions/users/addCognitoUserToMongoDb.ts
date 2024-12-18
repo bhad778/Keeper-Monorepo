@@ -1,4 +1,5 @@
 import { Callback, CognitoUserPoolTriggerEvent, Context } from 'aws-lambda';
+import { extractErrorMessage } from 'keeperUtils';
 
 import connectToDatabase from '../../db';
 import { TEmployer } from '../../types/employerTypes';
@@ -10,7 +11,7 @@ import Employer from '../../models/Employer';
 export const handler = async (
   event: CognitoUserPoolTriggerEvent, // Adjust the type if you have a specific schema for Cognito triggers
   context: Context,
-  callback: Callback
+  callback: Callback,
 ) => {
   context.callbackWaitsForEmptyEventLoop = false;
 
@@ -95,13 +96,15 @@ export const handler = async (
     // Return success response
     callback(null, event);
   } catch (error) {
-    console.error('Error in addCognitoUserToMongoDb:', error.message || error);
+    const errorMessage = extractErrorMessage(error);
+
+    console.error('Error in addCognitoUserToMongoDb:', errorMessage || error);
 
     callback(null, {
       statusCode: 400,
       headers,
       body: JSON.stringify({
-        error: error.message || 'An unexpected error occurred.',
+        error: errorMessage || 'An unexpected error occurred.',
       }),
     });
   }

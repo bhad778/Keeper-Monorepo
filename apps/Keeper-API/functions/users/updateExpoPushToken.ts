@@ -1,4 +1,5 @@
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
+import { extractErrorMessage } from 'keeperUtils';
 
 import connectToDatabase from '../../db';
 import Employee from '../../models/Employee';
@@ -41,11 +42,13 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       throw new Error('Invalid account type. Must be "employer" or "employee".');
     }
   } catch (error) {
-    console.error('Error in updateExpoPushToken:', error.message || error);
+    const errorMessage = extractErrorMessage(error);
+
+    console.error('Error in updateExpoPushToken:', errorMessage || error);
     return callback(null, {
       statusCode: 400,
       headers,
-      body: JSON.stringify({ error: error.message || 'An unexpected error occurred.' }),
+      body: JSON.stringify({ error: errorMessage || 'An unexpected error occurred.' }),
     });
   }
 };
@@ -65,11 +68,11 @@ const updateEmployerExpoPushToken = async (employerId: string, expoPushToken: st
 
   // Update matches in jobs and employees
   const employersJobs = await Job.find({ ownerId: employerId });
-  const otherMatchesIdsArray: any = employersJobs.flatMap((job) =>
+  const otherMatchesIdsArray: any = employersJobs.flatMap(job =>
     job?.matches?.map((match: TMatch) => ({
       employeeId: match.custom.employeeId,
       matchId: match.id,
-    }))
+    })),
   );
 
   if (!otherMatchesIdsArray) {
@@ -79,7 +82,7 @@ const updateEmployerExpoPushToken = async (employerId: string, expoPushToken: st
   for (const { employeeId, matchId } of otherMatchesIdsArray) {
     const employee = await Employee.findById(employeeId).exec();
     if (employee) {
-      const matchIndex = employee?.matches?.findIndex((match) => match.id === matchId);
+      const matchIndex = employee?.matches?.findIndex(match => match.id === matchId);
       if (matchIndex !== -1 && matchIndex !== undefined && employee && employee.matches) {
         employee.matches[matchIndex].custom.expoPushToken = expoPushToken;
         employee.markModified('matches');
@@ -114,7 +117,7 @@ const updateEmployeeExpoPushToken = async (employeeId: string, expoPushToken: st
   for (const { jobId, matchId } of otherMatchesIdsArray) {
     const job = await Job.findById(jobId).exec();
     if (job) {
-      const matchIndex = job?.matches?.findIndex((match) => match.id === matchId);
+      const matchIndex = job?.matches?.findIndex(match => match.id === matchId);
       if (matchIndex !== -1 && matchIndex !== undefined && job && job.matches) {
         job.matches[matchIndex].custom.expoPushToken = expoPushToken;
         job.markModified('matches');

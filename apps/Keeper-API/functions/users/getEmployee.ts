@@ -27,7 +27,7 @@ export const handler = (event: APIGatewayEvent, context: Context, callback: APIG
   connectToDatabase().then(() => {
     Employee.findById(userId)
       .exec()
-      .then((res) => {
+      .then(res => {
         if (res) {
           return callback(null, {
             statusCode: 200,
@@ -44,6 +44,6 @@ export const handler = (event: APIGatewayEvent, context: Context, callback: APIG
           });
         }
       })
-      .catch((err) => callback(new Error(err)));
+      .catch(err => callback(new Error(err)));
   });
 };

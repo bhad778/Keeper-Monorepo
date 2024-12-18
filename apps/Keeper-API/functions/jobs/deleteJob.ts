@@ -1,8 +1,9 @@
 import { APIGatewayEvent, Context, Callback } from 'aws-lambda';
+import { OperationEnum } from 'keeperTypes';
+import { extractErrorMessage } from 'keeperUtils';
 
 import Job from '../../models/Job';
 import { headers } from '../../constants';
-import { OperationEnum } from 'keeperTypes';
 
 // ex payload-
 // {
@@ -68,13 +69,15 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       }),
     });
   } catch (error) {
-    console.error(`Error deleting job(s): ${error.message}`);
+    const errorMessage = extractErrorMessage(error);
+
+    console.error(`Error deleting job(s): ${errorMessage}`);
     callback(null, {
       statusCode: 500,
       headers,
       body: JSON.stringify({
         success: false,
-        error: error.message,
+        error: errorMessage,
       }),
     });
   }

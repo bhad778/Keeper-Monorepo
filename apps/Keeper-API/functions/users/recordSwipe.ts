@@ -1,6 +1,7 @@
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import * as Joi from 'joi';
 import axios from 'axios';
+import { extractErrorMessage } from 'keeperUtils';
 
 import { headers, SENDER_EMAIL } from '../../constants';
 import connectToDatabase from '../../db';
@@ -126,13 +127,15 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       body: JSON.stringify({ message: 'Successfully recorded swipe' }),
     });
   } catch (error) {
-    console.error('Error in recordSwipe:', error.message || error);
+    const errorMessage = extractErrorMessage(error);
+
+    console.error('Error in recordSwipe:', errorMessage || error);
 
     callback(null, {
       statusCode: 400,
       headers,
       body: JSON.stringify({
-        error: error.message || 'An unexpected error occurred.',
+        error: errorMessage || 'An unexpected error occurred.',
       }),
     });
   }

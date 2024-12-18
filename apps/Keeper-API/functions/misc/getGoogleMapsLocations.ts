@@ -1,6 +1,7 @@
 import * as Joi from 'joi';
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import axios from 'axios';
+import { extractErrorMessage } from 'keeperUtils';
 
 import { headers } from '../../constants';
 import ValidateBody from '../validateBody';
@@ -55,13 +56,15 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       body: JSON.stringify(locationRes.data.predictions),
     });
   } catch (error) {
-    console.error('Error in getGoogleMapsLocations:', error.message || error);
+    const errorMessage = extractErrorMessage(error);
+
+    console.error('Error in getGoogleMapsLocations:', errorMessage || error);
 
     return callback(null, {
-      statusCode: error.message.includes('Validation') || error.message.includes('Bad Request') ? 400 : 500,
+      statusCode: errorMessage.includes('Validation') || errorMessage.includes('Bad Request') ? 400 : 500,
       headers,
       body: JSON.stringify({
-        error: error.message || 'An unexpected error occurred.',
+        error: errorMessage || 'An unexpected error occurred.',
       }),
     });
   }

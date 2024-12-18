@@ -1,5 +1,6 @@
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import * as Joi from 'joi';
+import { extractErrorMessage } from 'keeperUtils';
 
 import { headers } from '../../constants';
 import connectToDatabase from '../../db';
@@ -48,14 +49,16 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       body: JSON.stringify(savedEmployee),
     });
   } catch (error) {
-    console.error('Error in updateEmployeePreferences:', error.message || error);
+    const errorMessage = extractErrorMessage(error);
+
+    console.error('Error in updateEmployeePreferences:', errorMessage || error);
 
     // Return error response
     callback(null, {
       statusCode: 400,
       headers,
       body: JSON.stringify({
-        error: error.message || 'An unexpected error occurred.',
+        error: errorMessage || 'An unexpected error occurred.',
       }),
     });
   }

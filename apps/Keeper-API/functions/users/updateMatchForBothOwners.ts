@@ -1,5 +1,6 @@
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import * as Joi from 'joi';
+import { extractErrorMessage } from 'keeperUtils';
 
 import { headers } from '../../constants';
 import connectToDatabase from '../../db';
@@ -30,7 +31,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     const { userId, accountType, matchToUpdate } = JSON.parse(event.body);
 
     // Extract the other user ID from the match ID
-    const idsArray = matchToUpdate.id.split('-').filter((id) => !id.includes(userId));
+    const idsArray = matchToUpdate.id.split('-').filter(id => !id.includes(userId));
     const otherUserId = idsArray[0];
 
     await connectToDatabase();
@@ -47,7 +48,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
 
     // Update the logged-in user's match
     if (loggedInUser.matches) {
-      const loggedInUserIndex = loggedInUser.matches.findIndex((x) => x.id === matchToUpdate.id);
+      const loggedInUserIndex = loggedInUser.matches.findIndex(x => x.id === matchToUpdate.id);
       if (loggedInUserIndex !== -1) {
         loggedInUser.matches[loggedInUserIndex] = {
           ...loggedInUser.matches[loggedInUserIndex],
@@ -58,7 +59,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     }
 
     // Update the other user's match with hasNotification set to true
-    const otherUserIndex = otherUser.matches ? otherUser.matches.findIndex((x) => x.id === matchToUpdate.id) : -1;
+    const otherUserIndex = otherUser.matches ? otherUser.matches.findIndex(x => x.id === matchToUpdate.id) : -1;
     if (otherUser.matches && otherUserIndex !== -1) {
       otherUser.matches[otherUserIndex] = {
         ...otherUser.matches[otherUserIndex],
@@ -81,14 +82,16 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       body: JSON.stringify({ message: 'Match successfully updated' }),
     });
   } catch (error) {
-    console.error('Error in updateMatchForBothOwners:', error.message || error);
+    const errorMessage = extractErrorMessage(error);
+
+    console.error('Error in updateMatchForBothOwners:', errorMessage || error);
 
     // Return error response
     callback(null, {
       statusCode: 400,
       headers,
       body: JSON.stringify({
-        error: error.message || 'An unexpected error occurred.',
+        error: errorMessage || 'An unexpected error occurred.',
       }),
     });
   }

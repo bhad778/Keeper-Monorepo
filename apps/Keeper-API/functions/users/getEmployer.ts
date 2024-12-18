@@ -1,4 +1,5 @@
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
+import { extractErrorMessage } from 'keeperUtils';
 
 import { headers } from '../../constants';
 import connectToDatabase from '../../db';
@@ -34,14 +35,16 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       body: JSON.stringify(employers),
     });
   } catch (error) {
-    console.error('Error in getEmployer:', error.message || error);
+    const errorMessage = extractErrorMessage(error);
+
+    console.error('Error in getEmployer:', errorMessage || error);
 
     // Return error response
     callback(null, {
       statusCode: 400,
       headers,
       body: JSON.stringify({
-        error: error.message || 'An unexpected error occurred.',
+        error: errorMessage || 'An unexpected error occurred.',
       }),
     });
   }

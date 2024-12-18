@@ -1,5 +1,6 @@
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import * as Joi from 'joi';
+import { extractErrorMessage } from 'keeperUtils';
 
 import { colors, headers, SENDER_EMAIL } from '../../constants';
 import connectToDatabase from '../../db';
@@ -115,14 +116,16 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       }),
     });
   } catch (error) {
-    console.error('Error in addMatch:', error.message || error);
+    const errorMessage = extractErrorMessage(error);
+
+    console.error('Error in addMatch:', errorMessage || error);
 
     // Return error response
     callback(null, {
       statusCode: 400,
       headers,
       body: JSON.stringify({
-        error: error.message || 'An unexpected error occurred.',
+        error: errorMessage || 'An unexpected error occurred.',
       }),
     });
   }
