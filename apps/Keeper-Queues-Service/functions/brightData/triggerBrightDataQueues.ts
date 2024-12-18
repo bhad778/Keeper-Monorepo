@@ -1,8 +1,7 @@
+import { headers } from 'apps/Keeper-API/constants';
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import { JobSourceWebsiteEnum, TJobsQueueMessage } from 'keeperTypes';
 import { requestSnapshotByUrlAndFilters, sendMessageToQueue } from 'keeperUtils/brightDataUtils';
-
-import { headers } from '../../constants';
 
 const getLinkedInJobSnapshotUrl =
   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_lpfll7v5hcqtkxl6l&type=discover_new&discover_by=url&limit_per_input=30';
@@ -66,7 +65,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     } catch (error) {
       console.error('Error fetching snapshots from BrightData:', error);
       throw new Error(
-        `Error with Promise.all getting snapshots from BrightData for LinkedIn and Indeed jobs data: ${error.message}`,
+        `Error with Promise.all getting snapshots from BrightData for LinkedIn and Indeed jobs data: ${error}`,
       );
     }
 
