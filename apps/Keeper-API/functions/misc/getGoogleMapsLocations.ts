@@ -2,6 +2,7 @@ import * as Joi from 'joi';
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import axios from 'axios';
 import { extractErrorMessage } from 'keeperUtils';
+import { googleMapsApiKey } from 'keeperEnvironment';
 
 import { headers } from '../../constants';
 import ValidateBody from '../validateBody';
@@ -37,7 +38,6 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     }
 
     // Handle Google Maps API request
-    const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
     if (!googleMapsApiKey) {
       throw new Error('Server Error: Google Maps API key is not configured.');
     }

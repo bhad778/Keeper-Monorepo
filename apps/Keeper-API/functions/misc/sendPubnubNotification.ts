@@ -2,6 +2,7 @@ import axios from 'axios';
 import PubNub from 'pubnub';
 import * as Joi from 'joi';
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
+import { pubnubPublishKey, pubnubSubscribeKey } from 'keeperEnvironment';
 
 import { headers } from '../../constants';
 import ValidateBody from '../validateBody';
@@ -27,9 +28,6 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     const { messageObject } = JSON.parse(event.body);
     const { data } = messageObject;
     const { senderId, receiverId } = data;
-
-    const pubnubPublishKey = process.env.PUBNUB_PUBLISH_KEY;
-    const pubnubSubscribeKey = process.env.PUBNUB_SUBSCRIBE_KEY;
 
     if (!pubnubPublishKey || !pubnubSubscribeKey) {
       throw new Error('Server Error: PubNub keys are not configured.');

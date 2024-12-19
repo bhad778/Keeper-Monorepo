@@ -9,8 +9,8 @@ interface EnvConfig {
   affindaWorkspaceId: string;
   googleMapsRootUrl: string;
   googleMapsApiKey: string;
-  pubNubPublishKey: string;
-  pubNubSubscribeKey: string;
+  pubnubPublishKey: string;
+  pubnubSubscribeKey: string;
   brandFetchApiKey: string;
   db: string;
   coreSignalApiKey: string;
@@ -29,8 +29,8 @@ const env: EnvConfig = {
   affindaWorkspaceId: process.env.AFFINDA_WORKSPACE_ID || '',
   googleMapsRootUrl: process.env.GOOGLE_MAPS_ROOT_URL || '',
   googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY || '',
-  pubNubPublishKey: process.env.PUBNUB_PUBLISH_KEY || '',
-  pubNubSubscribeKey: process.env.PUBNUB_SUBSCRIBE_KEY || '',
+  pubnubPublishKey: process.env.PUBNUB_PUBLISH_KEY || '',
+  pubnubSubscribeKey: process.env.PUBNUB_SUBSCRIBE_KEY || '',
   brandFetchApiKey: process.env.BRANDFETCH_API_KEY || '',
   db: process.env.DB || '',
   coreSignalApiKey: process.env.CORESIGNAL_API_KEY || '',
@@ -51,8 +51,8 @@ export const {
   affindaWorkspaceId,
   googleMapsRootUrl,
   googleMapsApiKey,
-  pubNubPublishKey,
-  pubNubSubscribeKey,
+  pubnubPublishKey,
+  pubnubSubscribeKey,
   brandFetchApiKey,
   db,
   coreSignalApiKey,

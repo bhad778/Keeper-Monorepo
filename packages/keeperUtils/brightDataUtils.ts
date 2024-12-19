@@ -17,12 +17,11 @@ import {
 import { extractDollarNumbers, findStringsInLongString, normalizeLocation, normalizeUrl } from 'keeperUtils';
 import { TechnologiesList } from 'keeperConstants';
 import { CompaniesService } from 'keeperServices';
+import { brightDataApiKey } from 'keeperEnvironment';
 
 import AWS from '../../awsConfig';
 
 const sqs = new AWS.SQS();
-
-const brightDataApiKey = process.env.BRIGHTDATA_API_KEY;
 
 export const requeueTimeout = 600; // 10 minutes
 

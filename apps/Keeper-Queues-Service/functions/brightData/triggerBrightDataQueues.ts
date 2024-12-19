@@ -75,7 +75,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
 
     if (!linkedInSnapshotId) {
       console.error(
-        `This resposne for LinkedIn ${linkedInSnapshotId?.data} does not have a snapshot id- ${linkedInSnapshotId}.`,
+        `This response for LinkedIn ${linkedInSnapshotId?.data} does not have a snapshot id- ${linkedInSnapshotId}.`,
       );
       throw new Error('LinkedIn snapshot ID is missing or invalid.');
     }
