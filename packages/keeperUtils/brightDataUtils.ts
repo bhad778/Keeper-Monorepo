@@ -507,6 +507,8 @@ export const checkIfCompanyExistsInDatabase = async (sourceWebsiteUrl: string) =
 };
 
 export const requestSnapshotByUrlAndFilters = async (url, filters) => {
+  console.log('brightDataApiKey', brightDataApiKey);
+
   try {
     const response = await axios.post(url, filters, {
       headers: {

@@ -1,7 +1,12 @@
 import * as dotenv from 'dotenv';
-
+import * as path from 'path';
 // Load environment variables from the root .env file
-dotenv.config();
+
+const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
+
+dotenv.config({ path: path.resolve(__dirname, `../../${envFile}`) });
+
+console.log('process.env', process.env);
 
 interface EnvConfig {
   apiUrl: string;
