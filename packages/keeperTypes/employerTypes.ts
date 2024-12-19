@@ -21,6 +21,14 @@ export type TEmployer = {
   hasReceivedLikeNotification?: boolean;
 };
 
+export type TEmployerFilterListOptions =
+  | 'Experience'
+  | 'Skills'
+  | 'Company Size'
+  | 'Frontend/Backend'
+  | 'Work Auth'
+  | 'Salary/Contract';
+
 // job in our database
 export type TJob = {
   expoPushToken?: string | null;
