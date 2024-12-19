@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Modal, TouchableOpacity, Keyboard } from 'react-native';
+import { View, Modal, Keyboard } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   addEmployersJobs,
@@ -8,7 +8,7 @@ import {
   updateEmployerJobSettingsRedux,
   updateEmployersJob,
 } from 'reduxStore';
-import { TJob } from 'keeperTypes';
+import { TJob, TJobSettings } from 'keeperTypes';
 import {
   AppHeaderText,
   BottomSheet,
@@ -32,11 +32,9 @@ import {
   PreviewJobModal,
   LogoModal,
   AlertModal,
-  CultureModal,
 } from 'modals';
 import { JobsService, UsersService } from 'services';
 import { backoutWithoutSavingSubTitle, backoutWithoutSavingTitle, onSiteOptions } from 'constants/globalConstants';
-import { TJobSettings } from 'types/employerTypes';
 import RequiredSkillsModal from 'modals/required-skills-modal/RequiredSkillsModal';
 import { getGeoLocationFromAddress } from 'projectUtils';
 import { ViewJobPosting } from 'screens';
@@ -45,7 +43,6 @@ import { extractGoodImageFromBrandFetchData, padToTime } from 'projectUtils/glob
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import { useStyles } from './AddJobStyles';
-import BackIcon from '../../../assets/svgs/arrow_left_white.svg';
 
 const blankAddJobState: TJobSettings = {
   title: undefined,
@@ -90,8 +87,6 @@ const AddJob = ({
   const accountType = useSelector((state: RootState) => state.loggedInUser.accountType);
   const isEmployerNew = useSelector((state: RootState) => state.loggedInUser.isNew);
   const loggedInUserExpoPushToken = useSelector((state: RootState) => state.loggedInUser.expoPushToken);
-  const employerFirstName = useSelector((state: RootState) => state.loggedInUser.firstName);
-  const employerLastName = useSelector((state: RootState) => state.loggedInUser.lastName);
   const loggedInUserEmail = useSelector((state: RootState) => state.loggedInUser.email);
 
   const [addJobState, setAddJobState] = useState(editJobData?.jobSettings || blankAddJobState);
