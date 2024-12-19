@@ -59,6 +59,8 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     let linkedInSnapshotId, indeedSnapshotId;
     try {
       console.info('Fetching snapshots for LinkedIn and Indeed.');
+      console.log('getLinkedInJobSnapshotUrl', getLinkedInJobSnapshotUrl);
+      console.log('getIndeedJobSnapshotUrl', getIndeedJobSnapshotUrl);
       [linkedInSnapshotId, indeedSnapshotId] = await Promise.all([
         requestSnapshotByUrlAndFilters(getLinkedInJobSnapshotUrl, linkedInFilters),
         requestSnapshotByUrlAndFilters(getIndeedJobSnapshotUrl, indeedFilters),
