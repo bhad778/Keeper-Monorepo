@@ -517,7 +517,7 @@ export const requestSnapshotByUrlAndFilters = async (url, filters) => {
     return response?.data?.snapshot_id; // Returns the new snapshotId
   } catch (error) {
     console.error(
-      `Error requesting snapshot for with this ${url} and these filters- ${JSON.stringify(filters)}`,
+      `Error requesting snapshot with this url: ${url} and these filters: ${JSON.stringify(filters)}`,
       error,
     );
     throw error; // Let the caller handle the error
