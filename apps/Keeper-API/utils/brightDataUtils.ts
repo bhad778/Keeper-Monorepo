@@ -43,7 +43,7 @@ const linkedInRequiredYearsOfExperienceTransformer = (
 };
 
 const brightDataRequiredSkillsTransformer = (job_summary: string): string[] => {
-  let foundSkills: string[] = findStringsInLongString(TechnologiesList, job_summary);
+  const foundSkills: string[] = findStringsInLongString(TechnologiesList, job_summary);
   if (foundSkills && foundSkills.length > 0) {
     return foundSkills;
   } else {
