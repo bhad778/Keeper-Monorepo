@@ -1,8 +1,6 @@
 import mongoose, { InferSchemaType } from 'mongoose';
-
-import { JobSourceWebsiteEnum } from '../types/brightDataTypes';
-import { normalizeLocation, normalizeUrl } from '../utils/globalUtils';
-import { normalizeCompanyName } from '../utils/brightDataUtils';
+import { JobSourceWebsiteEnum } from 'keeperTypes';
+import { normalizeLocation, normalizeUrl, normalizeCompanyName } from 'keeperUtils';
 
 const CompaniesSchema = new mongoose.Schema({
   createdAt: { type: Date, required: false, default: new Date() },
@@ -24,18 +22,18 @@ const CompaniesSchema = new mongoose.Schema({
   indeedId: { type: String, default: null, required: false },
   sourceWebsite: { type: String, default: null, required: false },
   // link to company on linked in or indeed etc
-  sourceWebsiteUrl: { type: String, default: null, required: false, set: (value) => normalizeUrl(value) },
+  sourceWebsiteUrl: { type: String, default: null, required: false, set: value => normalizeUrl(value) },
   companyWebsiteUrl: {
     type: String,
     default: null,
     required: false,
-    set: (value) => normalizeUrl(value),
+    set: value => normalizeUrl(value),
   },
   companyName: {
     type: String,
     default: null,
     required: false,
-    set: (value) => normalizeCompanyName(value),
+    set: value => normalizeCompanyName(value),
   },
   about: { type: String, default: null, required: false },
   description: { type: String, default: null, required: false },
@@ -53,7 +51,7 @@ const CompaniesSchema = new mongoose.Schema({
   overviewUrl: { type: String, default: null, required: false },
   companySize: { type: String, default: null, required: false },
   revenue: { type: String, default: null, required: false },
-  headquarters: { type: String, default: null, required: false, set: (value) => normalizeLocation(value) },
+  headquarters: { type: String, default: null, required: false, set: value => normalizeLocation(value) },
   companyType: { type: String, default: null, required: false },
   industry: { type: String, default: null, required: false },
   diversityScore: { type: String, default: null, required: false },

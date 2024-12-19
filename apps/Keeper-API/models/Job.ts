@@ -1,7 +1,5 @@
 import mongoose from 'mongoose';
-
-import { normalizeLocation, normalizeTitle, normalizeUrl } from '../utils/globalUtils';
-import { normalizeCompanyName } from '../utils/brightDataUtils';
+import { normalizeLocation, normalizeTitle, normalizeUrl, normalizeCompanyName } from 'keeperUtils';
 
 const JobSchema = new mongoose.Schema({
   // devdog fields

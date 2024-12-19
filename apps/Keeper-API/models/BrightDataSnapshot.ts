@@ -1,5 +1,5 @@
 import mongoose, { InferSchemaType } from 'mongoose';
-import { BrightDataSnapshotTypeEnum } from '../types/brightDataTypes';
+import { BrightDataSnapshotTypeEnum } from 'keeperTypes';
 
 const BrightDataSnapshotSchema = new mongoose.Schema({
   snapshotId: { type: String, required: false },
