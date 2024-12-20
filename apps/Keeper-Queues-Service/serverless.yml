@@ -38,6 +38,9 @@ provider:
 
 package:
   individually: true
+  exclude:
+    - ../../** # Exclude everything outside the keeper-queues-service folder
+    - '!./**' # Include only files from the current folder
 
 plugins:
   - serverless-offline
