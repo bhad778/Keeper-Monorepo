@@ -1,14 +1,13 @@
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
-import { extractErrorMessage } from 'keeperUtils';
+import { extractErrorMessage, escapeRegex } from 'keeperUtils';
 import * as Joi from 'joi';
+import { TSwipe } from 'keeperTypes';
 
 import connectToDatabase from '../../db';
 import { EmployeePreferencesSchema } from '../../schemas/globalSchemas';
 import ValidateBody from '../validateBody';
 import Job from '../../models/Job';
 import { getItemsForSwipingLimit, headers, seniorDevYearsOfEpxerience } from '../../constants';
-import { escapeRegex } from '../../utils/globalUtils';
-import { TSwipe } from '../../types/globalTypes';
 import Swipe from '../../models/Swipe';
 
 module.exports.getJobsForSwiping = async (
