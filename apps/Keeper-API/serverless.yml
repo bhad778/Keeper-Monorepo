@@ -68,6 +68,22 @@ custom:
     number: 3
 
 functions:
+  findCompany:
+    handler: functions/companies/findCompany.handler
+    events:
+      - http:
+          path: findCompany
+          method: post
+          cors: true
+
+  updateCompany:
+    handler: functions/companies/updateCompany.handler
+    events:
+      - http:
+          path: updateCompany
+          method: post
+          cors: true
+
   imageUpload:
     handler: functions/misc/imageUpload.handler
     events:
@@ -258,5 +274,29 @@ functions:
     events:
       - http:
           path: getJobsForSwiping
+          method: post
+          cors: true
+
+  deleteJob:
+    handler: functions/jobs/deleteJob.handler
+    events:
+      - http:
+          path: deleteJob
+          method: post
+          cors: true
+
+  findJob:
+    handler: functions/jobs/findJob.handler
+    events:
+      - http:
+          path: findJob
+          method: post
+          cors: true
+
+  updateJob:
+    handler: functions/jobs/updateJob.handler
+    events:
+      - http:
+          path: updateJob
           method: post
           cors: true

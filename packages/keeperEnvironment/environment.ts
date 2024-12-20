@@ -6,8 +6,6 @@ const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.en
 
 dotenv.config({ path: path.resolve(__dirname, `../../${envFile}`) });
 
-console.log('process.env', process.env);
-
 interface EnvConfig {
   apiUrl: string;
   affindaKey: string;
