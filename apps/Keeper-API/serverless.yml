@@ -47,6 +47,9 @@ provider:
 
 package:
   individually: true
+  exclude:
+    - ../../** # Exclude everything outside the keeper-api folder
+    - '!./**' # Include only files from the current folder
 
 plugins:
   - serverless-offline

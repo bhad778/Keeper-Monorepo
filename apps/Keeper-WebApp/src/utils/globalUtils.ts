@@ -368,7 +368,7 @@ export const convertMetersToMiles = (meters: number) => {
 
 export const getGeoLocationFromAddress = async (address: string) => {
   const uriEncodedAddress = encodeURIComponent(address);
-  const googleMapsApiKey = 'asdfasdf';
+  const googleMapsApiKey = process.env.VITE_GOOGLE_MAPS_API_KEY;
 
   try {
     const res = await fetch(

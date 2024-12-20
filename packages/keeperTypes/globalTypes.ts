@@ -62,6 +62,11 @@ export type EmploymentTypes = 'Salary' | 'Contract';
 
 export type TAccountType = 'employee' | 'employer' | '';
 
+export enum AccountTypeEnum {
+  employee = 'employee',
+  employer = 'employer',
+}
+
 export enum EducationEnum {
   'Bootcamp' = 0,
   "Bachelor's" = 1,

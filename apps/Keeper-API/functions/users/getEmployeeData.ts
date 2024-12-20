@@ -2,14 +2,12 @@ import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import * as Joi from 'joi';
 import axios from 'axios';
 import { extractErrorMessage } from 'keeperUtils';
+import { TLoggedInEmployee, TEmployeePreferences, TEmployeeSettings, TJob } from 'keeperTypes';
 
 import { headers } from '../../constants';
 import connectToDatabase from '../../db';
 import ValidateBody from '../validateBody';
 import Employee from '../../models/Employee';
-import { TLoggedInEmployee } from '../../types/loggedInUserTypes';
-import { TEmployeePreferences, TEmployeeSettings } from '../../types/employeeTypes';
-import { TJob } from '../../types/employerTypes';
 
 export const handler = async (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
   context.callbackWaitsForEmptyEventLoop = false;

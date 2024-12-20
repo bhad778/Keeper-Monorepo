@@ -2,16 +2,15 @@ import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import * as Joi from 'joi';
 import { HydratedDocument } from 'mongoose';
 import axios from 'axios';
-import { extractErrorMessage } from 'keeperUtils';
+import { AccountTypeEnum, TEmployee } from 'keeperTypes';
+import { getGeoLocationFromAddress, extractErrorMessage } from 'keeperUtils';
+import { googleMapsApiKey } from 'keeperEnvironment';
 
 import { headers } from '../../constants';
 import connectToDatabase from '../../db';
 import ValidateBody from '../validateBody';
 import Employee from '../../models/Employee';
 import { AccountTypeSchema } from '../../schemas/globalSchemas';
-import { AccountTypeEnum } from '../../types/globalTypes';
-import { getGeoLocationFromAddress } from '../../utils/geoLocationUtils';
-import { TEmployee } from '../../types/employeeTypes';
 
 export const handler = async (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
   context.callbackWaitsForEmptyEventLoop = false;
@@ -68,7 +67,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     // Update geoLocation if address has changed
     if (newSettings.address && newSettings.address !== userObject.settings.address) {
       geoLocation = newSettings.address
-        ? (await getGeoLocationFromAddress(newSettings.address)) || null
+        ? (await getGeoLocationFromAddress(newSettings.address, googleMapsApiKey)) || null
         : userObject.geoLocation;
 
       if (geoLocation) {
