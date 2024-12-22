@@ -13,6 +13,7 @@ import {
 import { CompaniesService, JobsService } from 'keeperServices';
 import { jobsQueueUrl, sourceWebsiteCompaniesQueueUrl, geoLocationQueueUrl } from 'keeperEnvironment';
 
+import connectToDatabase from '../../../Keeper-API/db';
 import Job from '../../../Keeper-API/models/Job';
 
 const getLinkedInCompanySnapshotUrl =
@@ -29,6 +30,8 @@ export const handler = async (event: SQSEvent) => {
 
   const seenCompanyUrls = new Set<string>();
   const BATCH_SIZE = 10; // Number of jobs to process concurrently in a batch
+
+  await connectToDatabase();
 
   // There's typically only going to be 2 snapshots in the queue at a time, one from LinkedIn and one from Indeed
   const promises = event.Records.map(async record => {
