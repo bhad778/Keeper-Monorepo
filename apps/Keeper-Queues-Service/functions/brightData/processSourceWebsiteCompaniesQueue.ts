@@ -87,10 +87,10 @@ export const handler = async (event: SQSEvent) => {
         return;
       }
 
-      console.info(`Company data for ${transformedCompany.companyName} processed successfully.`);
+      console.info(`Upserting company data for ${transformedCompany.companyName} in the database.`);
 
       // Step 3: Upsert company data in the MongoDB database
-      await CompaniesService.updateCompany({
+      const updateResponse = await CompaniesService.updateCompany({
         query: {
           $or: [
             { sourceWebsiteUrl: transformedCompany.sourceWebsiteUrl }, // Match by `sourceWebsiteUrl`
@@ -100,6 +100,10 @@ export const handler = async (event: SQSEvent) => {
         updateData: transformedCompany,
         options: { upsert: true }, // Ensure upsert behavior
       });
+
+      console.info(
+        `Successfully upserted company data for ${transformedCompany.companyName}. Here is the response- ${updateResponse}`,
+      );
 
       const glassdoorFilters = [
         {
@@ -120,13 +124,13 @@ export const handler = async (event: SQSEvent) => {
          company ${transformedCompany.companyName}.`,
       );
 
-      // Step 5: Send the company snapshot ID to the source website queue
+      // Step 5: Send the company snapshot ID to the glassdoor companies queue
       await sendMessageToQueue(glassdoorCompaniesQueueUrl, {
         snapshotId: companySnapshotId,
         headquarters: transformedCompany.headquarters,
         companyWebsiteUrl: transformedCompany.companyWebsiteUrl,
       });
-      console.info(`Enqueued company snapshot ${companySnapshotId} to source website queue.`);
+      console.info(`Enqueued company snapshot ${companySnapshotId} to glassdoor companies queue.`);
     } catch (error) {
       console.error(`Error processing snapshotId ${snapshotId}:`, error);
       throw error; // Let AWS handle retries and DLQ

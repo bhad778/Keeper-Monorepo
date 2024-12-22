@@ -40,6 +40,7 @@ export const handler = async (event: SQSEvent) => {
       const updatePayload = {
         query: { sourceWebsiteUrl: glassdoorUrl }, // Match by sourceWebsiteUrl
         updateData: { reviews: reviewsArray }, // Update the reviews field
+        options: { upsert: true },
       };
 
       try {

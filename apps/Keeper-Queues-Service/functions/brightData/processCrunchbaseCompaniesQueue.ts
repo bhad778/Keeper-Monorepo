@@ -108,19 +108,23 @@ export const handler = async (event: SQSEvent) => {
           `Transformed company data for ${companyWebsiteUrl}: heres the data: ${JSON.stringify(transformedCompany)}`,
         );
 
-        const query = {
-          $or: [
-            { companyWebsiteUrl: companyWebsiteUrl }, // Match by normalized companyWebsiteUrl
-            {
-              companyName: companyName,
-              headquarters: headquarters, // Match by both companyName and headquarters
-            },
-          ],
+        const updatePayload = {
+          query: {
+            $or: [
+              { companyWebsiteUrl: companyWebsiteUrl }, // Match by normalized companyWebsiteUrl
+              {
+                companyName: companyName,
+                headquarters: headquarters, // Match by both companyName and headquarters
+              },
+            ],
+          }, // Match by sourceWebsiteUrl
+          updateData: transformedCompany, // Update the reviews field
+          options: { upsert: true },
         };
 
         // Step 4: Update company data in MongoDB
 
-        const updateResponse = await CompaniesService.updateCompany({ query, updateData: transformedCompany });
+        const updateResponse = await CompaniesService.updateCompany(updatePayload);
 
         if (updateResponse.success && updateResponse.result) {
           console.info(`Successfully updated Glassdoor data for company: ${companyWebsiteUrl}`);

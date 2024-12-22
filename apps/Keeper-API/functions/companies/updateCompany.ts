@@ -25,7 +25,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       throw new Error('Missing request body.');
     }
 
-    const { query, updateData, operation = OperationEnum.One } = JSON.parse(event.body);
+    const { query, updateData, operation = OperationEnum.One, options = {} } = JSON.parse(event.body);
 
     if (!query || typeof query !== 'object') {
       throw new Error('Invalid or missing query object.');
@@ -41,7 +41,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
 
     if (operation === OperationEnum.One) {
       // Update a single company
-      updateResult = await Company.findOneAndUpdate(query, updateData, { new: true });
+      updateResult = await Company.findOneAndUpdate(query, updateData, { new: true, ...options });
       if (!updateResult) {
         console.info(`No company found matching query: ${JSON.stringify(query)}`);
 
@@ -57,7 +57,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       console.info(`Updated one company matching query: ${JSON.stringify(query)}`);
     } else if (operation === OperationEnum.Many) {
       // Update multiple companies
-      updateResult = await Company.updateMany(query, updateData);
+      updateResult = await Company.updateMany(query, updateData, options);
       if (updateResult.matchedCount === 0) {
         console.info(`No companies found matching query: ${JSON.stringify(query)}`);
 
