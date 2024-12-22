@@ -14,6 +14,8 @@ import connectToDatabase from '../../db';
 //   }
 
 export const handler = async (event: APIGatewayEvent, context: Context, callback: Callback) => {
+  context.callbackWaitsForEmptyEventLoop = false;
+
   try {
     // Validate request body
     if (!event.body) {
@@ -26,7 +28,9 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       throw new Error('Invalid or missing query object.');
     }
 
+    console.info(`Finding job(s) with query: ${JSON.stringify(query)}`);
     await connectToDatabase();
+    console.info(`Connected to database.`);
 
     let result;
 
@@ -34,25 +38,14 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     if (operation === OperationEnum.One) {
       // Perform a findOne query
 
+      console.info(`Finding one job.`);
       result = await Job.findOne(query);
+      console.info(`Result: ${JSON.stringify(result)}`);
     } else if (operation === OperationEnum.Many) {
       // Perform a find query
       result = await Job.find(query, null, options);
     } else {
       throw new Error('Invalid operation. Supported operations are "findOne" and "find".');
-    }
-
-    // Check result
-    if (!result || (Array.isArray(result) && result.length === 0)) {
-      console.info(`No job(s) found matching query: ${JSON.stringify(query)}`);
-      return callback(null, {
-        statusCode: 404,
-        headers,
-        body: JSON.stringify({
-          success: false,
-          message: 'No job(s) found.',
-        }),
-      });
     }
 
     console.info(`Job(s) found: ${Array.isArray(result) ? result.length : 1}`);
@@ -64,17 +57,25 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
         result,
       }),
     });
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        success: true,
+        result,
+      }),
+    };
   } catch (error) {
     const errorMessage = extractErrorMessage(error);
 
     console.error(`Error finding job(s): ${errorMessage}`);
-    callback(null, {
+    return {
       statusCode: 500,
       headers,
       body: JSON.stringify({
         success: false,
         error: errorMessage,
       }),
-    });
+    };
   }
 };

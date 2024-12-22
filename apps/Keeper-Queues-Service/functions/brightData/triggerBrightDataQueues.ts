@@ -110,21 +110,22 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
 
     // Respond with success
     console.info('Successfully added snapshots to the Jobs Queue. Sending response.');
-    callback(null, {
+
+    return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         message: 'Successfully added LinkedIn and Indeed snapshots to the Jobs Queue',
         snapshots: jobsQueueMessages,
       }),
-    });
+    };
   } catch (error) {
     console.error('Error in addJobSnapshotsToQueue:', error);
 
-    callback(null, {
+    return {
       statusCode: 500,
       headers,
       body: JSON.stringify({ message: 'Failed to add job snapshots to the Jobs Queue', error }),
-    });
+    };
   }
 };

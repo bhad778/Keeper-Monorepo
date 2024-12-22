@@ -14,6 +14,8 @@ import connectToDatabase from '../../db';
 //   }
 
 export const handler = async (event: APIGatewayEvent, context: Context, callback: Callback) => {
+  context.callbackWaitsForEmptyEventLoop = false;
+
   try {
     // Validate request body
     if (!event.body) {
@@ -53,25 +55,27 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     }
 
     console.info(`Company/Companies found: ${Array.isArray(result) ? result.length : 1}`);
-    callback(null, {
+
+    return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         success: true,
         result,
       }),
-    });
+    };
   } catch (error) {
     const errorMessage = extractErrorMessage(error);
 
     console.error(`Error finding company: ${errorMessage}`);
-    callback(null, {
+
+    return {
       statusCode: 500,
       headers,
       body: JSON.stringify({
         success: false,
         error: errorMessage,
       }),
-    });
+    };
   }
 };

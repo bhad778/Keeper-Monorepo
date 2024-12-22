@@ -13,6 +13,8 @@ import connectToDatabase from '../../db';
 // }
 
 export const handler = async (event: APIGatewayEvent, context: Context, callback: Callback) => {
+  context.callbackWaitsForEmptyEventLoop = false;
+
   try {
     // Validate request body
     if (!event.body) {
@@ -63,25 +65,25 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       throw new Error('Invalid operation. Supported operations are "deleteOne" and "deleteMany".');
     }
 
-    callback(null, {
+    return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         success: true,
         deletedCount: deleteResult.deletedCount,
       }),
-    });
+    };
   } catch (error) {
     const errorMessage = extractErrorMessage(error);
 
     console.error(`Error deleting job(s): ${errorMessage}`);
-    callback(null, {
+    return {
       statusCode: 500,
       headers,
       body: JSON.stringify({
         success: false,
         error: errorMessage,
       }),
-    });
+    };
   }
 };
