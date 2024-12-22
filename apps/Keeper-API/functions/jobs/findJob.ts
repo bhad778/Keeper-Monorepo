@@ -48,19 +48,6 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       throw new Error('Invalid operation. Supported operations are "findOne" and "find".');
     }
 
-    // Check result
-    if (!result || (Array.isArray(result) && result.length === 0)) {
-      console.info(`No job(s) found matching query: ${JSON.stringify(query)}`);
-      return {
-        statusCode: 404,
-        headers,
-        body: JSON.stringify({
-          success: false,
-          message: 'No job(s) found.',
-        }),
-      };
-    }
-
     return {
       statusCode: 200,
       headers,
