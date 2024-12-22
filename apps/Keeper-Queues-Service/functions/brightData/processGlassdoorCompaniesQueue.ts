@@ -119,7 +119,7 @@ export const handler = async (event: SQSEvent) => {
 
         // Step 4: Update company data in MongoDB
         // fixed
-        const updateResult = await CompaniesService.updateCompany({
+        const updateResponse = await CompaniesService.updateCompany({
           query: {
             $or: [
               { companyWebsiteUrl: companyWebsiteUrl }, // Match by normalized companyWebsiteUrl
@@ -129,7 +129,7 @@ export const handler = async (event: SQSEvent) => {
           updateData: transformedCompany,
         });
 
-        if (updateResult) {
+        if (updateResponse.success) {
           console.info(`Successfully updated Glassdoor data for company: ${companyWebsiteUrl}`);
         } else {
           console.info(
@@ -137,8 +137,6 @@ export const handler = async (event: SQSEvent) => {
           );
           return;
         }
-
-        console.info('updateResult', JSON.stringify(updateResult));
 
         const daysBackToGetReviews = (transformedCompany?.reviewsCount ?? 0) > 1000 ? 180 : 1827; // 6 months or 5 years
 

@@ -38,14 +38,24 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     if (operation === OperationEnum.One) {
       // Perform a findOne query
 
-      console.info(`Finding one job.`);
       result = await Job.findOne(query);
-      console.info(`Result: ${JSON.stringify(result)}`);
     } else if (operation === OperationEnum.Many) {
       // Perform a find query
       result = await Job.find(query, null, options);
     } else {
       throw new Error('Invalid operation. Supported operations are "findOne" and "find".');
+    }
+
+    // If no results are found, set success to false
+    if (!result || (Array.isArray(result) && result.length === 0)) {
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({
+          success: false,
+          result,
+        }),
+      };
     }
 
     return {

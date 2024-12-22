@@ -45,12 +45,12 @@ export const handler = async (event: SQSEvent) => {
       try {
         const updateResponse = await CompaniesService.updateCompany(updatePayload);
 
-        if (updateResponse.data.success) {
+        if (updateResponse.success) {
           console.info(`Successfully updated reviews for company with URL: ${glassdoorUrl}`);
         } else {
           console.error(
             `Failed to update reviews for company with URL: ${glassdoorUrl}. Response: ${JSON.stringify(
-              updateResponse.data,
+              updateResponse,
             )}`,
           );
         }

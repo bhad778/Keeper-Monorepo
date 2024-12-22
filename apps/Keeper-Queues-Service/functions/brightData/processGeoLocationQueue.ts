@@ -38,9 +38,9 @@ export const handler = async (event: SQSEvent) => {
       };
 
       // Update the job in the database with geolocation data
-      const updatedJob = await JobsService.updateJob(payload);
+      const updateResponse = await JobsService.updateJob(payload);
 
-      if (updatedJob) {
+      if (updateResponse.success) {
         console.info(`Successfully updated applyLink: ${applyLink} with geolocation data.`);
       } else {
         console.error(`Job with applyLink: ${applyLink} not found in the database.`);

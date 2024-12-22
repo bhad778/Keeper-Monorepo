@@ -126,7 +126,7 @@ export const handler = async (event: SQSEvent) => {
             };
             const companyExists = await CompaniesService.findCompany(companyPayload);
 
-            if (companyExists) {
+            if (companyExists.success) {
               console.info(`Company with URL ${transformedJob.sourceWebsiteCompanyUrl} already exists. Skipping.`);
               return;
             }

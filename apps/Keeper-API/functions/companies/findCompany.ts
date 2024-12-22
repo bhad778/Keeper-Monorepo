@@ -42,7 +42,17 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       throw new Error('Invalid operation. Supported operations are "One" and "Many".');
     }
 
-    console.info(`Company/Companies found: ${Array.isArray(result) ? result.length : 1}`);
+    // If no results are found, set success to false
+    if (!result || (Array.isArray(result) && result.length === 0)) {
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({
+          success: false,
+          result,
+        }),
+      };
+    }
 
     return {
       statusCode: 200,
