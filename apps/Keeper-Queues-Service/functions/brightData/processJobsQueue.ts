@@ -193,12 +193,18 @@ export const handler = async (event: SQSEvent) => {
               `Successfully got company snapshot data for snapshot- ${companySnapshotId} and for company URL- ${transformedJob.sourceWebsiteCompanyUrl}.`,
             );
 
-            // Step 5: Send the company snapshot ID to the source website queue
-            await sendMessageToQueue(sourceWebsiteCompaniesQueueUrl, {
+            const soureWebsiteQueueMessage = {
               snapshotId: companySnapshotId,
               sourceWebsite,
-            });
-            console.info(`Enqueued company snapshot ${companySnapshotId} to source website queue.`);
+            };
+
+            // Step 5: Send the company snapshot ID to the source website queue
+            await sendMessageToQueue(sourceWebsiteCompaniesQueueUrl, soureWebsiteQueueMessage);
+            console.info(
+              `Enqueued company snapshot with this data to source website queue- ${JSON.stringify(
+                soureWebsiteQueueMessage,
+              )}.`,
+            );
 
             if (!transformedJob.jobLocation) {
               console.info(`This job doesnt have a jobLocation. Skipping sending to geoLocationQueue, 

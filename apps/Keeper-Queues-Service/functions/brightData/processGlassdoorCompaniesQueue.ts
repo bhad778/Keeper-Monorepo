@@ -25,7 +25,14 @@ const getCrunchbaseCompanyInfoSnapshotUrl =
   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1vijqt9jfj7olije&include_errors=true';
 
 const glassdoorSearchUrl = 'https://www.glassdoor.com/Search/results.htm?keyword=';
-const crunchbaseSearchUrl = 'https://www.crunchbase.com/organization/';
+
+// {
+//   "snapshotId": "s_m4zv8aoq2ivl7xnxv0",
+//   "companyName": "Delta",
+//   "headquarters": "Atlanta, GA",
+//   "companyWebsiteUrl": "",
+//   "isFinalTry": false
+// }
 
 export const handler = async (event: SQSEvent) => {
   try {
@@ -172,11 +179,11 @@ export const handler = async (event: SQSEvent) => {
           glassdoorUrl: transformedCompany.glassdoorUrl,
         };
 
-        console.info(
-          `Enqueued Glassdoor Reviews snapshot ${glassdoorReviewsSnapshotId} for company: ${companyWebsiteUrl}`,
-        );
-
         await sendMessageToQueue(glassdoorReviewsQueueUrl, messageToReviewsQueue);
+
+        console.info(
+          `Enqueued Glassdoor Reviews snapshot with this data to the glassdoor reviews queue- ${messageToReviewsQueue}`,
+        );
       } catch (error) {
         console.error(`Error processing Glassdoor snapshotId ${snapshotId} for company ${companyWebsiteUrl}:`, error);
 

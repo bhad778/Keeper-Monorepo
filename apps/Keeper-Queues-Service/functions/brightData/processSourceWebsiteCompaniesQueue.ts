@@ -18,6 +18,11 @@ const getGlassdoorCompanyInfoSnapshotUrl =
 
 const glassdoorSearchUrl = 'https://www.glassdoor.com/Search/results.htm?keyword=';
 
+// {
+//   "snapshotId": "s_m4zl9nh512acix3jzh",
+//   "sourceWebsite": "LinkedIn"
+// }
+
 // the companies queue holds messages that are just snapshotIds, and these snapshotIds hold data
 export const handler = async (event: SQSEvent) => {
   const promises = event.Records.map(async record => {
@@ -124,13 +129,19 @@ export const handler = async (event: SQSEvent) => {
          company ${transformedCompany.companyName}.`,
       );
 
-      // Step 5: Send the company snapshot ID to the glassdoor companies queue
-      await sendMessageToQueue(glassdoorCompaniesQueueUrl, {
+      const messageToGlassdoorQueue = {
         snapshotId: companySnapshotId,
         headquarters: transformedCompany.headquarters,
         companyWebsiteUrl: transformedCompany.companyWebsiteUrl,
-      });
-      console.info(`Enqueued company snapshot ${companySnapshotId} to glassdoor companies queue.`);
+      };
+
+      // Step 5: Send the company snapshot ID to the glassdoor companies queue
+      await sendMessageToQueue(glassdoorCompaniesQueueUrl, messageToGlassdoorQueue);
+      console.info(
+        `Enqueued company snapshot with this data to glassdoor companies queue. - ${JSON.stringify(
+          messageToGlassdoorQueue,
+        )} `,
+      );
     } catch (error) {
       console.error(`Error processing snapshotId ${snapshotId}:`, error);
       throw error; // Let AWS handle retries and DLQ
