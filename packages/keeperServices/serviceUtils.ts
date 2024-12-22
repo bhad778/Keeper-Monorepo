@@ -13,7 +13,13 @@ export const postRequest = <T>(endpoint: string, payload?: any): Promise<ApiResp
         'Content-Type': 'application/json',
       },
     })
-    .then(response => response.data);
+    .then(response => response.data)
+    .catch(error => {
+      console.error(
+        `Error in postRequest with this endpoint- ${endpoint} and this payload- ${payload}, and heres the error- ${error}`,
+      );
+      throw error;
+    });
 };
 
 export const getRequest = (url: string, headers: Record<string, string> = {}) => {
