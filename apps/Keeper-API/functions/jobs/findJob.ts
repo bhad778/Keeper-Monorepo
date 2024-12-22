@@ -4,6 +4,7 @@ import { extractErrorMessage } from 'keeperUtils';
 
 import Job from '../../models/Job';
 import { headers } from '../../constants';
+import connectToDatabase from '../../db';
 
 // ex payload-
 // {
@@ -25,11 +26,14 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       throw new Error('Invalid or missing query object.');
     }
 
+    await connectToDatabase();
+
     let result;
 
     // Determine operation type
     if (operation === OperationEnum.One) {
       // Perform a findOne query
+
       result = await Job.findOne(query);
     } else if (operation === OperationEnum.Many) {
       // Perform a find query

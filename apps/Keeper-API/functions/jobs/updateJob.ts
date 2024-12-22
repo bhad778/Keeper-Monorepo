@@ -4,6 +4,7 @@ import { extractErrorMessage } from 'keeperUtils';
 
 import Job from '../../models/Job';
 import { headers } from '../../constants';
+import connectToDatabase from '../../db';
 
 // ex payload-
 // {
@@ -31,6 +32,8 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     if (!updateData || typeof updateData !== 'object') {
       throw new Error('Invalid or missing updateData object.');
     }
+
+    await connectToDatabase();
 
     let updateResult;
 

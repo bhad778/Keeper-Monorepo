@@ -249,7 +249,7 @@ export const handler = async (event: SQSEvent) => {
         if (invalidJobs.length > 0) {
           console.info(`Skipped ${invalidJobs.length} invalid jobs due to validation errors.`);
           // Optionally, log the invalid jobs in detail
-          console.log('invalidJobs:', invalidJobs);
+          console.info('invalidJobs:', invalidJobs);
         }
       } else {
         console.info('No new jobs to process.');

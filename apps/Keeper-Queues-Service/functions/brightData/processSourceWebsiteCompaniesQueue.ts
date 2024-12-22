@@ -65,8 +65,6 @@ export const handler = async (event: SQSEvent) => {
         return;
       }
 
-      console.log('brightDataCompany', JSON.stringify(brightDataCompany));
-
       const transformCompany = company => {
         if (sourceWebsite === JobSourceWebsiteEnum.Indeed) {
           return brightDataIndeedCompanyTransformer(company);
@@ -80,8 +78,6 @@ export const handler = async (event: SQSEvent) => {
       console.info(`Transforming company data for snapshotId: ${snapshotId}`);
 
       const transformedCompany = transformCompany(brightDataCompany);
-
-      console.log('transformedCompany', JSON.stringify(transformedCompany));
 
       if (!transformedCompany) {
         console.info(

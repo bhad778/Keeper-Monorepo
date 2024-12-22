@@ -4,6 +4,7 @@ import { extractErrorMessage } from 'keeperUtils';
 
 import Company from '../../models/Company';
 import { headers } from '../../constants';
+import connectToDatabase from '../../db';
 
 // ex params-
 // {
@@ -24,6 +25,8 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     if (!query || typeof query !== 'object') {
       throw new Error('Invalid or missing query object.');
     }
+
+    await connectToDatabase();
 
     let result;
 

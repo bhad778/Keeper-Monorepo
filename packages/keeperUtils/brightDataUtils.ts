@@ -507,8 +507,6 @@ export const checkIfCompanyExistsInDatabase = async (sourceWebsiteUrl: string) =
 };
 
 export const requestSnapshotByUrlAndFilters = async (url, filters) => {
-  console.log('brightDataApiKey', brightDataApiKey);
-
   try {
     const response = await axios.post(url, filters, {
       headers: {
@@ -534,7 +532,7 @@ export const sendMessageToQueue = async (queueUrl, messageBody) => {
         MessageBody: JSON.stringify(messageBody),
       })
       .promise();
-    console.log(`Message sent to queue: ${queueUrl}`, messageBody);
+    console.info(`Message sent to queue: ${queueUrl}`, messageBody);
   } catch (error) {
     console.error(`Error sending message to queue ${queueUrl}:`, error);
     throw error; // Let the caller handle the error
@@ -550,7 +548,7 @@ export const requeueMessage = async (queueUrl, messageBody, delaySeconds) => {
         DelaySeconds: delaySeconds, // Delay before the message is visible in the queue
       })
       .promise();
-    console.log(`Message requeued with delay of ${delaySeconds} seconds:`, messageBody);
+    console.info(`Message requeued with delay of ${delaySeconds} seconds:`, messageBody);
   } catch (error) {
     console.error(`Error requeuing message to queue ${queueUrl}:`, error);
     throw error; // Let the caller handle the error
