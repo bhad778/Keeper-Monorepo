@@ -21,6 +21,12 @@ const getLinkedInCompanySnapshotUrl =
 const getIndeedCompanySnapshotUrl =
   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7qekxkv2i7ve6hx1s&include_errors=true';
 
+// example message-
+// {
+//   "snapshotId": "s_m4zl9nh512acix3jzh",
+//   "sourceWebsite": "LinkedIn"
+// }
+
 // this function pulls messages off the jobs queue, checks if the snapshot is ready, if it is it fetches the job data,
 // if its not ready it requeues the message. If the company already exists in the db it skips it does nothing thus
 // the message is removed from the queue. If that company doesnt already exist it requests a company snapshot from
@@ -100,12 +106,14 @@ export const handler = async (event: SQSEvent) => {
             const jobPayload = {
               query: { applyLink: transformedJob.applyLink },
             };
-            const jobExists = await JobsService.findJob(jobPayload); // Use unique identifier
 
-            if (jobExists) {
+            const jobExistsResponse = await JobsService.findJob(jobPayload); // Use unique identifier
+
+            if (jobExistsResponse.success && jobExistsResponse.result) {
               console.info(
-                `Job with this apply link already exists. Skipping, but here is the
-                 job were skipping- ${JSON.stringify(transformedJob)}.`,
+                `Job with this apply link already exists. Skipping, but here is the job we're skipping: ${JSON.stringify(
+                  transformedJob,
+                )}.`,
               );
               return;
             }

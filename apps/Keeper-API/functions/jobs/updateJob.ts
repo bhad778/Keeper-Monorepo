@@ -44,14 +44,15 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       updateResult = await Job.findOneAndUpdate(query, updateData, { new: true, ...options });
       if (!updateResult) {
         console.info(`No job found matching query: ${JSON.stringify(query)}`);
-        return callback(null, {
-          statusCode: 404,
+
+        return {
+          statusCode: 200,
           headers,
           body: JSON.stringify({
             success: false,
             message: 'Job not found to update.',
           }),
-        });
+        };
       }
       console.info(`Updated one job matching query: ${JSON.stringify(query)}`);
     } else if (operation === OperationEnum.Many) {
@@ -59,14 +60,15 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       updateResult = await Job.updateMany(query, updateData, options);
       if (updateResult.matchedCount === 0) {
         console.info(`No jobs found matching query: ${JSON.stringify(query)}`);
-        return callback(null, {
-          statusCode: 404,
+
+        return {
+          statusCode: 200,
           headers,
           body: JSON.stringify({
             success: false,
-            message: 'No jobs found to update.',
+            message: 'Job not found to update.',
           }),
-        });
+        };
       }
       console.info(`Updated ${updateResult.matchedCount} job(s) matching query: ${JSON.stringify(query)}`);
     } else {
@@ -78,8 +80,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       headers,
       body: JSON.stringify({
         success: true,
-        updatedCount: operation === 'updateMany' ? updateResult.matchedCount : 1,
-        updatedJob: operation === 'updateOne' ? updateResult : null,
+        result: updateResult,
       }),
     };
   } catch (error) {

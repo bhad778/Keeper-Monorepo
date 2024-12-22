@@ -44,14 +44,15 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       updateResult = await Company.findOneAndUpdate(query, updateData, { new: true });
       if (!updateResult) {
         console.info(`No company found matching query: ${JSON.stringify(query)}`);
-        return callback(null, {
-          statusCode: 404,
+
+        return {
+          statusCode: 200,
           headers,
           body: JSON.stringify({
             success: false,
             message: 'Company not found to update.',
           }),
-        });
+        };
       }
       console.info(`Updated one company matching query: ${JSON.stringify(query)}`);
     } else if (operation === OperationEnum.Many) {
@@ -59,14 +60,15 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       updateResult = await Company.updateMany(query, updateData);
       if (updateResult.matchedCount === 0) {
         console.info(`No companies found matching query: ${JSON.stringify(query)}`);
-        return callback(null, {
-          statusCode: 404,
+
+        return {
+          statusCode: 200,
           headers,
           body: JSON.stringify({
             success: false,
-            message: 'No companies found to update.',
+            message: 'Company not found to update.',
           }),
-        });
+        };
       }
       console.info(`Updated ${updateResult.matchedCount} company/companies matching query: ${JSON.stringify(query)}`);
     } else {

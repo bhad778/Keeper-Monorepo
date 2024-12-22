@@ -36,14 +36,15 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       deleteResult = await Job.deleteOne(query);
       if (deleteResult.deletedCount === 0) {
         console.info(`No job found matching query: ${JSON.stringify(query)}`);
-        return callback(null, {
-          statusCode: 404,
+
+        return {
+          statusCode: 200,
           headers,
           body: JSON.stringify({
             success: false,
             message: 'Job not found to delete.',
           }),
-        });
+        };
       }
       console.info(`Deleted one job matching query: ${JSON.stringify(query)}`);
     } else if (operation === OperationEnum.Many) {
@@ -51,14 +52,15 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       deleteResult = await Job.deleteMany(query);
       if (deleteResult.deletedCount === 0) {
         console.info(`No jobs found matching query: ${JSON.stringify(query)}`);
-        return callback(null, {
-          statusCode: 404,
+
+        return {
+          statusCode: 200,
           headers,
           body: JSON.stringify({
             success: false,
             message: 'No jobs found to delete.',
           }),
-        });
+        };
       }
       console.info(`Deleted ${deleteResult.deletedCount} job(s) matching query: ${JSON.stringify(query)}`);
     } else {
@@ -70,7 +72,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       headers,
       body: JSON.stringify({
         success: true,
-        deletedCount: deleteResult.deletedCount,
+        result: deleteResult.deletedCount,
       }),
     };
   } catch (error) {

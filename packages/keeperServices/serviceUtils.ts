@@ -1,7 +1,12 @@
 import axios from 'axios';
 import { apiUrl } from 'keeperEnvironment';
 
-export const postRequest = (endpoint: string, payload?: any) => {
+type ApiResponse<T> = {
+  success: boolean;
+  result: T;
+};
+
+export const postRequest = <T>(endpoint: string, payload?: any): Promise<ApiResponse<T>> => {
   return axios
     .post(`${apiUrl}/${endpoint}`, payload, {
       headers: {
