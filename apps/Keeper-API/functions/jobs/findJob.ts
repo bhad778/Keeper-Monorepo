@@ -48,7 +48,6 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       throw new Error('Invalid operation. Supported operations are "findOne" and "find".');
     }
 
-    console.info(`Job(s) found: ${Array.isArray(result) ? result.length : 1}`);
     callback(null, {
       statusCode: 200,
       headers,
@@ -62,7 +61,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       headers,
       body: JSON.stringify({
         success: true,
-        result,
+        result: !result ? [] : result,
       }),
     };
   } catch (error) {
