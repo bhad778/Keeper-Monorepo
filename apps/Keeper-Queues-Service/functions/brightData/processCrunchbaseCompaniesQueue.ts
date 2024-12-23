@@ -118,7 +118,7 @@ export const handler = async (event: SQSEvent) => {
               },
             ],
           }, // Match by sourceWebsiteUrl
-          updateData: transformedCompany, // Update the reviews field
+          updateData: { ...transformedCompany, lastCrunchbaseCompanyUpdate: new Date() }, // Update the reviews field
           options: { upsert: true },
         };
 

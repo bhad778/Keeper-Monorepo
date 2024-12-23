@@ -102,7 +102,7 @@ export const handler = async (event: SQSEvent) => {
             { companyName: transformedCompany.companyName }, // Match by `companyName`
           ],
         },
-        updateData: transformedCompany,
+        updateData: { ...transformedCompany, lastSourceWebsiteUpdate: new Date() },
         options: { upsert: true }, // Ensure upsert behavior
       });
 

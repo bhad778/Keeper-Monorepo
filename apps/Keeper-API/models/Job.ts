@@ -5,6 +5,7 @@ const JobSchema = new mongoose.Schema({
   // devdog fields
   createdAt: { type: Date, default: Date.now, required: false },
   geoLocation: { type: Object, default: null, required: false },
+  hasGottenGeoLocationData: { type: Boolean, default: false, required: false },
   hasGottenToEditProfileScreen: { type: Boolean, default: false, required: false },
   hasReceivedLikeNotification: { type: Boolean, default: false, required: false },
   receivedLikes: { type: Array, default: [], required: false },

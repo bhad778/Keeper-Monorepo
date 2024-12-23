@@ -10,7 +10,17 @@ const CompaniesSchema = new mongoose.Schema({
     default: null,
     required: false,
   },
-  lastGlassDoorUpdate: {
+  lastGlassDoorCompanyUpdate: {
+    type: Date,
+    default: null,
+    required: false,
+  },
+  lastGlassDoorReviewsUpdate: {
+    type: Date,
+    default: null,
+    required: false,
+  },
+  lastCrunchbaseCompanyUpdate: {
     type: Date,
     default: null,
     required: false,

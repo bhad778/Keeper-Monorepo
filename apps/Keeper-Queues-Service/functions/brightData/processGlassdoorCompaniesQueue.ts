@@ -133,7 +133,7 @@ export const handler = async (event: SQSEvent) => {
               { companyName: companyName, headquarters: headquarters }, // Match by both companyName and headquarters
             ],
           },
-          updateData: transformedCompany,
+          updateData: { ...transformedCompany, lastGlassDoorCompanyUpdate: new Date() },
         });
 
         if (updateResponse.success) {
