@@ -1,4 +1,5 @@
 import * as countries from 'i18n-iso-countries';
+import { stateAbbreviations } from 'keeperConstants';
 
 import { TEmployeePastJob, TEmployeeSettings } from '../keeperTypes';
 
@@ -93,20 +94,27 @@ export const normalizeUrl = (url: string, removeQueryParams = false) => {
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 countries.registerLocale(require('i18n-iso-countries/langs/en.json'));
 
-export const normalizeLocation = (rawLocation: string) => {
+export const normalizeLocation = (rawLocation: string): string | null => {
   if (!rawLocation) return null;
 
   try {
-    // Regex to match "City, State" format
-    const locationRegex = /([\w\s]+),\s*([A-Z]{2})/;
+    // Regex to match "City, State" or "City, Full State Name"
+    const locationRegex = /([\w\s]+),\s*([\w\s]+)/;
 
     // Attempt to match the city and state
     const match = rawLocation.match(locationRegex);
 
     if (match) {
       const city = match[1].trim();
-      const state = match[2].trim();
-      return `${city}, ${state}`;
+      const stateOrFullName = match[2].trim();
+
+      // Convert full state name to abbreviation, if applicable
+      const state = stateAbbreviations[stateOrFullName] || stateOrFullName;
+
+      // Ensure state is valid (abbreviation or valid full name)
+      if (stateAbbreviations[state] || Object.values(stateAbbreviations).includes(state)) {
+        return `${city}, ${state}`;
+      }
     }
 
     // If no match, log and return null
