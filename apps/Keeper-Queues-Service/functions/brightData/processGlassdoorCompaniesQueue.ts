@@ -31,7 +31,7 @@ const glassdoorSearchUrl = 'https://www.glassdoor.com/Search/results.htm?keyword
 //   "companyName": "Delta",
 //   "headquarters": "Atlanta, GA",
 //   "companyWebsiteUrl": "",
-//   "isFinalTry": false
+//   "retries": 0
 // }
 
 export const handler = async (event: SQSEvent) => {
@@ -40,7 +40,7 @@ export const handler = async (event: SQSEvent) => {
 
     // Ensure database connection is established
     const promises = event.Records.map(async record => {
-      let snapshotId, headquarters, companyWebsiteUrl, companyName, isFinalTry;
+      let snapshotId, headquarters, companyWebsiteUrl, companyName, retries;
 
       const messageBody = JSON.parse(record.body);
 
@@ -49,7 +49,7 @@ export const handler = async (event: SQSEvent) => {
         companyName = normalizeCompanyName(messageBody.companyName);
         headquarters = normalizeLocation(messageBody.headquarters);
         companyWebsiteUrl = normalizeUrl(messageBody.companyWebsiteUrl, true);
-        isFinalTry = messageBody.isFinalTry;
+        retries = messageBody.retries || 0;
 
         if (!snapshotId) {
           console.error(
@@ -125,7 +125,6 @@ export const handler = async (event: SQSEvent) => {
         );
 
         // Step 4: Update company data in MongoDB
-        // fixed
         const updateResponse = await CompaniesService.updateCompany({
           query: {
             $or: [
@@ -188,9 +187,8 @@ export const handler = async (event: SQSEvent) => {
         console.error(`Error processing Glassdoor snapshotId ${snapshotId} for company ${companyWebsiteUrl}:`, error);
 
         // Requeue in Glassdoor queue for retry, and then fallback to Crunchbase
-        const retries = messageBody.retries || 0;
 
-        if (retries < 1) {
+        if (retries > 1) {
           const crunchbaseFilters = [{ url: `https://www.crunchbase.com/organization/${messageBody.companyName}` }];
 
           const crunchbaseSnapshotId = await requestSnapshotByUrlAndFilters(
@@ -203,11 +201,14 @@ export const handler = async (event: SQSEvent) => {
              company ${messageBody.companyName}.`,
           );
 
-          const newMessageBody = { ...messageBody, snapshotId: crunchbaseSnapshotId, retries: retries + 1 };
+          const newMessageBody = { ...messageBody, snapshotId: crunchbaseSnapshotId };
 
-          console.info(`Retrying Glassdoor snapshot for ${messageBody.companyName}. Retry count: ${retries + 1}`);
+          console.info(`Max retries reached. Sending ${companyName} to Crunchbase queue.`);
+
           await sendMessageToQueue(crunchbaseCompaniesQueueUrl, newMessageBody);
         } else {
+          console.info(`Retrying Glassdoor snapshot for ${messageBody.companyName}. Retry count: ${retries + 1}`);
+
           const glassdoorFilters = [
             {
               search_url: `${glassdoorSearchUrl}${encodeURIComponent(companyName as string)}`,
@@ -225,8 +226,6 @@ export const handler = async (event: SQSEvent) => {
           const newMessageBody = { ...messageBody, snapshotId: glassdoorSnapshotId, retries: retries + 1 };
 
           await sendMessageToQueue(glassdoorCompaniesQueueUrl, newMessageBody);
-
-          console.info(`Max retries reached. Sending ${companyName} to Crunchbase queue.`);
         }
       }
     });

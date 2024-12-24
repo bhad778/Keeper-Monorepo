@@ -294,12 +294,40 @@ export const linkedInJobTransformer = (brightDataJob: TBrightDataLinkedInJob): T
   return transformedJob;
 };
 
+export const decodeHtmlEntities = (text: string): string => {
+  return text
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'");
+};
+
+export const normalizeDescription = (description: string): string => {
+  try {
+    // Remove "Company Name | X followers on LinkedIn." at the start
+    const introPattern = /^[^|]+\|\s*\d+,\d+\s*followers on LinkedIn\.\s*/;
+    description = description.replace(introPattern, '');
+
+    // Decode HTML entities
+    description = decodeHtmlEntities(description);
+
+    // Trim excess whitespace
+    description = description.trim();
+
+    return description;
+  } catch (error) {
+    console.error('Error normalizing description:', error);
+    return description;
+  }
+};
+
 export const brightDataLinkedInCompanyTransformer = (company: TBrightDataLinkedInCompany) => {
   const transformedJob: TCompany = {
     createdAt: new Date(),
     companyWebsiteUrl: normalizeUrl(company.website),
     companyName: normalizeCompanyName(company.name),
-    description: company.description,
+    description: normalizeDescription(company.description),
     headquarters: normalizeLocation(company.headquarters),
     logo: company.logo,
     sourceWebsite: JobSourceWebsiteEnum.LinkedIn,
@@ -384,7 +412,7 @@ export const brightDataIndeedCompanyTransformer = (company: TBrightDataIndeedCom
     createdAt: new Date(),
     companyWebsiteUrl: normalizeUrl(company.website),
     companyName: normalizeCompanyName(company.name),
-    description: company.description,
+    description: normalizeDescription(company.description),
     headquarters: normalizeLocation(company.headquarters),
     logo: company.logo,
     sourceWebsite: JobSourceWebsiteEnum.Indeed,
