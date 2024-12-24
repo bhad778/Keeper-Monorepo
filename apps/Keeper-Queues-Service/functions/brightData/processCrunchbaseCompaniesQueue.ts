@@ -13,7 +13,7 @@ import {
   sendMessageToQueue,
   transformGlassdoorUrlToReviews,
 } from 'keeperUtils/brightDataUtils';
-import { glassdoorReviewsQueueUrl, glassdoorCompaniesQueueUrl } from 'keeperEnvironment';
+import { glassdoorReviewsQueueUrl, glassdoorCompaniesQueueUrl, crunchbaseCompaniesQueueUrl } from 'keeperEnvironment';
 
 const glassdoorReviewsSnapshotUrl =
   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7j1po0921hbu0ri1z&include_errors=true';
@@ -59,7 +59,7 @@ export const handler = async (event: SQSEvent) => {
         const status = await checkSnapshotStatusById(snapshotId);
         if (status !== 'ready') {
           console.info(`Snapshot ${snapshotId} is not ready. Requeuing.`);
-          await requeueMessage(glassdoorCompaniesQueueUrl, messageBody, requeueTimeout);
+          await requeueMessage(crunchbaseCompaniesQueueUrl, messageBody, requeueTimeout);
           return;
         }
 
