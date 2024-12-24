@@ -104,7 +104,7 @@ export const handler = async (event: SQSEvent) => {
         if (!matchedCompany) {
           console.info(`No matching Glassdoor company found for ${companyWebsiteUrl}. Skipping. But here
             is the Glassdoor data fetched: ${JSON.stringify(glassdoorResults)}.`);
-          return;
+          throw new Error('No matching Glassdoor company found');
         }
 
         console.info(
@@ -216,8 +216,7 @@ export const handler = async (event: SQSEvent) => {
             },
           ];
 
-          // Step 4: Request a glassdoor snapshot for the company which will
-          // return 5 results and we will have to determine if one matches
+          // Step 4: Request a glassdoor snapshot for the company and send it back into this function with retries + 1
           const glassdoorSnapshotId = await requestSnapshotByUrlAndFilters(
             getGlassdoorCompanyInfoSnapshotUrl,
             glassdoorFilters,
