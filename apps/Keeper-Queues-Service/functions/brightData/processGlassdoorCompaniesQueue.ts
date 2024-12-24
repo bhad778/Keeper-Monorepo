@@ -238,10 +238,3 @@ export const handler = async (event: SQSEvent) => {
     throw new Error('Failed to process Glassdoor queue');
   }
 };
-
-// {
-//   "snapshotId": "s_m44x0z039uuxdlfad",
-//   "headquarters": "Purchase, NY",
-//   "companyWebsiteUrl": "https://www.mstr.cd/407uWQT",
-//   "companyName": "Mastercard",
-// }
