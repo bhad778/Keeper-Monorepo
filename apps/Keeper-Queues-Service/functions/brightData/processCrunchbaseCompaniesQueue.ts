@@ -57,9 +57,11 @@ export const handler = async (event: SQSEvent) => {
         // Step 3: Match Crunchbase data with the current company
         const matchedCompany = crunchbaseResults.find(result => {
           const normalizedCrunchbaseWebsite = normalizeUrl(result.website || '', true);
+          const normalizedCrunchbaseCompanyName = normalizeCompanyName(result.name);
+
           return (
             (companyWebsiteUrl != null && normalizedCrunchbaseWebsite === companyWebsiteUrl) ||
-            (companyName != null && normalizeCompanyName(result.name) === companyName)
+            (companyName != null && normalizedCrunchbaseCompanyName === companyName)
           );
         });
 
