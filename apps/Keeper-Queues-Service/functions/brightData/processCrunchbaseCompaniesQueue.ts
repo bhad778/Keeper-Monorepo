@@ -58,8 +58,8 @@ export const handler = async (event: SQSEvent) => {
         const matchedCompany = crunchbaseResults.find(result => {
           const normalizedCrunchbaseWebsite = normalizeUrl(result.website || '', true);
           return (
-            (normalizedCrunchbaseWebsite === companyWebsiteUrl && companyWebsiteUrl != null) ||
-            (normalizeCompanyName(result.name) === companyName && companyName != null)
+            (companyWebsiteUrl != null && normalizedCrunchbaseWebsite === companyWebsiteUrl) ||
+            (companyName != null && normalizeCompanyName(result.name) === companyName)
           );
         });
 
