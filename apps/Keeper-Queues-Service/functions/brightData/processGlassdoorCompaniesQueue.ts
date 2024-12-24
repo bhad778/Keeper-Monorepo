@@ -27,10 +27,10 @@ const getCrunchbaseCompanyInfoSnapshotUrl =
 const glassdoorSearchUrl = 'https://www.glassdoor.com/Search/results.htm?keyword=';
 
 // {
-//   "snapshotId": "s_m4zv8aoq2ivl7xnxv0",
-//   "companyName": "Delta",
-//   "headquarters": "Atlanta, GA",
-//   "companyWebsiteUrl": "",
+//   "snapshotId": "s_m501jgtk1otvx27w6f",
+//   "companyName": "Gusto",
+//   "headquarters": "San Francisco, CA",
+//   "companyWebsiteUrl": "https://www.gusto.com",
 //   "retries": 0
 // }
 
