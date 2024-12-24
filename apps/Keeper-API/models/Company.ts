@@ -10,12 +10,12 @@ const CompaniesSchema = new mongoose.Schema({
     default: null,
     required: false,
   },
-  lastGlassDoorCompanyUpdate: {
+  lastGlassdoorCompanyUpdate: {
     type: Date,
     default: null,
     required: false,
   },
-  lastGlassDoorReviewsUpdate: {
+  lastGlassdoorReviewsUpdate: {
     type: Date,
     default: null,
     required: false,
