@@ -23,6 +23,8 @@
   "exclude": [
     "node_modules", // Exclude node_modules
     "dist", // Exclude build directory
+    "../Keeper-WebApp/**",
+    "../Keeper-UI/**",
     "**/*.test.ts" // Exclude test files
   ]
 }
