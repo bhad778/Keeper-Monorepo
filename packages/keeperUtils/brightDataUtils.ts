@@ -13,6 +13,7 @@ import {
   EmploymentTypeEnum,
   TCompany,
   TGeoLocation,
+  TBrightDataCrunchbaseCompany,
 } from 'keeperTypes';
 import { extractDollarNumbers, findStringsInLongString, normalizeLocation, normalizeUrl } from 'keeperUtils';
 import { TechnologiesList } from 'keeperConstants';
@@ -489,6 +490,28 @@ export const brightDataGlassdoorCompanyTransformer = (company: TBrightDataGlassd
     workLifeBalanceRating: company.ratings_work_life_balance,
     businessOutlookRating: company.ratings_business_outlook,
     recommendToFriendRating: company.ratings_recommend_to_friend,
+  };
+
+  return transformedCompany;
+};
+
+export const brightDataCrunchbaseCompanyTransformer = (company: TBrightDataCrunchbaseCompany) => {
+  const transformedCompany: Partial<TCompany> = {
+    companyWebsiteUrl: normalizeUrl(company.website),
+    headquarters: normalizeLocation(company.address),
+    crunchbaseUrl: company.url,
+    countryCode: company.country_code,
+    companySize: company.num_employees,
+    lastCrunchbaseCompanyUpdate: new Date(),
+    companyType: company.company_type,
+    rating: company.cb_rank,
+    about: company.about,
+    socialMediaLinks: company.social_media_links,
+    foundedDate: company.founded_date,
+    contactEmail: company.contact_email,
+    contactPhone: company.contact_phone,
+    companyUUID: company.uuid,
+    logo: company.image,
   };
 
   return transformedCompany;

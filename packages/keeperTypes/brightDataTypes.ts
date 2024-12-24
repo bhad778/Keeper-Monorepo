@@ -135,6 +135,24 @@ export type TBrightDataGlassdoorCompany = {
   url: string;
 };
 
+export type TBrightDataCrunchbaseCompany = {
+  url: string; // url to the company's crunchbase page
+  name: string;
+  cb_rank: number;
+  about: string;
+  company_type: string; // public, private, etc.
+  social_media_links: string[];
+  founded_date: string;
+  num_employees: string;
+  country_code: string;
+  website: string; // official website of the company
+  contact_email: string;
+  contact_phone: string;
+  uuid: string; // universal identifier for the company
+  image: string; // image or logo
+  address: string;
+};
+
 export type TJobsQueueMessage = {
   snapshotId: string;
   sourceWebsite: JobSourceWebsiteEnum;
