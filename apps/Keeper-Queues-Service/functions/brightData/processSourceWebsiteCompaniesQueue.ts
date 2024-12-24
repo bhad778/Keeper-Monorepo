@@ -26,21 +26,21 @@ const glassdoorSearchUrl = 'https://www.glassdoor.com/Search/results.htm?keyword
 // the companies queue holds messages that are just snapshotIds, and these snapshotIds hold data
 export const handler = async (event: SQSEvent) => {
   const promises = event.Records.map(async record => {
-    let snapshotId, sourceWebsite;
-
-    const messageBody = JSON.parse(record.body);
+    let snapshotId: string | undefined, sourceWebsite: string | undefined;
 
     try {
+      const messageBody = JSON.parse(record.body);
+
       snapshotId = messageBody.snapshotId;
       sourceWebsite = messageBody.sourceWebsite;
 
       if (!snapshotId || !sourceWebsite) {
         console.error(
-          `Skipping. This message from the queue is missing one of these: 
-           snapshotId: ${snapshotId}, sourceWebsite: ${sourceWebsite}. Here is the message
-           that was missing it- ${messageBody}`,
+          `Skipping. Missing required fields: snapshotId (${snapshotId}), sourceWebsite (${sourceWebsite}). Message: ${JSON.stringify(
+            messageBody,
+          )}`,
         );
-        return; // Skip processing this message
+        return;
       }
 
       console.info(`Processing snapshotId: ${snapshotId}`);
@@ -56,91 +56,79 @@ export const handler = async (event: SQSEvent) => {
       // Step 2: Fetch company data from BrightData
       const snapshotResultArray = await fetchSnapshotArrayDataById(snapshotId);
 
-      console.info(`Successfully fetched snapshot data for snapshotId: ${snapshotId}`);
-
       if (!Array.isArray(snapshotResultArray) || snapshotResultArray.length === 0) {
         console.error(`Snapshot data for snapshotId ${snapshotId} is empty or invalid.`);
         return;
       }
 
       const brightDataCompany = snapshotResultArray[0];
-
       if (!brightDataCompany || typeof brightDataCompany !== 'object') {
         console.error(`Invalid company data in snapshot for snapshotId ${snapshotId}.`);
         return;
       }
 
-      const transformCompany = company => {
-        if (sourceWebsite === JobSourceWebsiteEnum.Indeed) {
-          return brightDataIndeedCompanyTransformer(company);
-        } else if (sourceWebsite === JobSourceWebsiteEnum.LinkedIn) {
-          return brightDataLinkedInCompanyTransformer(company);
-        } else {
-          return undefined;
-        }
-      };
-
+      // Step 3: Transform company data
       console.info(`Transforming company data for snapshotId: ${snapshotId}`);
-
-      const transformedCompany = transformCompany(brightDataCompany);
+      const transformedCompany =
+        sourceWebsite === JobSourceWebsiteEnum.Indeed
+          ? brightDataIndeedCompanyTransformer(brightDataCompany)
+          : sourceWebsite === JobSourceWebsiteEnum.LinkedIn
+          ? brightDataLinkedInCompanyTransformer(brightDataCompany)
+          : undefined;
 
       if (!transformedCompany) {
-        console.info(
-          `Skipping company as transformCompany returned undefined. Here is what the company
-           was- ${brightDataCompany} and here is what sourceWebsite was- ${sourceWebsite}`,
-        );
+        console.info(`TransformCompany returned undefined. Skipping. Company: ${brightDataCompany}`);
         return;
       }
 
-      console.info(`Upserting company data for ${transformedCompany.companyName} in the database.`);
+      console.info(`Upserting company data for ${transformedCompany.companyName} into the database.`);
 
-      // Step 3: Upsert company data in the MongoDB database
+      // Step 4: Upsert company data into the database
       const updateResponse = await CompaniesService.updateCompany({
         query: {
           $or: [
-            { sourceWebsiteUrl: transformedCompany.sourceWebsiteUrl }, // Match by `sourceWebsiteUrl`
-            { companyName: transformedCompany.companyName }, // Match by `companyName`
+            { sourceWebsiteUrl: transformedCompany.sourceWebsiteUrl },
+            { companyName: transformedCompany.companyName },
           ],
         },
         updateData: { ...transformedCompany, lastSourceWebsiteUpdate: new Date() },
-        options: { upsert: true }, // Ensure upsert behavior
+        options: { upsert: true },
       });
 
-      console.info(
-        `Successfully upserted company data for ${transformedCompany.companyName}. Here is the response- ${updateResponse}`,
-      );
+      if (!updateResponse || !updateResponse.success) {
+        console.error(`Failed to upsert company data for ${transformedCompany.companyName}.`);
+        return;
+      }
 
+      console.info(`Successfully upserted company data for ${transformedCompany.companyName}.`);
+
+      // Step 5: Request Glassdoor snapshot
       const glassdoorFilters = [
         {
-          search_url: `${glassdoorSearchUrl}${encodeURIComponent(transformedCompany?.companyName as string)}`,
+          search_url: `${glassdoorSearchUrl}${encodeURIComponent(transformedCompany?.companyName || '')}`,
           max_search_results: 5,
         },
       ];
 
-      // Step 4: Request a glassdoor snapshot for the company which will
-      // return 5 results and we will have to determine if one matches
       const companySnapshotId = await requestSnapshotByUrlAndFilters(
         getGlassdoorCompanyInfoSnapshotUrl,
         glassdoorFilters,
       );
 
       console.info(
-        `Successfully got glassdoor company snapshot ID ${companySnapshotId} for
-         company ${transformedCompany.companyName}.`,
+        `Successfully got Glassdoor snapshot ID ${companySnapshotId} for company ${transformedCompany.companyName}.`,
       );
 
+      // Step 6: Enqueue Glassdoor snapshot ID for further processing
       const messageToGlassdoorQueue = {
         snapshotId: companySnapshotId,
         headquarters: transformedCompany.headquarters,
         companyWebsiteUrl: transformedCompany.companyWebsiteUrl,
       };
 
-      // Step 5: Send the company snapshot ID to the glassdoor companies queue
       await sendMessageToQueue(glassdoorCompaniesQueueUrl, messageToGlassdoorQueue);
       console.info(
-        `Enqueued company snapshot with this data to glassdoor companies queue. - ${JSON.stringify(
-          messageToGlassdoorQueue,
-        )} `,
+        `Enqueued Glassdoor snapshot to the Glassdoor companies queue: ${JSON.stringify(messageToGlassdoorQueue)}`,
       );
     } catch (error) {
       console.error(`Error processing snapshotId ${snapshotId}:`, error);
