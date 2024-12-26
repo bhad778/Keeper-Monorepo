@@ -50,6 +50,8 @@ export const handler = async (event: SQSEvent) => {
         companyWebsiteUrl = normalizeUrl(messageBody.companyWebsiteUrl, true);
         retries = messageBody.retries || 0;
 
+        console.info(`Processing message with this data- ${JSON.stringify(messageBody)}`);
+
         if (!snapshotId) {
           console.error(
             `This message from the queue is missing a snapshotId. Skipping, but here is the message: ${JSON.stringify(
@@ -59,7 +61,7 @@ export const handler = async (event: SQSEvent) => {
           throw new Error('Missing snapshotId in the message');
         }
 
-        if (!companyWebsiteUrl && (!headquarters || !companyName)) {
+        if (companyWebsiteUrl || (headquarters && companyName)) {
           console.error(
             `This message is missing a required field. You must have a companyWebsiteUrl or both headquarters and companyName. Skipping, but here is the message: ${JSON.stringify(
               messageBody,
@@ -78,11 +80,11 @@ export const handler = async (event: SQSEvent) => {
           return;
         }
 
-        console.info(`Snapshot ${snapshotId} is ready.`);
+        console.info(`Snapshot ${snapshotId} for ${companyName} is ready.`);
 
         // Step 2: Fetch Glassdoor data
         const glassdoorResults: TBrightDataGlassdoorCompany[] = await fetchSnapshotArrayDataById(snapshotId);
-        console.info(`Fetched ${glassdoorResults.length} Glassdoor results for snapshotId: ${snapshotId}`);
+        console.info(`Fetched ${glassdoorResults.length} Glassdoor results for ${companyName}`);
 
         // Step 3: Match Glassdoor data with the current company
         const matchedCompany = glassdoorResults.find(result => {
@@ -95,14 +97,16 @@ export const handler = async (event: SQSEvent) => {
           const normalizedGlassdoorWebsite = normalizeUrl(result.details_website || '', true);
 
           return (
-            (normalizedGlassdoorHeadquarters === headquarters && headquarters != null) ||
-            (normalizedGlassdoorWebsite === companyWebsiteUrl && companyWebsiteUrl != null)
+            (headquarters != null && normalizedGlassdoorHeadquarters === headquarters) ||
+            (companyWebsiteUrl != null && normalizedGlassdoorWebsite === companyWebsiteUrl)
           );
         });
 
         if (!matchedCompany) {
           console.info(`No matching Glassdoor company found for ${companyWebsiteUrl}. Skipping. But here
-            is the Glassdoor data fetched: ${JSON.stringify(glassdoorResults)}.`);
+            is the Glassdoor data fetched: ${JSON.stringify(
+              glassdoorResults,
+            )}. And heres what we tried to match any of the results on, headquarters: ${headquarters} and companyWebsiteUrl: ${companyWebsiteUrl}.`);
           throw new Error('No matching Glassdoor company found');
         }
 
