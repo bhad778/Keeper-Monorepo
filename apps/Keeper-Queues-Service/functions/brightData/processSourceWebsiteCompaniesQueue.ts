@@ -34,6 +34,8 @@ export const handler = async (event: SQSEvent) => {
       snapshotId = messageBody.snapshotId;
       sourceWebsite = messageBody.sourceWebsite;
 
+      console.info(`Processing message with this data- ${JSON.stringify(messageBody)}`);
+
       if (!snapshotId || !sourceWebsite) {
         console.error(
           `Skipping. Missing required fields: snapshotId (${snapshotId}), sourceWebsite (${sourceWebsite}). Message: ${JSON.stringify(
@@ -123,6 +125,7 @@ export const handler = async (event: SQSEvent) => {
       const messageToGlassdoorQueue = {
         snapshotId: companySnapshotId,
         headquarters: transformedCompany.headquarters,
+        companyName: transformedCompany.companyName,
         companyWebsiteUrl: transformedCompany.companyWebsiteUrl,
       };
 

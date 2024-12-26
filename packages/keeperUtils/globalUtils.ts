@@ -61,11 +61,10 @@ export const logApiError = (apiCallName: string, params: Record<string, any>, er
 
   if (axios.isAxiosError(error) && error.request) {
     const status = error.response?.status ?? 'unknown';
-    const url = error.config?.url ?? 'unknown';
     const data = error.response?.data ?? 'no data';
 
     console.error(
-      `Error during API call "${apiCallName}" with parameters: { ${paramsString} }. Status: ${status}, URL: ${url}, Data: ${JSON.stringify(
+      `Error during API call "${apiCallName}" with parameters: { ${paramsString} }. Status: ${status}, Error Message: ${JSON.stringify(
         data,
       )}`,
     );
