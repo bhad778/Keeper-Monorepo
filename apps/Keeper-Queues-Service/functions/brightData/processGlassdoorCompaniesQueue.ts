@@ -1,6 +1,6 @@
 import { SQSEvent } from 'aws-lambda';
 import { TBrightDataGlassdoorCompany } from 'keeperTypes';
-import { normalizeLocation, normalizeUrl } from 'keeperUtils';
+import { logApiError, normalizeLocation, normalizeUrl } from 'keeperUtils';
 import { CompaniesService } from 'keeperServices';
 import {
   brightDataGlassdoorCompanyTransformer,
@@ -189,7 +189,7 @@ export const handler = async (event: SQSEvent) => {
           `Enqueued Glassdoor Reviews snapshot with this data to the glassdoor reviews queue- ${messageToReviewsQueue}`,
         );
       } catch (error) {
-        console.error(`Error processing Glassdoor snapshotId ${snapshotId} for company ${companyWebsiteUrl}:`, error);
+        logApiError('sendMessageToQueue', { snapshotId, companyWebsiteUrl }, error);
 
         // Requeue in Glassdoor queue for retry, and then fallback to Crunchbase
 
