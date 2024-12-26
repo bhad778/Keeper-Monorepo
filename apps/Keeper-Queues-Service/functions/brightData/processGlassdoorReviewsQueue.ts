@@ -47,7 +47,7 @@ export const handler = async (event: SQSEvent) => {
       // Step 3: Update company data using the updateCompany Lambda
       const updatePayload = {
         query: { sourceWebsiteUrl: glassdoorUrl }, // Match by sourceWebsiteUrl
-        updateData: { reviews: reviewsArray, lastGlassDoorReviewsUpdate: new Date() }, // Update the reviews field
+        updateData: { reviews: reviewsArray, lastGlassdoorReviewsUpdate: new Date() }, // Update the reviews field
         options: { upsert: true },
       };
 
