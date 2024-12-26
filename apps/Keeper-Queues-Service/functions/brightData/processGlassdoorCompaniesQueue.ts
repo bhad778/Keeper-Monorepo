@@ -61,7 +61,9 @@ export const handler = async (event: SQSEvent) => {
           throw new Error('Missing snapshotId in the message');
         }
 
-        if (companyWebsiteUrl || (headquarters && companyName)) {
+        // you must have a companyWebsiteUrl or both headquarters and companyName to continue which is companyWebsiteUrl || (headquarters && companyName)
+        // so to catch when you shouldnt continue we just reversed that by putting ! in front of everything
+        if (!(companyWebsiteUrl || (headquarters && companyName))) {
           console.error(
             `This message is missing a required field. You must have a companyWebsiteUrl or both headquarters and companyName. Skipping, but here is the message: ${JSON.stringify(
               messageBody,
