@@ -32,7 +32,15 @@ export const handler = async (event: SQSEvent) => {
         return;
       }
 
-      const reviewsArray = reviewsResponseArray.slice(0, 50);
+      // Filter out bad responses with "warning_code": "dead_page"
+      const validReviews = reviewsResponseArray.filter(review => review.warning_code !== 'dead_page');
+
+      if (validReviews.length === 0) {
+        console.info(`All reviews for snapshotId: ${snapshotId} were invalid (dead pages). Skipping.`);
+        return;
+      }
+
+      const reviewsArray = validReviews.slice(0, 50);
 
       console.info(`Fetched ${reviewsArray.length} reviews for snapshotId: ${snapshotId}`);
 
