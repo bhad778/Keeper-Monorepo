@@ -192,7 +192,7 @@ export const handler = async (event: SQSEvent) => {
         // Requeue in Glassdoor queue for retry, and then fallback to Crunchbase
 
         if (retries >= 1) {
-          const crunchbaseFilters = [{ url: `https://www.crunchbase.com/organization/${companyName}` }];
+          const crunchbaseFilters = [{ url: `https://www.crunchbase.com/organization/${companyName.toLowerCase()}` }];
 
           const crunchbaseSnapshotId = await requestSnapshotByUrlAndFilters(
             getCrunchbaseCompanyInfoSnapshotUrl,
