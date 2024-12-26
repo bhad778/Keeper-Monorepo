@@ -2,7 +2,6 @@ import { SQSEvent } from 'aws-lambda';
 import { TBrightDataCrunchbaseCompany } from 'keeperTypes';
 import { normalizeLocation, normalizeUrl } from 'keeperUtils';
 import { CompaniesService } from 'keeperServices';
-
 import {
   brightDataCrunchbaseCompanyTransformer,
   checkSnapshotStatusById,
@@ -14,10 +13,10 @@ import {
 import { crunchbaseCompaniesQueueUrl } from 'keeperEnvironment';
 
 // {
-//   "snapshotId": "s_m501jgtk1otvx27w6f",
-//   "companyName": "Gusto",
-//   "headquarters": "San Francisco, CA",
-//   "companyWebsiteUrl": "https://www.gusto.com",
+//   "snapshotId": "s_m55ia30ldn0jnwxwn",
+//   "companyName": "Aimbridge Hospitality",
+//   "headquarters": "Plano, TX",
+//   "companyWebsiteUrl": "https://www.aimbridgehospitality.com",
 //   "retries": 0
 // }
 
@@ -119,7 +118,7 @@ export const handler = async (event: SQSEvent) => {
       } catch (error) {
         console.error(`Error processing Crunchbase snapshotId ${snapshotId} for company ${companyWebsiteUrl}:`, error);
 
-        if (retries < 3) {
+        if (retries <= 1) {
           console.info(`Retrying Crunchbase snapshot for ${messageBody.companyName}. Retry count: ${retries + 1}`);
           const newMessageBody = { ...messageBody, retries: retries + 1 };
           await requeueMessage(crunchbaseCompaniesQueueUrl, newMessageBody, requeueTimeout);
