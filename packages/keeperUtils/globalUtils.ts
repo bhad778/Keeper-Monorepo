@@ -2,6 +2,7 @@ import * as countries from 'i18n-iso-countries';
 import { stateAbbreviations } from 'keeperConstants';
 
 import { TEmployeePastJob, TEmployeeSettings } from '../keeperTypes';
+import axios from 'axios';
 
 export const getLargestNumberFromArray = (numbersArray: number[] | string[]) => {
   let largest = numbersArray[0];
@@ -51,6 +52,21 @@ export const capitalizeFirstLetter = (text: string) => {
 
 export const escapeRegex = (text: string) => {
   return text.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&');
+};
+
+export const logApiError = (apiCallName: string, params: Record<string, any>, error: unknown): void => {
+  const paramsString = Object.entries(params)
+    .map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
+    .join(', ');
+
+  if (axios.isAxiosError(error) && error.request) {
+    console.error(
+      `Error during API call "${apiCallName}" with parameters: { ${paramsString} }. Axios error data:`,
+      error.request.data,
+    );
+  } else {
+    console.error(`Error during API call "${apiCallName}" with parameters: { ${paramsString} }. General error:`, error);
+  }
 };
 
 export const normalizeUrl = (url: string, removeQueryParams = false) => {

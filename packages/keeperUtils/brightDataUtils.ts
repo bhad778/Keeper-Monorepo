@@ -15,7 +15,13 @@ import {
   TGeoLocation,
   TBrightDataCrunchbaseCompany,
 } from 'keeperTypes';
-import { extractDollarNumbers, findStringsInLongString, normalizeLocation, normalizeUrl } from 'keeperUtils';
+import {
+  extractDollarNumbers,
+  findStringsInLongString,
+  logApiError,
+  normalizeLocation,
+  normalizeUrl,
+} from 'keeperUtils';
 import { TechnologiesList } from 'keeperConstants';
 import { CompaniesService } from 'keeperServices';
 import { brightDataApiKey } from 'keeperEnvironment';
@@ -527,7 +533,7 @@ export const checkSnapshotStatusById = async snapshotId => {
     });
     return response?.data?.status; // 'ready' 'running' or 'building' are the known possible statuses
   } catch (error) {
-    console.error(`Error checking status for snapshotId ${snapshotId}:`, error);
+    logApiError('checkSnapshotStatusById', { snapshotId }, error);
     throw error; // Let the caller handle the error
   }
 };
@@ -542,7 +548,7 @@ export const fetchSnapshotArrayDataById = async snapshotId => {
     });
     return response.data; // The actual job data from BrightData
   } catch (error) {
-    console.error(`Error fetching data for snapshotId ${snapshotId}:`, error);
+    logApiError('fetchSnapshotArrayDataById', { snapshotId }, error);
     throw error; // Let the caller handle the error
   }
 };
@@ -556,7 +562,7 @@ export const checkIfCompanyExistsInDatabase = async (sourceWebsiteUrl: string) =
     const company = await CompaniesService.findCompany(queryPayload);
     return !!company; // Returns true if the company exists, false otherwise
   } catch (error) {
-    console.error(`Error checking company ${sourceWebsiteUrl} in database:`, error);
+    logApiError('checkIfCompanyExistsInDatabase', { sourceWebsiteUrl }, error);
     throw error; // Let the caller handle the error
   }
 };
@@ -571,10 +577,7 @@ export const requestSnapshotByUrlAndFilters = async (url, filters) => {
     });
     return response?.data?.snapshot_id; // Returns the new snapshotId
   } catch (error) {
-    console.error(
-      `Error requesting snapshot with this url: ${url} and these filters: ${JSON.stringify(filters)}`,
-      error,
-    );
+    logApiError('requestSnapshotByUrlAndFilters', { url, filters }, error);
     throw error; // Let the caller handle the error
   }
 };
@@ -590,6 +593,7 @@ export const sendMessageToQueue = async (queueUrl, messageBody) => {
     console.info(`Message sent to queue: ${queueUrl}`, messageBody);
   } catch (error) {
     console.error(`Error sending message to queue ${queueUrl}:`, error);
+    logApiError('sendMessageToQueue', { queueUrl, messageBody }, error);
     throw error; // Let the caller handle the error
   }
 };
@@ -606,6 +610,7 @@ export const requeueMessage = async (queueUrl, messageBody, delaySeconds) => {
     console.info(`Message requeued with delay of ${delaySeconds} seconds:`, messageBody);
   } catch (error) {
     console.error(`Error requeuing message to queue ${queueUrl}:`, error);
+    logApiError('requeueMessage', { queueUrl, messageBody }, error);
     throw error; // Let the caller handle the error
   }
 };

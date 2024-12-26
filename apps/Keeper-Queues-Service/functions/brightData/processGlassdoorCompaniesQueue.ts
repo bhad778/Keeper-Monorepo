@@ -2,7 +2,6 @@ import { SQSEvent } from 'aws-lambda';
 import { TBrightDataGlassdoorCompany } from 'keeperTypes';
 import { normalizeLocation, normalizeUrl } from 'keeperUtils';
 import { CompaniesService } from 'keeperServices';
-
 import {
   brightDataGlassdoorCompanyTransformer,
   checkSnapshotStatusById,
@@ -188,8 +187,8 @@ export const handler = async (event: SQSEvent) => {
 
         // Requeue in Glassdoor queue for retry, and then fallback to Crunchbase
 
-        if (retries > 1) {
-          const crunchbaseFilters = [{ url: `https://www.crunchbase.com/organization/${messageBody.companyName}` }];
+        if (retries >= 1) {
+          const crunchbaseFilters = [{ url: `https://www.crunchbase.com/organization/${companyName}` }];
 
           const crunchbaseSnapshotId = await requestSnapshotByUrlAndFilters(
             getCrunchbaseCompanyInfoSnapshotUrl,
@@ -198,7 +197,7 @@ export const handler = async (event: SQSEvent) => {
 
           console.info(
             `Successfully got crunchbase company snapshot ID ${crunchbaseSnapshotId} for
-             company ${messageBody.companyName}.`,
+             company ${companyName}.`,
           );
 
           const newMessageBody = { ...messageBody, snapshotId: crunchbaseSnapshotId };
@@ -207,7 +206,7 @@ export const handler = async (event: SQSEvent) => {
 
           await sendMessageToQueue(crunchbaseCompaniesQueueUrl, newMessageBody);
         } else {
-          console.info(`Retrying Glassdoor snapshot for ${messageBody.companyName}. Retry count: ${retries + 1}`);
+          console.info(`Retrying Glassdoor snapshot for ${companyName}. Retry count: ${retries + 1}`);
 
           const glassdoorFilters = [
             {
