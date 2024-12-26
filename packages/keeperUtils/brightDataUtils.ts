@@ -136,7 +136,7 @@ export const normalizeCompanyName = (name: string) => {
   return normalizedName;
 };
 
-export const transformGlassdoorUrlToReviews = url => {
+export const transformGlassdoorUrlToReviews = (url: string): string | null => {
   if (!url || typeof url !== 'string') return null;
 
   try {
@@ -160,7 +160,7 @@ export const transformGlassdoorUrlToReviews = url => {
 
     // Extract company name and identifier
     const companyName = match[1];
-    const identifier = match[2];
+    const identifier = `E${match[2]}`; // Ensure the identifier retains the 'E' prefix
 
     // Construct the Reviews URL
     return `https://www.glassdoor.com/Reviews/${companyName}-Reviews-${identifier}.htm`;
