@@ -65,7 +65,7 @@ export const handler = async (event: SQSEvent) => {
           console.error(
             `This message is missing a required field. You must have a companyWebsiteUrl or both headquarters and companyName. Skipping, but here is the message: ${JSON.stringify(
               messageBody,
-            )}`,
+            )} and here they are after normalization: companyWebsiteUrl: ${companyWebsiteUrl}, headquarters: ${headquarters}, companyName: ${companyName}`,
           );
           return; // Skip processing this message
         }
