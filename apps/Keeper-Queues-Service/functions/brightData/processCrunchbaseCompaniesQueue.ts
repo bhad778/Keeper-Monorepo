@@ -13,6 +13,14 @@ import {
 } from 'keeperUtils/brightDataUtils';
 import { crunchbaseCompaniesQueueUrl } from 'keeperEnvironment';
 
+// {
+//   "snapshotId": "s_m501jgtk1otvx27w6f",
+//   "companyName": "Gusto",
+//   "headquarters": "San Francisco, CA",
+//   "companyWebsiteUrl": "https://www.gusto.com",
+//   "retries": 0
+// }
+
 export const handler = async (event: SQSEvent) => {
   try {
     console.info('Starting batch processing for Crunchbase snapshots.');
@@ -28,6 +36,8 @@ export const handler = async (event: SQSEvent) => {
         headquarters = normalizeLocation(messageBody.headquarters);
         companyWebsiteUrl = normalizeUrl(messageBody.companyWebsiteUrl, true);
         retries = messageBody.retries || 0;
+
+        console.info(`Processing message with this data- ${JSON.stringify(messageBody)}`);
 
         if (!snapshotId) {
           console.error(
