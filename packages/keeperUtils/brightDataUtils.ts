@@ -324,7 +324,7 @@ export const normalizeDescription = (description: string): string => {
 
     return description;
   } catch (error) {
-    console.error('Error normalizing description:', error);
+    console.error(`Error normalizing description with this description- ${description} and this error- ${error}`);
     return description;
   }
 };
