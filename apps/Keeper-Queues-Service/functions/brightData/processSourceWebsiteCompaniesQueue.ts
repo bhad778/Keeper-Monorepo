@@ -20,7 +20,7 @@ const glassdoorSearchUrl = 'https://www.glassdoor.com/Search/results.htm?keyword
 
 // this snapshot will yield
 // {
-//   "snapshotId": "s_m5kgyfxs1km7azb6yh",
+//   "snapshotId": "s_m5kgyfxs1km7azb6yh", - sentry
 //   "sourceWebsite": "LinkedIn"
 // }
 
