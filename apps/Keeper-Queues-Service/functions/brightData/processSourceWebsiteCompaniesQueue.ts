@@ -142,3 +142,111 @@ export const handler = async (event: SQSEvent) => {
   await Promise.all(promises);
   console.info('Batch processing complete.');
 };
+
+// crunchbase keyword
+
+// Acuity%20Brands
+// s_m58h784q2lxg991hjr - good
+
+// Methodist%20Le%20Bonheur%20Healthcare
+// s_m58h81bi1jsw4dan9a - good
+
+// abacus.ai
+// s_m58hq5th27ojpbxuqo - good but wont match because our DB doesnt have companyWebsiteUrl or headquarters, but name does match exactly. We should make it so if headquarters and companywebsiteurl is null but name matches exactly then it works too. Also just for crunchbase, do a check that says if url = the full company name with dashes in between make sure both are lowercased, which is an automatic match by itself
+
+// dataannotation
+// s_m58hr6v452zvms0m9 - doesnt exist in crunchbase
+
+// University of Texas at Austin
+// s_m58hu8w3qpkjitrfl - good and will match on companyWebsiteUrl or the new url field check
+
+// Rank One Computing
+// s_m58hw6pyslhdvf1di - good and will work on new url field check or name because companyWebsiteUrl and headquarters are null
+
+// Goliath Partners
+// s_m58hx8tw1bzugxvhat - this company doesnt exist in crunchbase
+
+// Soft Tech Consulting
+// s_m58hydeovhfq3wocn - good and will work on new url field check or name, because companyWebsiteUrl and headquarters are null
+
+// crunchbase
+
+// t-mobile
+// s_m55x9rra2lelfz2zi6 - good
+
+// abacus.ai
+// s_m58fq0cb1a5zdem264 - bad
+
+// abacusai
+// s_m58fwpwp2ojrihh405 - bad
+
+// abacus ai
+// s_m58fwx6kykn62nkj7 - bad
+
+// Abacus AI
+// s_m58fx5mdw0fcl3s64 - bad
+
+// Abacus.AI
+// s_m58g43fmz0ucq19nf - bad
+
+// methodist%20le%20bonheur%20healthcare
+// s_m58g2wq61y267kr5nj - bad
+
+// Acuity%20Brands
+// s_m58ghion13rer3iacn - bad
+
+// acuity%20brands
+// s_m58ghzu7xuqz9vw3n - bad
+
+// acuity brands
+// s_m58gi9rg1xhppjy9o9 - bad
+
+// glassdoor
+
+// t-mobile
+// s_m55ymm5w1wz4te5hjp - bad
+
+// t%20mobile
+// s_m55yzg93b53da2gz4 - good
+
+// t mobile
+// s_m55yzzgi510cxsp36 - good
+
+// tmobile
+// s_m55z0i2a1sw2dy1obb - good
+
+// methodist-le-bonheur-healthcare
+// s_m58i4l587fm807pah
+
+// methodist le bonheur healthcare
+// s_m58fsvs615t4tmcvh2 - bad
+
+// methodistlebonheurhealthcare
+// s_m58gb7fe1j3whfzkq3 - bad
+
+// methodist%20le%20bonheur%20healthcare
+// s_m58g8tcb1m3z63vsbf - bad
+
+// Methodist%20Le%20Bonheur%20Healthcare
+// s_m58g01bpegvitw3g8 - bad
+
+// methodist
+// s_m58g20ex2l84lwsr77 - bad
+
+// Acuity%20Brands
+// s_m58gdw7g11hjl5c8fg - bad
+
+// acuity%20brands
+// s_m58gekri1oxlw1vuq - bad
+
+// acuity-brands
+// s_m58gf4cg1uxo9nkd4y - s_m58i5c6l1wnr377cy4
+
+// acuity brands
+// s_m58gf4cg1uxo9nkd4y - bad
+
+// DataAnnotation
+// s_m58gnqlp18rmv9gu4q - bad
+
+// dataannotation
+// s_m58go72o1obtewp2ct - bad

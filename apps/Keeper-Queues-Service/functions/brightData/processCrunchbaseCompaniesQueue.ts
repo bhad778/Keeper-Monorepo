@@ -7,16 +7,19 @@ import {
   checkSnapshotStatusById,
   fetchSnapshotArrayDataById,
   normalizeCompanyName,
+  requestSnapshotByUrlAndFilters,
   requeueMessage,
   requeueTimeout,
-} from 'keeperUtils/brightDataUtils';
+} from 'keeperUtils';
 import { crunchbaseCompaniesQueueUrl } from 'keeperEnvironment';
 
+import { getCrunchbaseCompanyInfoSnapshotUrl } from './processGlassdoorCompaniesQueue';
+
 // {
-//   "snapshotId": "s_m55ia30ldn0jnwxwn",
-//   "companyName": "Aimbridge Hospitality",
-//   "headquarters": "Plano, TX",
-//   "companyWebsiteUrl": "https://www.aimbridgehospitality.com",
+//   "snapshotId": "s_m55x9rra2lelfz2zi6",
+//   "companyName": "T-Mobile",
+//   "headquarters": "Bellevue, WA",
+//   "companyWebsiteUrl": "https://www.t-mobile.com",
 //   "retries": 0
 // }
 
@@ -65,18 +68,38 @@ export const handler = async (event: SQSEvent) => {
 
         // Step 3: Match Crunchbase data with the current company
         const matchedCompany = crunchbaseResults.find(result => {
-          const normalizedCrunchbaseWebsite = normalizeUrl(result.website || '', true);
+          // this is the actual companies website
+          const normalizedCrunchbaseCompanyWebsite = normalizeUrl(result.website || '', true);
+
           const normalizedCrunchbaseCompanyName = normalizeCompanyName(result.name);
 
+          // get the company name from crunchbase/organization/company-name
+          const match = result?.url.match(/\/organization\/([^/]+)/);
+          const crunchbaseCompanyNameFromUrl = match ? match[1] : null;
+
+          const normalizedCrunchbaseHeadquarters = normalizeLocation(result.address);
+
+          const companyNameDashed = companyName?.toLowerCase().split(' ').join('-');
+
           return (
-            (companyWebsiteUrl != null && normalizedCrunchbaseWebsite === companyWebsiteUrl) ||
-            (companyName != null && normalizedCrunchbaseCompanyName === companyName)
+            // Match by companyWebsiteUrl
+            (companyWebsiteUrl != null && normalizedCrunchbaseCompanyWebsite === companyWebsiteUrl) ||
+            // if companyName is not null and headquarters is not null and both match
+            (companyName != null &&
+              normalizedCrunchbaseCompanyName === companyName &&
+              headquarters != null &&
+              normalizedCrunchbaseHeadquarters) ||
+            // Match when headquarters and companyWebsiteUrl are null but names match
+            (companyWebsiteUrl == null && headquarters == null && normalizedCrunchbaseCompanyName === companyName) ||
+            // often the company name at the end of crunchbase url is just the company name with dashes inbetween so if
+            // thats true then also a match
+            companyNameDashed === crunchbaseCompanyNameFromUrl
           );
         });
 
         if (!matchedCompany) {
           console.info(
-            `No matching Crunchbase company found for ${companyWebsiteUrl}. Skipping. But here is the Crunchbase data fetched: ${JSON.stringify(
+            `No matching Crunchbase company found for ${companyName}. Skipping. But here is the Crunchbase data fetched: ${JSON.stringify(
               crunchbaseResults,
             )}.`,
           );
@@ -97,13 +120,40 @@ export const handler = async (event: SQSEvent) => {
         }
 
         console.info(
-          `Transformed company data for ${companyWebsiteUrl}: here is the data: ${JSON.stringify(transformedCompany)}`,
+          `Transformed company data for ${companyName}: here is the data: ${JSON.stringify(transformedCompany)}`,
         );
+
+        // get the company name from crunchbase/organization/company-name
+        const match = matchedCompany?.url.match(/\/organization\/([^/]+)/);
+        const crunchbaseCompanyNameFromUrl = match ? match[1] : null;
+
+        const orConditions: any = [
+          {
+            // If companyWebsiteUrl is not null and matches
+            $and: [{ companyWebsiteUrl: { $ne: null } }, { companyWebsiteUrl: companyWebsiteUrl }],
+          },
+          {
+            // If companyName is not null and matches
+            $and: [{ companyName: { $ne: null } }, { companyName: companyName }],
+          },
+        ];
+
+        // Add the condition for dashes in company name only if crunchbaseCompanyNameFromUrl is not null
+        if (crunchbaseCompanyNameFromUrl) {
+          const normalizedCrunchbaseCompanyName = normalizeCompanyName(crunchbaseCompanyNameFromUrl);
+
+          orConditions.push({
+            companyName: {
+              $regex: `^${normalizedCrunchbaseCompanyName?.replace(/\s+/g, '\\s*')}$`, // disregard spaces when matching
+              $options: 'i', // Case-insensitive match
+            },
+          });
+        }
 
         // Step 4: Update company data in MongoDB
         const updateResponse = await CompaniesService.updateCompany({
           query: {
-            $or: [{ companyWebsiteUrl: companyWebsiteUrl }, { companyName: companyName, headquarters: headquarters }],
+            $or: orConditions,
           },
           updateData: { ...transformedCompany, lastCrunchbaseCompanyUpdate: new Date() },
         });
@@ -120,7 +170,16 @@ export const handler = async (event: SQSEvent) => {
 
         if (retries <= 1) {
           console.info(`Retrying Crunchbase snapshot for ${messageBody.companyName}. Retry count: ${retries + 1}`);
-          const newMessageBody = { ...messageBody, retries: retries + 1 };
+
+          // const crunchbaseFilters = [{ url: `https://www.crunchbase.com/organization/${formattedCompanyName}` }];
+          const crunchbaseFilters = [{ keyword: companyName }];
+
+          const crunchbaseSnapshotId = await requestSnapshotByUrlAndFilters(
+            getCrunchbaseCompanyInfoSnapshotUrl,
+            crunchbaseFilters,
+          );
+
+          const newMessageBody = { ...messageBody, snapshotId: crunchbaseSnapshotId, retries: retries + 1 };
           await requeueMessage(crunchbaseCompaniesQueueUrl, newMessageBody, requeueTimeout);
         } else {
           console.error(

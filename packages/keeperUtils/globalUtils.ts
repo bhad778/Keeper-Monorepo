@@ -118,26 +118,28 @@ export const normalizeLocation = (rawLocation: string): string | null => {
   if (!rawLocation) return null;
 
   try {
-    // Regex to match "City, State" or "City, Full State Name"
-    const locationRegex = /([\w\s]+),\s*([\w\s]+)/;
+    // List of state abbreviations and full names
 
-    // Attempt to match the city and state
-    const match = rawLocation.match(locationRegex);
+    const stateNames = Object.keys(stateAbbreviations).join('|'); // Full state names
+    const stateAbbr = Object.values(stateAbbreviations).join('|'); // State abbreviations
+
+    // Dynamic regex to match city and state
+    const stateRegex = new RegExp(`([\\w\\s]+),\\s*(${stateAbbr}|${stateNames})`, 'i');
+
+    // Match the input with the regex
+    const match = rawLocation.match(stateRegex);
 
     if (match) {
-      const city = match[1].trim();
-      const stateOrFullName = match[2].trim();
+      const city = match[1].trim(); // The part before the comma
+      const stateOrFullName = match[2].trim(); // The matched state
 
       // Convert full state name to abbreviation, if applicable
       const state = stateAbbreviations[stateOrFullName] || stateOrFullName;
 
-      // Ensure state is valid (abbreviation or valid full name)
-      if (stateAbbreviations[state] || Object.values(stateAbbreviations).includes(state)) {
-        return `${city}, ${state}`;
-      }
+      // Return normalized location
+      return `${city}, ${state}`;
     }
 
-    // If no match, log and return null
     console.warn(`Could not normalize location: ${rawLocation}`);
     return null;
   } catch (error) {

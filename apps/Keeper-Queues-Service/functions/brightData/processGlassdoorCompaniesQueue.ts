@@ -20,8 +20,10 @@ const glassdoorReviewsSnapshotUrl =
 
 const getGlassdoorCompanyInfoSnapshotUrl =
   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7j0bx501ockwldaqf&include_errors=true&type=discover_new&discover_by=keyword';
-const getCrunchbaseCompanyInfoSnapshotUrl =
-  'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1vijqt9jfj7olije&include_errors=true';
+// export const getCrunchbaseCompanyInfoSnapshotUrl =
+//   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1vijqt9jfj7olije&include_errors=true';
+export const getCrunchbaseCompanyInfoSnapshotUrl =
+  'https://api.brightdata.com/datasets/v3/snapshots?dataset_id=gd_l1vijqt9jfj7olije&status=ready';
 
 const glassdoorSearchUrl = 'https://www.glassdoor.com/Search/results.htm?keyword=';
 
@@ -133,8 +135,18 @@ export const handler = async (event: SQSEvent) => {
         const updateResponse = await CompaniesService.updateCompany({
           query: {
             $or: [
-              { companyWebsiteUrl: companyWebsiteUrl }, // Match by normalized companyWebsiteUrl
-              { companyName: companyName, headquarters: headquarters }, // Match by both companyName and headquarters
+              {
+                $and: [
+                  { companyWebsiteUrl: { $ne: null } }, // Ensure companyWebsiteUrl is not null
+                  { companyWebsiteUrl: companyWebsiteUrl }, // Match by normalized companyWebsiteUrl
+                ],
+              },
+              {
+                $and: [
+                  { companyName: companyName }, // Match by companyName
+                  { companyName: { $ne: null } }, // Ensure companyName is not null
+                ],
+              },
             ],
           },
           updateData: { ...transformedCompany, lastGlassdoorCompanyUpdate: new Date() },
@@ -149,53 +161,55 @@ export const handler = async (event: SQSEvent) => {
           return;
         }
 
-        const daysBackToGetReviews = (transformedCompany?.reviewsCount ?? 0) > 1000 ? 180 : 1827; // 6 months or 5 years
+        // const daysBackToGetReviews = (transformedCompany?.reviewsCount ?? 0) > 1000 ? 180 : 1827; // 6 months or 5 years
 
-        const reviewsSnapshotPayload = [
-          {
-            url: transformGlassdoorUrlToReviews(transformedCompany.glassdoorUrl as string),
-            days: daysBackToGetReviews,
-          },
-        ];
+        // const reviewsSnapshotPayload = [
+        //   {
+        //     url: transformGlassdoorUrlToReviews(transformedCompany.glassdoorUrl as string),
+        //     days: daysBackToGetReviews,
+        //   },
+        // ];
 
         // Step 5: Request Glassdoor Reviews snapshot
+        // TODO- uncomment this when and figure out how to make it not cost so much money
+        // because now it gets way too many reviews and costs a lot
+        // console.info(`Requesting Glassdoor Reviews snapshot for company: ${transformedCompany.glassdoorUrl}`);
 
-        console.info(`Requesting Glassdoor Reviews snapshot for company: ${transformedCompany.glassdoorUrl}`);
+        // const glassdoorReviewsSnapshotId = await requestSnapshotByUrlAndFilters(
+        //   glassdoorReviewsSnapshotUrl,
+        //   reviewsSnapshotPayload,
+        // );
 
-        const glassdoorReviewsSnapshotId = await requestSnapshotByUrlAndFilters(
-          glassdoorReviewsSnapshotUrl,
-          reviewsSnapshotPayload,
-        );
+        // console.info(
+        //   `Glassdoor Reviews snapshotId: ${glassdoorReviewsSnapshotId}, for reviewsUrl: ${transformGlassdoorUrlToReviews(
+        //     transformedCompany.glassdoorUrl as string,
+        //   )}`,
+        // );
 
-        console.info(
-          `Glassdoor Reviews snapshotId: ${glassdoorReviewsSnapshotId}, for reviewsUrl: ${transformGlassdoorUrlToReviews(
-            transformedCompany.glassdoorUrl as string,
-          )}`,
-        );
+        // if (!glassdoorReviewsSnapshotId) {
+        //   console.error(`Failed to get Glassdoor Reviews snapshot for company: ${transformedCompany.sourceWebsiteUrl}`);
+        //   return;
+        // }
 
-        if (!glassdoorReviewsSnapshotId) {
-          console.error(`Failed to get Glassdoor Reviews snapshot for company: ${transformedCompany.sourceWebsiteUrl}`);
-          return;
-        }
+        // const messageToReviewsQueue = {
+        //   snapshotId: glassdoorReviewsSnapshotId, // Get this after requesting the snapshot
+        //   glassdoorUrl: transformedCompany.glassdoorUrl,
+        // };
 
-        const messageToReviewsQueue = {
-          snapshotId: glassdoorReviewsSnapshotId, // Get this after requesting the snapshot
-          glassdoorUrl: transformedCompany.glassdoorUrl,
-        };
+        // await sendMessageToQueue(glassdoorReviewsQueueUrl, messageToReviewsQueue);
 
-        await sendMessageToQueue(glassdoorReviewsQueueUrl, messageToReviewsQueue);
-
-        console.info(
-          `Enqueued Glassdoor Reviews snapshot with this data to the glassdoor reviews queue- ${messageToReviewsQueue}`,
-        );
+        // console.info(
+        //   `Enqueued Glassdoor Reviews snapshot with this data to the glassdoor reviews queue- ${messageToReviewsQueue}`,
+        // );
       } catch (error) {
         logApiError('sendMessageToQueue', { snapshotId, companyWebsiteUrl }, error);
 
         // Requeue in Glassdoor queue for retry, and then fallback to Crunchbase
 
         if (retries >= 1) {
-          const formattedCompanyName = companyName.toLowerCase().replace(/\s+/g, '-');
-          const crunchbaseFilters = [{ url: `https://www.crunchbase.com/organization/${formattedCompanyName}` }];
+          // const formattedCompanyName = companyName.toLowerCase().replace(/\s+/g, '-');
+
+          const crunchbaseFilters = [{ keyword: companyName }];
 
           const crunchbaseSnapshotId = await requestSnapshotByUrlAndFilters(
             getCrunchbaseCompanyInfoSnapshotUrl,
