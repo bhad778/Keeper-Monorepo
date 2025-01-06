@@ -19,7 +19,7 @@ const getGlassdoorCompanyInfoSnapshotUrl =
 const glassdoorSearchUrl = 'https://www.glassdoor.com/Search/results.htm?keyword=';
 
 // {
-//   "snapshotId": "s_m4zl9nh512acix3jzh",
+//   "snapshotId": "",
 //   "sourceWebsite": "LinkedIn"
 // }
 
