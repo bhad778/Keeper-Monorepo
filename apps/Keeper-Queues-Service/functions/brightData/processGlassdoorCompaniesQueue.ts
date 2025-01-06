@@ -14,12 +14,11 @@ import {
   transformGlassdoorUrlToReviews,
 } from 'keeperUtils/brightDataUtils';
 import { glassdoorReviewsQueueUrl, glassdoorCompaniesQueueUrl, crunchbaseCompaniesQueueUrl } from 'keeperEnvironment';
+import { getGlassdoorCompanyInfoSnapshotUrl } from './processSourceWebsiteCompaniesQueue';
 
 const glassdoorReviewsSnapshotUrl =
   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7j1po0921hbu0ri1z&include_errors=true';
 
-const getGlassdoorCompanyInfoSnapshotUrl =
-  'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7j0bx501ockwldaqf&include_errors=true&type=discover_new&discover_by=keyword';
 // export const getCrunchbaseCompanyInfoSnapshotUrl =
 //   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1vijqt9jfj7olije&include_errors=true';
 export const getCrunchbaseCompanyInfoSnapshotUrl =
@@ -202,7 +201,7 @@ export const handler = async (event: SQSEvent) => {
         //   `Enqueued Glassdoor Reviews snapshot with this data to the glassdoor reviews queue- ${messageToReviewsQueue}`,
         // );
       } catch (error) {
-        logApiError('sendMessageToQueue', { snapshotId, companyWebsiteUrl }, error);
+        logApiError('processGlassdoorCompaniesQueue', { snapshotId, companyWebsiteUrl }, error);
 
         // Requeue in Glassdoor queue for retry, and then fallback to Crunchbase
 
@@ -231,7 +230,7 @@ export const handler = async (event: SQSEvent) => {
 
           const glassdoorFilters = [
             {
-              search_url: `${glassdoorSearchUrl}${encodeURIComponent(companyName as string)}`,
+              search_url: `${glassdoorSearchUrl}${encodeURIComponent(companyName || '')}`,
               max_search_results: 5,
             },
           ];
