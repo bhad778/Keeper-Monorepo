@@ -21,6 +21,7 @@ const getLinkedInCompanySnapshotUrl =
 const getIndeedCompanySnapshotUrl =
   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7qekxkv2i7ve6hx1s&include_errors=true';
 
+// this snapshot will yield an array of many jobs
 // example message-
 // {
 //   "snapshotId": "s_m4zl9nh512acix3jzh",

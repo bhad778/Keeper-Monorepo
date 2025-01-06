@@ -18,6 +18,7 @@ const getGlassdoorCompanyInfoSnapshotUrl =
 
 const glassdoorSearchUrl = 'https://www.glassdoor.com/Search/results.htm?keyword=';
 
+// this snapshot will yield
 // {
 //   "snapshotId": "",
 //   "sourceWebsite": "LinkedIn"
