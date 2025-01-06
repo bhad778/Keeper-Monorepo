@@ -20,7 +20,7 @@ const glassdoorSearchUrl = 'https://www.glassdoor.com/Search/results.htm?keyword
 
 // this snapshot will yield
 // {
-//   "snapshotId": "",
+//   "snapshotId": "s_m5lkavvos7yaxjpu5",
 //   "sourceWebsite": "LinkedIn"
 // }
 
@@ -144,7 +144,40 @@ export const handler = async (event: SQSEvent) => {
   console.info('Batch processing complete.');
 };
 
+// curl -H "Authorization: Bearer de4cc20e-bc8a-43be-bcfb-1a223a598a4a" -H "Content-Type: application/json" -d '[{"keyword":"Hims & Hers"}]' "https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1vijqt9jfj7olije&include_errors=true&type=discover_new&discover_by=keyword"
+
+// I think when matching on company name, it should say if one of the company names is 1 word, it should see if the other one
+// includes that word by itself with spaces around it. For example in my db, jobs via dice would match dice, expedia group would
+// match expedia. It also needs to change dashes into spaces
+
 // crunchbase keyword
+
+// Sentry
+// s_m5lkavvos7yaxjpu5 -
+
+// Klaviyo
+// s_m5lkegrp1zt5zcd5rj -
+
+// Ncr Voyix
+// s_m5lkf0hy15lgmja6ju -
+
+// U.S. Department of Veterans Affairs
+// s_m5lkfnhm211gkindhw -
+
+// Aimbridge Hospitality
+// s_m5lkg43821ha24rynp -
+
+// Expedia Group
+// s_m5lkjgvd29cxy40mon -
+
+// Constellis
+// s_m5lkkcnd1tnbgejhry -
+
+// Intersources
+// s_m5lkm10zmir2azfv -
+
+// Hims & Hers
+// s_m5lkncdp2d9x1m0ce -
 
 // Acuity%20Brands
 // s_m58h784q2lxg991hjr - good

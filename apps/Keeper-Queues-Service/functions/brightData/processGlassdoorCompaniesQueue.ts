@@ -156,7 +156,7 @@ export const handler = async (event: SQSEvent) => {
           console.info(`Successfully updated Glassdoor data for company: ${companyWebsiteUrl}`);
         } else {
           console.info(
-            `No matching company found in DB for URL: ${companyWebsiteUrl} and headquarters: ${headquarters}`,
+            `No matching company found in DB. It failed to match one of these- companyName: ${companyName} or companyWebsiteUrl: ${companyWebsiteUrl}`,
           );
           return;
         }

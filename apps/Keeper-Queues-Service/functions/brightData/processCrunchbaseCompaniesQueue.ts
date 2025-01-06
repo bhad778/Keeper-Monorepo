@@ -16,10 +16,10 @@ import { crunchbaseCompaniesQueueUrl } from 'keeperEnvironment';
 import { getCrunchbaseCompanyInfoSnapshotUrl } from './processGlassdoorCompaniesQueue';
 
 // {
-//   "snapshotId": "s_m55x9rra2lelfz2zi6",
-//   "companyName": "T-Mobile",
-//   "headquarters": "Bellevue, WA",
-//   "companyWebsiteUrl": "https://www.t-mobile.com",
+//   "snapshotId": "s_m5lkavvos7yaxjpu5",
+//   "companyName": "Sentry",
+//   "headquarters": null,
+//   "companyWebsiteUrl": "https://www.sentry.io",
 //   "retries": 0
 // }
 
@@ -162,7 +162,7 @@ export const handler = async (event: SQSEvent) => {
           console.info(`Successfully updated Crunchbase data for company: ${companyWebsiteUrl}`);
         } else {
           console.info(
-            `No matching company found in DB for URL: ${companyWebsiteUrl} and headquarters: ${headquarters}`,
+            `No matching company found in DB. It failed to match one of these- companyName: ${companyName} or companyWebsiteUrl: ${companyWebsiteUrl}`,
           );
         }
       } catch (error) {
