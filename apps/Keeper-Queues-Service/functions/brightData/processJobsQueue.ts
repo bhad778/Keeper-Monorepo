@@ -191,7 +191,7 @@ export const handler = async (event: SQSEvent) => {
             }
 
             console.info(
-              `Successfully got company snapshot data for snapshot- ${companySnapshotId} and for company URL- ${transformedJob.sourceWebsiteCompanyUrl}.`,
+              `Successfully got company snapshot data for company- ${transformedJob.companyName}, here is the snapshotId- ${companySnapshotId}.`,
             );
 
             const soureWebsiteQueueMessage = {
