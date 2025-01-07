@@ -68,31 +68,33 @@ export const handler = async (event: SQSEvent) => {
 
         // Step 3: Match Crunchbase data with the current company
         const matchedCompany = crunchbaseResults.find(result => {
-          // this is the actual companies website
+          // Normalize the company's website
           const normalizedCrunchbaseCompanyWebsite = normalizeUrl(result.website || '', true);
 
+          // Normalize the company's name
           const normalizedCrunchbaseCompanyName = normalizeCompanyName(result.name);
 
-          // get the company name from crunchbase/organization/company-name
-          const match = result?.url.match(/\/organization\/([^/]+)/);
+          // Get the company name from Crunchbase URL
+          const match = result?.url ? result.url.match(/\/organization\/([^/]+)/) : null;
           const crunchbaseCompanyNameFromUrl = match ? match[1] : null;
 
+          // Normalize the headquarters location
           const normalizedCrunchbaseHeadquarters = normalizeLocation(result.address);
 
+          // Create the dashed version of the company name
           const companyNameDashed = companyName?.toLowerCase().split(' ').join('-');
 
           return (
             // Match by companyWebsiteUrl
             (companyWebsiteUrl != null && normalizedCrunchbaseCompanyWebsite === companyWebsiteUrl) ||
-            // if companyName is not null and headquarters is not null and both match
+            // Match by companyName and headquarters
             (companyName != null &&
               normalizedCrunchbaseCompanyName === companyName &&
               headquarters != null &&
               normalizedCrunchbaseHeadquarters) ||
             // Match when headquarters and companyWebsiteUrl are null but names match
             (companyWebsiteUrl == null && headquarters == null && normalizedCrunchbaseCompanyName === companyName) ||
-            // often the company name at the end of crunchbase url is just the company name with dashes inbetween so if
-            // thats true then also a match
+            // Match by dashed company name in URL
             companyNameDashed === crunchbaseCompanyNameFromUrl
           );
         });
