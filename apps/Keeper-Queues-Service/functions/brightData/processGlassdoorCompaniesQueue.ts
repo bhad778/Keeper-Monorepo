@@ -22,7 +22,7 @@ const glassdoorReviewsSnapshotUrl =
 // export const getCrunchbaseCompanyInfoSnapshotUrl =
 //   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1vijqt9jfj7olije&include_errors=true';
 export const getCrunchbaseCompanyInfoSnapshotUrl =
-  'https://api.brightdata.com/datasets/v3/snapshots?dataset_id=gd_l1vijqt9jfj7olije&status=ready';
+  'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1vijqt9jfj7olije&include_errors=true&type=discover_new&discover_by=keyword';
 
 const glassdoorSearchUrl = 'https://www.glassdoor.com/Search/results.htm?keyword=';
 
