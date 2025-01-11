@@ -1,7 +1,11 @@
 import { SQSEvent } from 'aws-lambda';
 import { JobSourceWebsiteEnum } from 'keeperTypes';
 import { CompaniesService } from 'keeperServices';
-import { glassdoorCompaniesQueueUrl, sourceWebsiteCompaniesQueueUrl } from 'keeperEnvironment';
+import {
+  crunchbaseCompaniesQueueUrl,
+  glassdoorCompaniesQueueUrl,
+  sourceWebsiteCompaniesQueueUrl,
+} from 'keeperEnvironment';
 import {
   brightDataIndeedCompanyTransformer,
   brightDataLinkedInCompanyTransformer,
@@ -12,6 +16,9 @@ import {
   requeueTimeout,
   sendMessageToQueue,
 } from 'keeperUtils/brightDataUtils';
+
+export const getCrunchbaseCompanyInfoSnapshotUrl =
+  'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1vijqt9jfj7olije&include_errors=true&type=discover_new&discover_by=keyword';
 
 export const getGlassdoorCompanyInfoSnapshotUrl =
   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7j0bx501ockwldaqf&include_errors=true&type=discover_new&discover_by=keyword';
@@ -113,27 +120,49 @@ export const handler = async (event: SQSEvent) => {
         },
       ];
 
-      const companySnapshotId = await requestSnapshotByUrlAndFilters(
+      const glassDoorCompanySnapshotId = await requestSnapshotByUrlAndFilters(
         getGlassdoorCompanyInfoSnapshotUrl,
         glassdoorFilters,
       );
 
       console.info(
-        `Successfully got Glassdoor snapshot ID ${companySnapshotId} for company ${transformedCompany.companyName}.`,
+        `Successfully got Glassdoor snapshot ID ${glassDoorCompanySnapshotId} for company ${transformedCompany.companyName}.`,
       );
 
       // Step 6: Enqueue Glassdoor snapshot ID for further processing
-      const messageToGlassdoorQueue = {
-        snapshotId: companySnapshotId,
+      const messageToGlassdoorAndCrunchbaseQueues = {
         headquarters: transformedCompany.headquarters,
         companyName: transformedCompany.companyName,
         companyWebsiteUrl: transformedCompany.companyWebsiteUrl,
       };
 
-      await sendMessageToQueue(glassdoorCompaniesQueueUrl, messageToGlassdoorQueue);
+      await sendMessageToQueue(glassdoorCompaniesQueueUrl, {
+        ...messageToGlassdoorAndCrunchbaseQueues,
+        snapshotId: glassDoorCompanySnapshotId,
+      });
+
       console.info(
-        `Enqueued Glassdoor snapshot to the Glassdoor companies queue: ${JSON.stringify(messageToGlassdoorQueue)}`,
+        `Enqueued Glassdoor snapshot to the Glassdoor companies queue: ${JSON.stringify(
+          messageToGlassdoorAndCrunchbaseQueues,
+        )}`,
       );
+
+      const crunchbaseFilters = [{ keyword: transformedCompany.companyName }];
+
+      const crunchbaseSnapshotId = await requestSnapshotByUrlAndFilters(
+        getCrunchbaseCompanyInfoSnapshotUrl,
+        crunchbaseFilters,
+      );
+
+      console.info(
+        `Successfully got crunchbase company snapshot ID ${crunchbaseSnapshotId} for
+         company ${transformedCompany.companyName}.`,
+      );
+
+      await sendMessageToQueue(crunchbaseCompaniesQueueUrl, {
+        ...messageToGlassdoorAndCrunchbaseQueues,
+        snapshotId: crunchbaseSnapshotId,
+      });
     } catch (error) {
       console.error(`Error processing snapshotId ${snapshotId}:`, error);
       throw error; // Let AWS handle retries and DLQ
@@ -144,143 +173,28 @@ export const handler = async (event: SQSEvent) => {
   console.info('Batch processing complete.');
 };
 
-// curl -H "Authorization: Bearer de4cc20e-bc8a-43be-bcfb-1a223a598a4a" -H "Content-Type: application/json" -d '[{"keyword":"Hims & Hers"}]' "https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1vijqt9jfj7olije&include_errors=true&type=discover_new&discover_by=keyword"
+// curl -H "Authorization: Bearer de4cc20e-bc8a-43be-bcfb-1a223a598a4a" -H "Content-Type: application/json" -d '[{"keyword":"Plaid"}]' "https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1vijqt9jfj7olije&include_errors=true&type=discover_new&discover_by=keyword"
 
 // I think when matching on company name, it should say if one of the company names is 1 word, it should see if the other one
 // includes that word by itself with spaces around it. For example in my db, jobs via dice would match dice, expedia group would
 // match expedia. It also needs to change dashes into spaces
 
-// crunchbase keyword
+// maybe we just do manual checks for jobs via dice etc cus theres gonna be a lot of those, and it just says this company wants to remain anonymous
 
-// Sentry
-// s_m5lkavvos7yaxjpu5 -
+// Prelim - in cb
+// s_m5sqcruyvmgbqpri5 - worked when I ran it again
 
-// Klaviyo
-// s_m5lkegrp1zt5zcd5rj -
+// Vignesh Technological Solutions - in cb
+// s_m5sqe7h91qvkgm9qia - worked when I ran it again
 
-// Ncr Voyix
-// s_m5lkf0hy15lgmja6ju -
+// Rvo Health - in cb
+// s_m5sqfswl2prh4siney - worked when I ran it again
 
-// U.S. Department of Veterans Affairs
-// s_m5lkfnhm211gkindhw -
+// Unity Technologies - in cb
+// s_m5sqike53dhkk3qbs - worked when I ran it again
 
-// Aimbridge Hospitality
-// s_m5lkg43821ha24rynp -
+// Motherduck - in cb
+// s_m5sqmja62pd049yzxc - worked when I ran it again
 
-// Expedia Group
-// s_m5lkjgvd29cxy40mon -
-
-// Constellis
-// s_m5lkkcnd1tnbgejhry -
-
-// Intersources
-// s_m5lkm10zmir2azfv -
-
-// Hims & Hers
-// s_m5lkncdp2d9x1m0ce -
-
-// Acuity%20Brands
-// s_m58h784q2lxg991hjr - good
-
-// Methodist%20Le%20Bonheur%20Healthcare
-// s_m58h81bi1jsw4dan9a - good
-
-// abacus.ai
-// s_m58hq5th27ojpbxuqo - good but wont match because our DB doesnt have companyWebsiteUrl or headquarters, but name does match exactly. We should make it so if headquarters and companywebsiteurl is null but name matches exactly then it works too. Also just for crunchbase, do a check that says if url = the full company name with dashes in between make sure both are lowercased, which is an automatic match by itself
-
-// dataannotation
-// s_m58hr6v452zvms0m9 - doesnt exist in crunchbase
-
-// University of Texas at Austin
-// s_m58hu8w3qpkjitrfl - good and will match on companyWebsiteUrl or the new url field check
-
-// Rank One Computing
-// s_m58hw6pyslhdvf1di - good and will work on new url field check or name because companyWebsiteUrl and headquarters are null
-
-// Goliath Partners
-// s_m58hx8tw1bzugxvhat - this company doesnt exist in crunchbase
-
-// Soft Tech Consulting
-// s_m58hydeovhfq3wocn - good and will work on new url field check or name, because companyWebsiteUrl and headquarters are null
-
-// crunchbase
-
-// t-mobile
-// s_m55x9rra2lelfz2zi6 - good
-
-// abacus.ai
-// s_m58fq0cb1a5zdem264 - bad
-
-// abacusai
-// s_m58fwpwp2ojrihh405 - bad
-
-// abacus ai
-// s_m58fwx6kykn62nkj7 - bad
-
-// Abacus AI
-// s_m58fx5mdw0fcl3s64 - bad
-
-// Abacus.AI
-// s_m58g43fmz0ucq19nf - bad
-
-// methodist%20le%20bonheur%20healthcare
-// s_m58g2wq61y267kr5nj - bad
-
-// Acuity%20Brands
-// s_m58ghion13rer3iacn - bad
-
-// acuity%20brands
-// s_m58ghzu7xuqz9vw3n - bad
-
-// acuity brands
-// s_m58gi9rg1xhppjy9o9 - bad
-
-// glassdoor
-
-// t-mobile
-// s_m55ymm5w1wz4te5hjp - bad
-
-// t%20mobile
-// s_m55yzg93b53da2gz4 - good
-
-// t mobile
-// s_m55yzzgi510cxsp36 - good
-
-// tmobile
-// s_m55z0i2a1sw2dy1obb - good
-
-// methodist-le-bonheur-healthcare
-// s_m58i4l587fm807pah
-
-// methodist le bonheur healthcare
-// s_m58fsvs615t4tmcvh2 - bad
-
-// methodistlebonheurhealthcare
-// s_m58gb7fe1j3whfzkq3 - bad
-
-// methodist%20le%20bonheur%20healthcare
-// s_m58g8tcb1m3z63vsbf - bad
-
-// Methodist%20Le%20Bonheur%20Healthcare
-// s_m58g01bpegvitw3g8 - bad
-
-// methodist
-// s_m58g20ex2l84lwsr77 - bad
-
-// Acuity%20Brands
-// s_m58gdw7g11hjl5c8fg - bad
-
-// acuity%20brands
-// s_m58gekri1oxlw1vuq - bad
-
-// acuity-brands
-// s_m58gf4cg1uxo9nkd4y - s_m58i5c6l1wnr377cy4
-
-// acuity brands
-// s_m58gf4cg1uxo9nkd4y - bad
-
-// DataAnnotation
-// s_m58gnqlp18rmv9gu4q - bad
-
-// dataannotation
-// s_m58go72o1obtewp2ct - bad
+// Plaid - in cb
+// s_m5sqqd5s5c3gjdx88 - worked when I ran it again

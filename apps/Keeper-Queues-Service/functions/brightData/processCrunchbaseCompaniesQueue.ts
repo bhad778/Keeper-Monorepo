@@ -12,14 +12,13 @@ import {
   requeueTimeout,
 } from 'keeperUtils';
 import { crunchbaseCompaniesQueueUrl } from 'keeperEnvironment';
-
-import { getCrunchbaseCompanyInfoSnapshotUrl } from './processGlassdoorCompaniesQueue';
+import { getCrunchbaseCompanyInfoSnapshotUrl } from './processSourceWebsiteCompaniesQueue';
 
 // {
-//   "snapshotId": "s_m5lkavvos7yaxjpu5",
-//   "companyName": "Sentry",
+//   "snapshotId": "s_m5sqcruyvmgbqpri5",
+//   "companyName": "Prelim",
 //   "headquarters": null,
-//   "companyWebsiteUrl": "https://www.sentry.io",
+//   "companyWebsiteUrl": null,
 //   "retries": 0
 // }
 
@@ -161,7 +160,7 @@ export const handler = async (event: SQSEvent) => {
         });
 
         if (updateResponse.success) {
-          console.info(`Successfully updated Crunchbase data for company: ${companyWebsiteUrl}`);
+          console.info(`Successfully updated Crunchbase data for company: ${companyName}`);
         } else {
           console.info(
             `No matching company found in DB. It failed to match one of these- companyName: ${companyName} or companyWebsiteUrl: ${companyWebsiteUrl}`,
@@ -170,7 +169,7 @@ export const handler = async (event: SQSEvent) => {
       } catch (error) {
         console.error(`Error processing Crunchbase snapshotId ${snapshotId} for company ${companyWebsiteUrl}:`, error);
 
-        if (retries <= 1) {
+        if (retries < 1) {
           console.info(`Retrying Crunchbase snapshot for ${messageBody.companyName}. Retry count: ${retries + 1}`);
 
           // const crunchbaseFilters = [{ url: `https://www.crunchbase.com/organization/${formattedCompanyName}` }];

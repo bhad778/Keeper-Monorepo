@@ -21,8 +21,6 @@ const glassdoorReviewsSnapshotUrl =
 
 // export const getCrunchbaseCompanyInfoSnapshotUrl =
 //   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1vijqt9jfj7olije&include_errors=true';
-export const getCrunchbaseCompanyInfoSnapshotUrl =
-  'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1vijqt9jfj7olije&include_errors=true&type=discover_new&discover_by=keyword';
 
 const glassdoorSearchUrl = 'https://www.glassdoor.com/Search/results.htm?keyword=';
 
@@ -203,29 +201,9 @@ export const handler = async (event: SQSEvent) => {
       } catch (error) {
         logApiError('processGlassdoorCompaniesQueue', { snapshotId, companyWebsiteUrl }, error);
 
-        // Requeue in Glassdoor queue for retry, and then fallback to Crunchbase
+        // Requeue in Glassdoor queue for retry, if it fails a second time we do nothing which lets it go
 
-        if (retries >= 1) {
-          // const formattedCompanyName = companyName.toLowerCase().replace(/\s+/g, '-');
-
-          const crunchbaseFilters = [{ keyword: companyName }];
-
-          const crunchbaseSnapshotId = await requestSnapshotByUrlAndFilters(
-            getCrunchbaseCompanyInfoSnapshotUrl,
-            crunchbaseFilters,
-          );
-
-          console.info(
-            `Successfully got crunchbase company snapshot ID ${crunchbaseSnapshotId} for
-             company ${companyName}.`,
-          );
-
-          const newMessageBody = { ...messageBody, snapshotId: crunchbaseSnapshotId };
-
-          console.info(`Max retries reached. Sending ${companyName} to Crunchbase queue.`);
-
-          await sendMessageToQueue(crunchbaseCompaniesQueueUrl, newMessageBody);
-        } else {
+        if (retries < 1) {
           console.info(`Retrying Glassdoor snapshot for ${companyName}. Retry count: ${retries + 1}`);
 
           const glassdoorFilters = [
