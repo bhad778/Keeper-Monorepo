@@ -45,7 +45,6 @@ export const handler = async (event: SQSEvent) => {
 
   const limit = pLimit(MAX_CONCURRENT_REQUESTS);
 
-  // Process up to 80 messages
   const promises = messagesToProcess.map(async record => {
     limit(async () => {
       let snapshotId: string | undefined, sourceWebsite: string | undefined;
