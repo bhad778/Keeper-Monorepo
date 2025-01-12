@@ -25,10 +25,13 @@ export const getGlassdoorCompanyInfoSnapshotUrl =
 
 const glassdoorSearchUrl = 'https://www.glassdoor.com/Search/results.htm?keyword=';
 
-// this snapshot will yield
 // {
-//   "snapshotId": "s_m5kgyfxs1km7azb6yh",
+//   "snapshotId": "s_m5ss48mo29h1ih9kiq",
 //   "sourceWebsite": "LinkedIn"
+// },
+// {
+//   "snapshotId": "s_m5ss48lv1v239spx",
+//   "sourceWebsite": "Indeed"
 // }
 
 // the companies queue holds messages that are just snapshotIds, and these snapshotIds hold data
