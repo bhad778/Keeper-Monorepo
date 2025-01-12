@@ -1,6 +1,6 @@
 import { SQSEvent } from 'aws-lambda';
 import { TBrightDataGlassdoorCompany } from 'keeperTypes';
-import { logApiError, normalizeLocation, normalizeUrl } from 'keeperUtils';
+import { extractErrorMessage, logApiError, normalizeLocation, normalizeUrl } from 'keeperUtils';
 import { CompaniesService } from 'keeperServices';
 import {
   brightDataGlassdoorCompanyTransformer,
@@ -11,18 +11,9 @@ import {
   requeueMessage,
   requeueTimeout,
   sendMessageToQueue,
-  transformGlassdoorUrlToReviews,
 } from 'keeperUtils/brightDataUtils';
 import { glassdoorReviewsQueueUrl, glassdoorCompaniesQueueUrl, crunchbaseCompaniesQueueUrl } from 'keeperEnvironment';
-import { getGlassdoorCompanyInfoSnapshotUrl } from './processSourceWebsiteCompaniesQueue';
-
-const glassdoorReviewsSnapshotUrl =
-  'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7j1po0921hbu0ri1z&include_errors=true';
-
-// export const getCrunchbaseCompanyInfoSnapshotUrl =
-//   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1vijqt9jfj7olije&include_errors=true';
-
-const glassdoorSearchUrl = 'https://www.glassdoor.com/Search/results.htm?keyword=';
+import { getGlassdoorCompanyInfoSnapshotUrl, glassdoorSearchUrl } from 'keeperConstants';
 
 // {
 //   "snapshotId": "s_m501jgtk1otvx27w6f",
@@ -204,24 +195,38 @@ export const handler = async (event: SQSEvent) => {
         // Requeue in Glassdoor queue for retry, if it fails a second time we do nothing which lets it go
 
         if (retries < 1) {
-          console.info(`Retrying Glassdoor snapshot for ${companyName}. Retry count: ${retries + 1}`);
+          try {
+            console.info(`Retrying Glassdoor snapshot for ${companyName}. Retry count: ${retries + 1}`);
 
-          const glassdoorFilters = [
-            {
-              search_url: `${glassdoorSearchUrl}${encodeURIComponent(companyName || '')}`,
-              max_search_results: 5,
-            },
-          ];
+            const glassdoorFilters = [
+              {
+                search_url: `${glassdoorSearchUrl}${encodeURIComponent(companyName || '')}`,
+                max_search_results: 5,
+              },
+            ];
+            // Step 4: Request a glassdoor snapshot for the company and send it back into this function with retries + 1
+            const glassdoorSnapshotId = await requestSnapshotByUrlAndFilters(
+              getGlassdoorCompanyInfoSnapshotUrl,
+              glassdoorFilters,
+            );
 
-          // Step 4: Request a glassdoor snapshot for the company and send it back into this function with retries + 1
-          const glassdoorSnapshotId = await requestSnapshotByUrlAndFilters(
-            getGlassdoorCompanyInfoSnapshotUrl,
-            glassdoorFilters,
-          );
+            const newMessageBody = { ...messageBody, snapshotId: glassdoorSnapshotId, retries: retries + 1 };
 
-          const newMessageBody = { ...messageBody, snapshotId: glassdoorSnapshotId, retries: retries + 1 };
+            await sendMessageToQueue(glassdoorCompaniesQueueUrl, newMessageBody);
+          } catch (error) {
+            const errorMessage = extractErrorMessage(error);
 
-          await sendMessageToQueue(glassdoorCompaniesQueueUrl, newMessageBody);
+            if (errorMessage.includes('too many running jobs')) {
+              console.warn(
+                `Crunchbase snapshot request hit rate limit. Requeuing message: ${JSON.stringify(messageBody)}`,
+              );
+              await requeueMessage(glassdoorCompaniesQueueUrl, messageBody, requeueTimeout);
+              return;
+            } else {
+              console.error(`Failed to request Crunchbase snapshot:`, error);
+              throw error; // Let AWS handle retries for other errors
+            }
+          }
         }
       }
     });

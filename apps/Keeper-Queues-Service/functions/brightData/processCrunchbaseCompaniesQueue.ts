@@ -1,6 +1,6 @@
 import { SQSEvent } from 'aws-lambda';
 import { TBrightDataCrunchbaseCompany } from 'keeperTypes';
-import { normalizeLocation, normalizeUrl } from 'keeperUtils';
+import { extractErrorMessage, normalizeLocation, normalizeUrl } from 'keeperUtils';
 import { CompaniesService } from 'keeperServices';
 import {
   brightDataCrunchbaseCompanyTransformer,
@@ -12,7 +12,7 @@ import {
   requeueTimeout,
 } from 'keeperUtils';
 import { crunchbaseCompaniesQueueUrl } from 'keeperEnvironment';
-import { getCrunchbaseCompanyInfoSnapshotUrl } from './processSourceWebsiteCompaniesQueue';
+import { getCrunchbaseCompanyInfoSnapshotUrl } from 'keeperConstants';
 
 // {
 //   "snapshotId": "s_m5sqcruyvmgbqpri5",
@@ -170,18 +170,33 @@ export const handler = async (event: SQSEvent) => {
         console.error(`Error processing Crunchbase snapshotId ${snapshotId} for company ${companyWebsiteUrl}:`, error);
 
         if (retries < 1) {
-          console.info(`Retrying Crunchbase snapshot for ${messageBody.companyName}. Retry count: ${retries + 1}`);
+          try {
+            console.info(`Retrying Crunchbase snapshot for ${messageBody.companyName}. Retry count: ${retries + 1}`);
 
-          // const crunchbaseFilters = [{ url: `https://www.crunchbase.com/organization/${formattedCompanyName}` }];
-          const crunchbaseFilters = [{ keyword: companyName }];
+            // const crunchbaseFilters = [{ url: `https://www.crunchbase.com/organization/${formattedCompanyName}` }];
+            const crunchbaseFilters = [{ keyword: companyName }];
 
-          const crunchbaseSnapshotId = await requestSnapshotByUrlAndFilters(
-            getCrunchbaseCompanyInfoSnapshotUrl,
-            crunchbaseFilters,
-          );
+            const crunchbaseSnapshotId = await requestSnapshotByUrlAndFilters(
+              getCrunchbaseCompanyInfoSnapshotUrl,
+              crunchbaseFilters,
+            );
 
-          const newMessageBody = { ...messageBody, snapshotId: crunchbaseSnapshotId, retries: retries + 1 };
-          await requeueMessage(crunchbaseCompaniesQueueUrl, newMessageBody, requeueTimeout);
+            const newMessageBody = { ...messageBody, snapshotId: crunchbaseSnapshotId, retries: retries + 1 };
+            await requeueMessage(crunchbaseCompaniesQueueUrl, newMessageBody, requeueTimeout);
+          } catch (error) {
+            const errorMessage = extractErrorMessage(error);
+
+            if (errorMessage.includes('too many running jobs')) {
+              console.warn(
+                `Crunchbase snapshot request hit rate limit. Requeuing message: ${JSON.stringify(messageBody)}`,
+              );
+              await requeueMessage(crunchbaseCompaniesQueueUrl, messageBody, requeueTimeout);
+              return;
+            } else {
+              console.error(`Failed to request Crunchbase snapshot:`, error);
+              throw error; // Let AWS handle retries for other errors
+            }
+          }
         } else {
           console.error(
             `Max retries reached for Crunchbase snapshotId ${snapshotId} and company ${messageBody.companyName}. Skipping.`,
