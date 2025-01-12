@@ -32,6 +32,7 @@ const glassdoorSearchUrl = 'https://www.glassdoor.com/Search/results.htm?keyword
 // }
 
 // the companies queue holds messages that are just snapshotIds, and these snapshotIds hold data
+// this queue gets blasted with many
 export const handler = async (event: SQSEvent) => {
   const MAX_MESSAGES_TO_PROCESS = 80; // Limit the number of messages processed per invocation
 
@@ -221,3 +222,5 @@ export const handler = async (event: SQSEvent) => {
 
 // Plaid - in cb
 // s_m5sqqd5s5c3gjdx88 - worked when I ran it again
+
+// You have too many running jobs for this dataset. Please wait until some of them finish or consider combining multiple inputs into a single request. Running jobs: 100>=100
