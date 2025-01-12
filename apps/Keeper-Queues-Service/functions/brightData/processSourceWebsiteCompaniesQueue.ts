@@ -33,7 +33,14 @@ const glassdoorSearchUrl = 'https://www.glassdoor.com/Search/results.htm?keyword
 
 // the companies queue holds messages that are just snapshotIds, and these snapshotIds hold data
 export const handler = async (event: SQSEvent) => {
-  const promises = event.Records.map(async record => {
+  const MAX_MESSAGES_TO_PROCESS = 80; // Limit the number of messages processed per invocation
+
+  // Split messages into those to process and those to requeue
+  const messagesToProcess = event.Records.slice(0, MAX_MESSAGES_TO_PROCESS);
+  const messagesToRequeue = event.Records.slice(MAX_MESSAGES_TO_PROCESS);
+
+  // Process up to 80 messages
+  const promises = messagesToProcess.map(async record => {
     let snapshotId: string | undefined, sourceWebsite: string | undefined;
 
     try {
@@ -170,6 +177,22 @@ export const handler = async (event: SQSEvent) => {
   });
 
   await Promise.all(promises);
+
+  // Requeue remaining messages
+  const requeuePromises = messagesToRequeue.map(async record => {
+    try {
+      const messageBody = JSON.parse(record.body);
+      console.info(`Requeuing message: ${JSON.stringify(messageBody)}`);
+
+      const batchRequeueTimeout = 300; // Requeue after 5 minutes
+      await requeueMessage(sourceWebsiteCompaniesQueueUrl, messageBody, batchRequeueTimeout);
+    } catch (error) {
+      console.error(`Failed to requeue message: ${record.body}`, error);
+    }
+  });
+
+  await Promise.all(requeuePromises);
+
   console.info('Batch processing complete.');
 };
 
