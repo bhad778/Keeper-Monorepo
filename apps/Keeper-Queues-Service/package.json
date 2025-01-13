@@ -23,7 +23,6 @@
     "dotenv": "^16.4.5",
     "i18n-iso-countries": "^7.13.0",
     "mongoose": "^8.7.2",
-    "p-limit": "^6.2.0",
     "path": "^0.12.7",
     "serverless-prune-plugin": "^2.1.0",
     "uuid": "^10.0.0"
