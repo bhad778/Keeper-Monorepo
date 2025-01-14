@@ -2,9 +2,9 @@ import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import { JobSourceWebsiteEnum, TJobsQueueMessage } from 'keeperTypes';
 import { requestSnapshotByUrlAndFilters, sendMessageToQueue, staggerTimeout } from 'keeperUtils';
 import { staggerQueueUrl } from 'keeperEnvironment';
+import { getIndeedJobSnapshotUrl, getLinkedInJobSnapshotUrl, linkedInFiltersUrl } from 'keeperConstants';
 
 import { headers } from '../../../Keeper-API/constants';
-import { getIndeedJobSnapshotUrl, getLinkedInJobSnapshotUrl, linkedInFiltersUrl } from 'keeperConstants';
 
 export const handler = async (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
   context.callbackWaitsForEmptyEventLoop = false;
