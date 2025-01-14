@@ -8,8 +8,7 @@ import {
   fetchSnapshotArrayDataById,
   normalizeCompanyName,
   requestSnapshotByUrlAndFilters,
-  requeueMessage,
-  requeueTimeout,
+  snapshotNotReadyRequeueTimeout,
   sendMessageToQueue,
 } from 'keeperUtils/brightDataUtils';
 import { glassdoorReviewsQueueUrl, glassdoorCompaniesQueueUrl, crunchbaseCompaniesQueueUrl } from 'keeperEnvironment';
@@ -68,7 +67,7 @@ export const handler = async (event: SQSEvent) => {
         const status = await checkSnapshotStatusById(snapshotId);
         if (status !== 'ready') {
           console.info(`Snapshot ${snapshotId} is not ready. Requeuing.`);
-          await requeueMessage(glassdoorCompaniesQueueUrl, messageBody, requeueTimeout);
+          await sendMessageToQueue(glassdoorCompaniesQueueUrl, messageBody, snapshotNotReadyRequeueTimeout);
           return;
         }
 
@@ -217,13 +216,11 @@ export const handler = async (event: SQSEvent) => {
             const errorMessage = extractErrorMessage(error);
 
             if (errorMessage.includes('too many running jobs')) {
-              console.warn(
-                `Crunchbase snapshot request hit rate limit. Requeuing message: ${JSON.stringify(messageBody)}`,
-              );
-              await requeueMessage(glassdoorCompaniesQueueUrl, messageBody, requeueTimeout);
+              console.warn(`Brightdata request hit rate limit. Requeuing message: ${JSON.stringify(messageBody)}`);
+              await sendMessageToQueue(glassdoorCompaniesQueueUrl, messageBody, snapshotNotReadyRequeueTimeout);
               return;
             } else {
-              console.error(`Failed to request Crunchbase snapshot:`, error);
+              console.error(`Failed to request snapshot:`, error);
               throw error; // Let AWS handle retries for other errors
             }
           }

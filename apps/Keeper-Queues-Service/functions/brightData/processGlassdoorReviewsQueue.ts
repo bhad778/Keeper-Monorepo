@@ -1,8 +1,12 @@
 import { SQSEvent } from 'aws-lambda';
 import { CompaniesService } from 'keeperServices';
 import { glassdoorReviewsQueueUrl } from 'keeperEnvironment';
-
-import { requeueMessage, checkSnapshotStatusById, fetchSnapshotArrayDataById } from 'keeperUtils/brightDataUtils';
+import {
+  checkSnapshotStatusById,
+  fetchSnapshotArrayDataById,
+  sendMessageToQueue,
+  snapshotNotReadyRequeueTimeout,
+} from 'keeperUtils';
 
 export const handler = async (event: SQSEvent) => {
   try {
@@ -21,7 +25,7 @@ export const handler = async (event: SQSEvent) => {
       const status = await checkSnapshotStatusById(snapshotId);
       if (status !== 'ready') {
         console.info(`Snapshot ${snapshotId} is not ready. Requeuing.`);
-        await requeueMessage(glassdoorReviewsQueueUrl, messageBody, 600); // Requeue after 10 minutes
+        await sendMessageToQueue(glassdoorReviewsQueueUrl, messageBody, snapshotNotReadyRequeueTimeout);
         return;
       }
 

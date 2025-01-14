@@ -19,6 +19,7 @@ interface EnvConfig {
   coreSignalApiKey: string;
   brightDataApiKey: string;
   jobsQueueUrl: string;
+  staggerQueueUrl: string;
   geoLocationQueueUrl: string;
   sourceWebsiteCompaniesQueueUrl: string;
   glassdoorCompaniesQueueUrl: string;
@@ -39,6 +40,7 @@ const env: EnvConfig = {
   coreSignalApiKey: process.env.CORESIGNAL_API_KEY || '',
   brightDataApiKey: process.env.BRIGHTDATA_API_KEY || '',
   jobsQueueUrl: process.env.JOBS_QUEUE_URL || '',
+  staggerQueueUrl: process.env.STAGGER_QUEUE_URL || '',
   geoLocationQueueUrl: process.env.GEOLOCATION_QUEUE_URL || '',
   sourceWebsiteCompaniesQueueUrl: process.env.SOURCE_WEBSITE_COMPANIES_QUEUE_URL || '',
   glassdoorCompaniesQueueUrl: process.env.GLASSDOOR_COMPANIES_QUEUE_URL || '',
@@ -61,6 +63,7 @@ export const {
   coreSignalApiKey,
   brightDataApiKey,
   jobsQueueUrl,
+  staggerQueueUrl,
   geoLocationQueueUrl,
   sourceWebsiteCompaniesQueueUrl,
   glassdoorCompaniesQueueUrl,

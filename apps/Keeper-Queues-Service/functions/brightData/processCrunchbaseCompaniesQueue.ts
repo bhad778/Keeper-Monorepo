@@ -1,6 +1,6 @@
 import { SQSEvent } from 'aws-lambda';
 import { TBrightDataCrunchbaseCompany } from 'keeperTypes';
-import { extractErrorMessage, normalizeLocation, normalizeUrl } from 'keeperUtils';
+import { extractErrorMessage, normalizeLocation, normalizeUrl, sendMessageToQueue } from 'keeperUtils';
 import { CompaniesService } from 'keeperServices';
 import {
   brightDataCrunchbaseCompanyTransformer,
@@ -8,8 +8,7 @@ import {
   fetchSnapshotArrayDataById,
   normalizeCompanyName,
   requestSnapshotByUrlAndFilters,
-  requeueMessage,
-  requeueTimeout,
+  snapshotNotReadyRequeueTimeout,
 } from 'keeperUtils';
 import { crunchbaseCompaniesQueueUrl } from 'keeperEnvironment';
 import { getCrunchbaseCompanyInfoSnapshotUrl } from 'keeperConstants';
@@ -55,7 +54,7 @@ export const handler = async (event: SQSEvent) => {
         const status = await checkSnapshotStatusById(snapshotId);
         if (status !== 'ready') {
           console.info(`Snapshot ${snapshotId} is not ready. Requeuing.`);
-          await requeueMessage(crunchbaseCompaniesQueueUrl, messageBody, requeueTimeout);
+          await sendMessageToQueue(crunchbaseCompaniesQueueUrl, messageBody, snapshotNotReadyRequeueTimeout);
           return;
         }
 
@@ -182,18 +181,16 @@ export const handler = async (event: SQSEvent) => {
             );
 
             const newMessageBody = { ...messageBody, snapshotId: crunchbaseSnapshotId, retries: retries + 1 };
-            await requeueMessage(crunchbaseCompaniesQueueUrl, newMessageBody, requeueTimeout);
+            await sendMessageToQueue(crunchbaseCompaniesQueueUrl, newMessageBody, snapshotNotReadyRequeueTimeout);
           } catch (error) {
             const errorMessage = extractErrorMessage(error);
 
             if (errorMessage.includes('too many running jobs')) {
-              console.warn(
-                `Crunchbase snapshot request hit rate limit. Requeuing message: ${JSON.stringify(messageBody)}`,
-              );
-              await requeueMessage(crunchbaseCompaniesQueueUrl, messageBody, requeueTimeout);
+              console.warn(`Brightdata request hit rate limit. Requeuing message: ${JSON.stringify(messageBody)}`);
+              await sendMessageToQueue(crunchbaseCompaniesQueueUrl, messageBody, snapshotNotReadyRequeueTimeout);
               return;
             } else {
-              console.error(`Failed to request Crunchbase snapshot:`, error);
+              console.error(`Failed to request snapshot:`, error);
               throw error; // Let AWS handle retries for other errors
             }
           }

@@ -12,9 +12,9 @@ import {
   checkSnapshotStatusById,
   fetchSnapshotArrayDataById,
   requestSnapshotByUrlAndFilters,
-  requeueMessage,
-  requeueTimeout,
+  snapshotNotReadyRequeueTimeout,
   sendMessageToQueue,
+  staggerTimeout,
 } from 'keeperUtils/brightDataUtils';
 import { extractErrorMessage } from 'keeperUtils';
 
@@ -60,7 +60,7 @@ export const handler = async (event: SQSEvent) => {
       const status = await checkSnapshotStatusById(snapshotId);
       if (status !== 'ready') {
         console.info(`Snapshot ${snapshotId} is not ready. Requeuing.`);
-        await requeueMessage(sourceWebsiteCompaniesQueueUrl, messageBody, requeueTimeout);
+        await sendMessageToQueue(sourceWebsiteCompaniesQueueUrl, messageBody, snapshotNotReadyRequeueTimeout);
         return;
       }
 
@@ -152,11 +152,11 @@ export const handler = async (event: SQSEvent) => {
         const errorMessage = extractErrorMessage(error);
 
         if (errorMessage.includes('too many running jobs')) {
-          console.warn(`Crunchbase snapshot request hit rate limit. Requeuing message: ${JSON.stringify(messageBody)}`);
-          await requeueMessage(sourceWebsiteCompaniesQueueUrl, messageBody, requeueTimeout);
+          console.warn(`Brightdata request hit rate limit. Requeuing message: ${JSON.stringify(messageBody)}`);
+          await sendMessageToQueue(sourceWebsiteCompaniesQueueUrl, messageBody, staggerTimeout);
           return;
         } else {
-          console.error(`Failed to request Crunchbase snapshot:`, error);
+          console.error(`Failed to request snapshot:`, error);
           throw error; // Let AWS handle retries for other errors
         }
       }
@@ -188,11 +188,11 @@ export const handler = async (event: SQSEvent) => {
         const errorMessage = extractErrorMessage(error);
 
         if (errorMessage.includes('too many running jobs')) {
-          console.warn(`Crunchbase snapshot request hit rate limit. Requeuing message: ${JSON.stringify(messageBody)}`);
-          await requeueMessage(sourceWebsiteCompaniesQueueUrl, messageBody, requeueTimeout);
+          console.warn(`Brightdata request hit rate limit. Requeuing message: ${JSON.stringify(messageBody)}`);
+          await sendMessageToQueue(sourceWebsiteCompaniesQueueUrl, messageBody, staggerTimeout);
           return;
         } else {
-          console.error(`Failed to request Crunchbase snapshot:`, error);
+          console.error(`Failed to request snapshot:`, error);
           throw error; // Let AWS handle retries for other errors
         }
       }

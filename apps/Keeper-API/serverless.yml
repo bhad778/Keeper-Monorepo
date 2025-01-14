@@ -280,6 +280,14 @@ functions:
           method: post
           cors: true
 
+  addJob:
+    handler: functions/jobs/addJob.handler
+    events:
+      - http:
+          path: addJob
+          method: post
+          cors: true
+
   deleteJob:
     handler: functions/jobs/deleteJob.handler
     events:

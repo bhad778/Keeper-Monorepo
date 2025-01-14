@@ -64,6 +64,11 @@ custom:
 resources:
   Resources:
     # DLQs
+    StaggerDLQ:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: StaggerDLQ
+
     JobsDLQ:
       Type: AWS::SQS::Queue
       Properties:
@@ -95,6 +100,14 @@ resources:
         QueueName: GlassdoorReviewsDLQ
 
     # Main Queues with DLQs
+    StaggerQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: StaggerQueue
+        RedrivePolicy:
+          deadLetterTargetArn: !GetAtt StaggerDLQ.Arn
+          maxReceiveCount: 3
+
     JobsQueue:
       Type: AWS::SQS::Queue
       Properties:
@@ -151,6 +164,16 @@ functions:
           path: triggerBrightDataQueues
           method: post
           cors: true
+
+  processStaggerQueue:
+    handler: functions/brightData/processStaggerQueue.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - StaggerQueue
+              - Arn
+          batchSize: 10
 
   processJobsQueue:
     handler: functions/brightData/processJobsQueue.handler

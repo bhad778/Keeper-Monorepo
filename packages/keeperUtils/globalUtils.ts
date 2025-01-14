@@ -2,7 +2,7 @@ import * as countries from 'i18n-iso-countries';
 import { stateAbbreviations } from 'keeperConstants';
 
 import { TEmployeePastJob, TEmployeeSettings } from '../keeperTypes';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 export const getLargestNumberFromArray = (numbersArray: number[] | string[]) => {
   let largest = numbersArray[0];
@@ -337,9 +337,21 @@ export const convertMilesToMeters = (miles: number) => {
 };
 
 export const extractErrorMessage = (error: unknown): string => {
+  if (error instanceof AxiosError) {
+    // Check if the error response has data or statusText
+    if (error.response?.data) {
+      return typeof error.response.data === 'string' ? error.response.data : JSON.stringify(error.response.data);
+    }
+    if (error.response?.statusText) {
+      return error.response.statusText;
+    }
+    return 'An Axios error occurred without response data.';
+  }
+
   if (error instanceof Error) {
     return error.message;
   }
+
   return 'An unexpected error occurred.';
 };
 

@@ -1,7 +1,7 @@
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import { JobSourceWebsiteEnum, TJobsQueueMessage } from 'keeperTypes';
-import { requestSnapshotByUrlAndFilters, sendMessageToQueue } from 'keeperUtils';
-import { jobsQueueUrl } from 'keeperEnvironment';
+import { requestSnapshotByUrlAndFilters, sendMessageToQueue, staggerTimeout } from 'keeperUtils';
+import { staggerQueueUrl } from 'keeperEnvironment';
 
 import { headers } from '../../../Keeper-API/constants';
 
@@ -101,7 +101,19 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     // Send messages to Jobs Queue
     try {
       console.info('Sending messages to the Jobs Queue.');
-      await Promise.all(jobsQueueMessages.map(message => sendMessageToQueue(jobsQueueUrl as string, message)));
+      // We currently have 2 different source websites and we will potentially have more. Each message in the jobsQueueMessages sends
+      // 100s of data items down the queue pipeline. I want all those messages to be staggered. Currently we stagger things by 5 minutes
+      // through the queue processes. So if I staggered these message by 5 minutes, they would each start their different queue pipelines
+      // 5 minutes apart and both processes would later keep staggering and reqeueing in 5 minute intervales which means there would be a
+      // lot of overlap. thats why im staggering this initial one by (staggerTimeout / 2) * 3). I did staggerTimeout / 2 because 5 / 2 is 2.5, and
+      // starting the first pipeline on the 2.5 mark then the next one on the 5 mark means both of those entire processes from here on out
+      // are staggered. I did * 3 at the end just to be safe, for example 2.5 * 3 is 7.5 and I just wanted to spread them out a little more to start
+      await Promise.all(
+        jobsQueueMessages.map(
+          (message, index) =>
+            sendMessageToQueue(staggerQueueUrl as string, message, index * ((staggerTimeout / 2) * 3)), // 7.5 minutes
+        ),
+      );
       console.info('Successfully sent messages to the Jobs Queue.');
     } catch (error) {
       console.error('Error sending messages to the Jobs Queue:', error);

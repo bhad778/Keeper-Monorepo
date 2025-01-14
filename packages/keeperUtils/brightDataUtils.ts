@@ -30,7 +30,8 @@ import AWS from '../../awsConfig';
 
 const sqs = new AWS.SQS();
 
-export const requeueTimeout = 600; // 10 minutes
+export const staggerTimeout = 30;
+export const snapshotNotReadyRequeueTimeout = 600; // 10 minutes
 
 const linkedInRequiredYearsOfExperienceTransformer = (
   job_seniority_level: TBrightDataLinkedInJob['job_seniority_level'],
@@ -582,23 +583,7 @@ export const requestSnapshotByUrlAndFilters = async (url, filters) => {
   }
 };
 
-export const sendMessageToQueue = async (queueUrl, messageBody) => {
-  try {
-    await sqs
-      .sendMessage({
-        QueueUrl: queueUrl,
-        MessageBody: JSON.stringify(messageBody),
-      })
-      .promise();
-    console.info(`Message sent to queue: ${queueUrl}`, messageBody);
-  } catch (error) {
-    console.error(`Error sending message to queue ${queueUrl}:`, error);
-    logApiError('sendMessageToQueue', { queueUrl, messageBody }, error);
-    throw error; // Let the caller handle the error
-  }
-};
-
-export const requeueMessage = async (queueUrl, messageBody, delaySeconds) => {
+export const sendMessageToQueue = async (queueUrl: string, messageBody: any, delaySeconds?: number) => {
   try {
     await sqs
       .sendMessage({
@@ -607,10 +592,10 @@ export const requeueMessage = async (queueUrl, messageBody, delaySeconds) => {
         DelaySeconds: delaySeconds, // Delay before the message is visible in the queue
       })
       .promise();
-    console.info(`Message requeued with delay of ${delaySeconds} seconds:`, messageBody);
+    console.info(`Message queued with delay of ${delaySeconds || 'zero'} seconds:`, messageBody);
   } catch (error) {
-    console.error(`Error requeuing message to queue ${queueUrl}:`, error);
-    logApiError('requeueMessage', { queueUrl, messageBody }, error);
+    console.error(`Error queuing message to queue ${queueUrl}:`, error);
+    logApiError('sendMessageToQueue', { queueUrl, messageBody }, error);
     throw error; // Let the caller handle the error
   }
 };
