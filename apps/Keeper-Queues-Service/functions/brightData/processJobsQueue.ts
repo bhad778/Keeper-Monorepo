@@ -8,11 +8,7 @@ import {
 } from 'keeperUtils';
 import { geoLocationQueueUrl, jobsQueueUrl, sourceWebsiteCompaniesQueueUrl } from 'keeperEnvironment';
 import { TJob, JobSourceWebsiteEnum } from 'keeperTypes';
-
-const getLinkedInCompanySnapshotUrl =
-  'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1vikfnt1wgvvqz95w&include_errors=true';
-const getIndeedCompanySnapshotUrl =
-  'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7qekxkv2i7ve6hx1s&include_errors=true';
+import { getIndeedCompanySnapshotUrl, getLinkedInCompanySnapshotUrl } from 'keeperConstants';
 
 // example message-
 // {

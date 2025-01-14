@@ -17,14 +17,11 @@ import {
   staggerTimeout,
 } from 'keeperUtils/brightDataUtils';
 import { extractErrorMessage } from 'keeperUtils';
-
-export const getCrunchbaseCompanyInfoSnapshotUrl =
-  'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1vijqt9jfj7olije&include_errors=true&type=discover_new&discover_by=keyword';
-
-export const getGlassdoorCompanyInfoSnapshotUrl =
-  'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7j0bx501ockwldaqf&include_errors=true&type=discover_new&discover_by=keyword';
-
-const glassdoorSearchUrl = 'https://www.glassdoor.com/Search/results.htm?keyword=';
+import {
+  getCrunchbaseCompanyInfoSnapshotUrl,
+  getGlassdoorCompanyInfoSnapshotUrl,
+  glassdoorSearchUrl,
+} from 'keeperConstants';
 
 // this snapshot will yield
 // {
