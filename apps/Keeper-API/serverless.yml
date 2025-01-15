@@ -312,7 +312,7 @@ functions:
           method: post
           cors: true
 
-  updateJob:
+  addJobApplication:
     handler: functions/jobApplications/addJobApplication.handler
     events:
       - http:
@@ -320,7 +320,7 @@ functions:
           method: post
           cors: true
 
-  updateJob:
+  findJobApplication:
     handler: functions/jobApplications/findJobApplication.handler
     events:
       - http:
