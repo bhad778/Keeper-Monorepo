@@ -320,10 +320,10 @@ functions:
           method: post
           cors: true
 
-  findJobApplication:
-    handler: functions/jobApplications/findJobApplication.handler
+  findJobApplicationByUserId:
+    handler: functions/jobApplications/findJobApplicationByUserId.handler
     events:
       - http:
-          path: findJobApplication
+          path: findJobApplicationByUserId
           method: post
           cors: true
