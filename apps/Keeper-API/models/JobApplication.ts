@@ -1,5 +1,8 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
+import Employee from './Employee';
+import Job from './Job';
+
 // Job Application Interface
 interface IJobApplication extends Document {
   employeeId: mongoose.Schema.Types.ObjectId; // Reference to the User model
@@ -8,8 +11,8 @@ interface IJobApplication extends Document {
 }
 
 const jobApplicationSchema = new Schema<IJobApplication>({
-  employeeId: { type: mongoose.Schema.Types.ObjectId, ref: 'Employee', required: true },
-  jobId: { type: mongoose.Schema.Types.ObjectId, ref: 'Job', required: true },
+  employeeId: { type: mongoose.Schema.Types.ObjectId, ref: Employee, required: true },
+  jobId: { type: mongoose.Schema.Types.ObjectId, ref: Job, required: true },
   createdAt: { type: Date, default: Date.now },
 });
 
