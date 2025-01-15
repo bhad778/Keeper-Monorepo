@@ -5,6 +5,11 @@ import JobApplication from '../../models/JobApplication';
 import { headers } from '../../constants';
 import connectToDatabase from '../../db';
 
+// ex payload
+// {
+//   "employeeId": "64a58544b219fe17f06f38d8",
+//   "jobId": "6785d6241bda7a0519f060a8"
+// }
 export const handler = async (event: APIGatewayEvent, context: Context) => {
   context.callbackWaitsForEmptyEventLoop = false;
 
@@ -14,14 +19,14 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
       throw new Error('Missing request body.');
     }
 
-    const { userId, jobId }: { userId: string; jobId: string } = JSON.parse(event.body);
+    const { employeeId, jobId }: { employeeId: string; jobId: string } = JSON.parse(event.body);
 
-    // Validate that userId and jobId are provided
-    if (!userId || !jobId) {
+    // Validate that employeeId and jobId are provided
+    if (!employeeId || !jobId) {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ message: 'userId and jobId are required' }),
+        body: JSON.stringify({ message: 'employeeId and jobId are required' }),
       };
     }
 
@@ -30,7 +35,7 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
 
     // Create a new job application document
     const newJobApplication = new JobApplication({
-      userId,
+      employeeId,
       jobId,
     });
 
