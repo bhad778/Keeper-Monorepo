@@ -1,11 +1,11 @@
-import { APIGatewayEvent, Context, Callback } from 'aws-lambda';
+import { APIGatewayEvent, Context } from 'aws-lambda';
 import { extractErrorMessage } from 'keeperUtils';
 
 import JobApplication from '../../models/JobApplication';
 import { headers } from '../../constants';
 import connectToDatabase from '../../db';
 
-export const handler = async (event: APIGatewayEvent, context: Context, callback: Callback) => {
+export const handler = async (event: APIGatewayEvent, context: Context) => {
   context.callbackWaitsForEmptyEventLoop = false;
 
   try {

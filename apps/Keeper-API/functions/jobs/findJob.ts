@@ -1,4 +1,4 @@
-import { APIGatewayEvent, Context, Callback } from 'aws-lambda';
+import { APIGatewayEvent, Context } from 'aws-lambda';
 import { OperationEnum } from 'keeperTypes';
 import { extractErrorMessage } from 'keeperUtils';
 
@@ -13,7 +13,7 @@ import connectToDatabase from '../../db';
 //     "options": { "limit": 5, "sort": { "companyName": 1 } }
 //   }
 
-export const handler = async (event: APIGatewayEvent, context: Context, callback: Callback) => {
+export const handler = async (event: APIGatewayEvent, context: Context) => {
   context.callbackWaitsForEmptyEventLoop = false;
 
   try {
