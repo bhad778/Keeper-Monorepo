@@ -9,7 +9,7 @@ import ValidateBody from '../validateBody';
 import Employee from '../../models/Employee';
 import Job from '../../models/Job';
 import { AccountTypeSchema, TMatchSchema } from '../../schemas/globalSchemas';
-import AWS from '../../../../awsConfig';
+import AWS from 'keeperEnvironment/awsConfig';
 
 export const handler = async (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
   context.callbackWaitsForEmptyEventLoop = false;

@@ -10,7 +10,7 @@ import Employee from '../../models/Employee';
 import Job from '../../models/Job';
 import Employer from '../../models/Employer';
 import Swipe from '../../models/Swipe';
-import AWS from '../../../../awsConfig';
+import AWS from 'keeperEnvironment/awsConfig';
 
 export const handler = async (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
   context.callbackWaitsForEmptyEventLoop = false;

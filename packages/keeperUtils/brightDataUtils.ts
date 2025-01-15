@@ -24,9 +24,7 @@ import {
 } from 'keeperUtils';
 import { TechnologiesList } from 'keeperConstants';
 import { CompaniesService } from 'keeperServices';
-import { brightDataApiKey } from 'keeperEnvironment';
-
-import AWS from '../../awsConfig';
+import { brightDataApiKey, AWS } from 'keeperEnvironment';
 
 const sqs = new AWS.SQS();
 

@@ -12,8 +12,20 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "paths": {
+      "keeperApi/*": ["apps/Keeper-API/*"],
+      "keeperQueuesService/*": ["apps/Keeper-Queues-Service/*"],
+      "keeperUi/*": ["apps/Keeper-UI/*"],
+      "keeperWebApp/*": ["apps/Keeper-WebApp/*"],
+      "keeperAssets/*": ["packages/keeperAssets/*"],
+      "keeperConstants/*": ["packages/keeperConstants/*"],
+      "keeperEnvironment/*": ["packages/keeperEnvironment/*"],
+      "keeperServices/*": ["packages/keeperServices/*"],
+      "keeperTypes/*": ["packages/keeperTypes/*"],
+      "keeperUtils/*": ["packages/keeperUtils/*"]
+    }
   },
-  "include": ["apps/**/*", "packages/**/*", "global.d.ts", "awsConfig.ts"],
+  "include": ["apps/**/*", "packages/**/*", "global.d.ts", "packages/keeperEnvironment/awsConfig.ts"],
   "exclude": ["node_modules", "dist", "coverage"]
 }

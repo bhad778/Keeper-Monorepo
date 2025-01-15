@@ -3,9 +3,6 @@
   "compilerOptions": {
     "rootDir": "../../", // Set to the monorepo root to include all relevant files
     "baseUrl": "./", // Base URL for module resolution
-    "paths": {
-      "*": ["../../packages/*"] // Map all packages in the `packages` directory
-    },
     "outDir": "./dist", // Ensure compiled output is placed in the correct directory
     "strict": true, // Enable strict type checking
     "esModuleInterop": true, // Enable ES module compatibility
