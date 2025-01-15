@@ -14,6 +14,11 @@ const EmployeeSchema = new mongoose.Schema({
   hasReceivedLikeNotification: { type: Boolean, required: false },
   matches: { type: Array, required: false },
   lastUpdatedOnWeb: { type: Boolean, required: false },
+  appliedJobs: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'Job', // Reference to the Job model
+    default: [],
+  },
   settings: {
     firstName: { type: String, required: false },
     lastName: { type: String, required: false },

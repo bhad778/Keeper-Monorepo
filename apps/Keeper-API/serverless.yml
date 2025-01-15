@@ -311,3 +311,19 @@ functions:
           path: updateJob
           method: post
           cors: true
+
+  updateJob:
+    handler: functions/jobApplications/addJobApplication.handler
+    events:
+      - http:
+          path: addJobApplication
+          method: post
+          cors: true
+
+  updateJob:
+    handler: functions/jobApplications/findJobApplication.handler
+    events:
+      - http:
+          path: findJobApplication
+          method: post
+          cors: true
