@@ -63,6 +63,7 @@ export default function Navigation() {
   const dispatch = useDispatch();
   const { getUserData } = useAuth();
   // const { getUserData, logOut } = useAuth();
+  const navigationRef = useRef(null);
 
   const isEmployee = accountType === 'employee';
 
@@ -157,7 +158,8 @@ export default function Navigation() {
 
   useDidMountEffect(() => {
     // when get getUserData(), it gets the data and sets it in redux, which will trigger this useEffect
-    setInitialScreen('Root');
+    // setInitialScreen('Root');
+    navigationRef.current?.navigate('Root');
   }, [accountType]);
 
   // useDidMountEffect(() => {
@@ -216,7 +218,7 @@ export default function Navigation() {
 
   return (
     <PubNubProvider client={pubnub}>
-      <NavigationContainer theme={DefaultTheme}>
+      <NavigationContainer theme={DefaultTheme} ref={navigationRef}>
         <RootNavigator initialScreen={initialScreen} />
         <StatusBar backgroundColor={theme.color.primary} />
       </NavigationContainer>
