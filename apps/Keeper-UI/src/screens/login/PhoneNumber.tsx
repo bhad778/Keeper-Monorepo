@@ -5,14 +5,14 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { AppBoldText, KeeperSelectButton, KeeperSpinnerOverlay, AppText, BackButton } from 'components';
 import * as Sentry from 'sentry-expo';
-import { UsersService } from 'services';
+import { UsersService } from 'keeperServices';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, addLoggedInUser, setSwipingDataRedux } from 'reduxStore';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { FullNameLogo } from 'keeperAssets';
+import { CognitoUser } from 'amazon-cognito-identity-js';
 
 import useStyles from './PhoneNumberStyles';
-import { CognitoUser } from 'amazon-cognito-identity-js';
 
 type RouteParams = {
   isLogIn?: boolean;

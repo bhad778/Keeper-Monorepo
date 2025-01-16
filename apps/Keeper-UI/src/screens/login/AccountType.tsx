@@ -19,23 +19,23 @@ const AccountType = () => {
     warmUpGetForSwiping();
   }, []);
 
-  const finishSwiper = useCallback(() => {
-    navigation.navigate('Root', { screen: 'Discover' });
-  }, [navigation]);
+  // const finishSwiper = useCallback(() => {
+  //   navigation.navigate('Root', { screen: 'Discover' });
+  // }, [navigation]);
 
   const onChangeAccountType = useCallback(
     (accountType: 'employee' | 'employer') => {
-      if (accountType === 'employee') {
-        warmUpEmployeeSignUp();
-      } else if (accountType === 'employer') {
-        warmUpEmployerSignUp();
-      }
-
+      // if (accountType === 'employee') {
+      //   warmUpEmployeeSignUp();
+      // } else if (accountType === 'employer') {
+      //   warmUpEmployerSignUp();
+      // }
+      console.log('accountType', accountType);
       dispatch(addLoggedInUser({ accountType }));
       // navigation.navigate('EducationSwiper');
       // finishSwiper(accountType);
     },
-    [dispatch, finishSwiper],
+    [dispatch],
   );
 
   const onLoginPress = useCallback(() => {

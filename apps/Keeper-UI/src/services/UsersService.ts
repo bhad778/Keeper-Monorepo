@@ -15,6 +15,7 @@ const UsersService = {
     newSettings: Partial<TEmployeeSettings>;
     lastUpdatedOnWeb: boolean;
     isIncomplete?: boolean;
+    
   }) => {
     return axios
       .post(`${apiUrl}/updateUserSettings`, JSON.stringify(payload), {

@@ -16,6 +16,7 @@ const UsersService = {
     newSettings: Partial<TEmployeeSettings>;
     lastUpdatedOnWeb: boolean;
     isIncomplete?: boolean;
+    isPing?: boolean;
   }) => postRequest('updateUserSettings', { userId, accountType, newSettings, lastUpdatedOnWeb, isIncomplete }),
 
   recordSwipe: (payload: TSwipe) => postRequest('recordSwipe', payload),
