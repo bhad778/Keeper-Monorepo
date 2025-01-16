@@ -7,10 +7,11 @@ import { AppBoldText, KeeperSelectButton, KeeperSpinnerOverlay, AppText, BackBut
 import * as Sentry from 'sentry-expo';
 import { UsersService } from 'keeperServices';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState, addLoggedInUser, setSwipingDataRedux } from 'reduxStore';
+// import { RootState, addLoggedInUser, setSwipingDataRedux } from 'reduxStore';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { FullNameLogo } from 'keeperAssets';
 import { CognitoUser } from 'amazon-cognito-identity-js';
+import { addLoggedInUser, RootState, setSwipingDataRedux } from 'reduxStore';
 
 import useStyles from './PhoneNumberStyles';
 
