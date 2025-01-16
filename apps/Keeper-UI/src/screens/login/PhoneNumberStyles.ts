@@ -2,26 +2,34 @@ import { Dimensions, StyleSheet } from 'react-native';
 import { useTheme } from 'theme/theme.context';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export const useStyles = (isValid: boolean) => {
   const { theme } = useTheme();
 
   const styles = StyleSheet.create({
     container: {
-      justifyContent: 'flex-start',
-      alignItems: 'center',
-      flex: 1,
       backgroundColor: theme.color.primary,
     },
+    scrollContentsContainer: {
+      backgroundColor: theme.color.primary,
+      height: SCREEN_HEIGHT,
+    },
     contents: {
-      justifyContent: 'center',
+      justifyContent: 'flex-start',
       alignItems: 'center',
       flex: 1,
       width: '100%',
       paddingHorizontal: 30,
     },
-    createAJobTextContainer: { height: '20%' },
-    createAJobText: { textAlign: 'center', fontSize: 30, lineHeight: 0 },
+    createAJobTextContainer: {
+      // height: 80,
+    },
+    createAJobText: {
+      textAlign: 'center',
+      fontSize: 30,
+      lineHeight: 0,
+    },
     backButton: {
       position: 'absolute',
       top: 70,
@@ -42,7 +50,8 @@ export const useStyles = (isValid: boolean) => {
     },
     keyboardAvoidingView: {
       width: SCREEN_WIDTH,
-      flex: 1,
+      paddingBottom: 100,
+      backgroundColor: theme.color.primary,
     },
     keeperLogoContainer: {
       height: '25%',
@@ -52,7 +61,7 @@ export const useStyles = (isValid: boolean) => {
       alignItems: 'center',
       borderBottomColor: 'white',
       borderBottomWidth: 1,
-      marginBottom: 100,
+      marginBottom: 20,
     },
     keeperLogo: {
       height: '70%',

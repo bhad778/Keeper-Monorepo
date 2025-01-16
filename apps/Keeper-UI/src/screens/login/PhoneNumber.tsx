@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { TextInput, View, Keyboard } from 'react-native';
+import { TextInput, View, Keyboard, ScrollView } from 'react-native';
 import { Auth } from 'aws-amplify';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
@@ -216,62 +216,64 @@ const PhoneNumber = () => {
 
   return (
     <View style={styles.container}>
-      <KeyboardAwareScrollView contentContainerStyle={styles.keyboardAvoidingView} keyboardShouldPersistTaps='handled'>
-        {!isFromBottomTabNav && (
-          <BackButton touchableContainerStyles={styles.backButton} iconStyles={styles.backButtonIcon} />
-        )}
-        <KeeperSpinnerOverlay isLoading={isPhoneNumberCallLoading} color='white' />
-
-        <View style={styles.keeperLogoContainer}>
-          <FullNameLogo style={styles.keeperLogo} />
-        </View>
-
-        <View style={styles.contents}>
-          {!isEmployee && !isLogIn && (
-            <View style={styles.createAJobTextContainer}>
-              <AppText style={styles.createAJobText}>Sign up and Create a Job</AppText>
-            </View>
+      <ScrollView contentContainerStyle={styles.keyboardAvoidingView} keyboardShouldPersistTaps='handled'>
+        <View style={styles.scrollContentsContainer}>
+          {!isFromBottomTabNav && (
+            <BackButton touchableContainerStyles={styles.backButton} iconStyles={styles.backButtonIcon} />
           )}
-          {!isLogIn && (
-            <>
-              <View style={styles.iconTextContainer}>
-                <AppBoldText style={styles.titleText}>Enter Email</AppBoldText>
-              </View>
-              <TextInput
-                style={styles.textInput}
-                value={email}
-                clearTextOnFocus={true}
-                onChangeText={onChangeEmail}
-                autoComplete='email'
-                textContentType='emailAddress'
-                textAlign='left'
-              />
-            </>
-          )}
+          <KeeperSpinnerOverlay isLoading={isPhoneNumberCallLoading} color='white' />
 
-          <View style={styles.iconTextContainer}>
-            <AppBoldText style={styles.titleText}>Enter Phone Number</AppBoldText>
-            <AppText style={styles.subTitleText}>
-              We use this only to send you a one time password and make sure all users have verified US phone numbers
-            </AppText>
+          <View style={styles.keeperLogoContainer}>
+            <FullNameLogo style={styles.keeperLogo} />
           </View>
-          <TextInput
-            style={styles.textInput}
-            value={phoneNumber}
-            clearTextOnFocus={true}
-            onChangeText={onChangePhoneNumber}
-            keyboardType='numeric'
-            textAlign='left'
-          />
-          <KeeperSelectButton
-            buttonStyles={styles.submitButton}
-            textStyles={styles.submitText}
-            disabled={!isValid}
-            onPress={onNextButtonPress}
-            title='SUBMIT'
-          />
+
+          <View style={styles.contents}>
+            {/* {!isEmployee && !isLogIn && (
+              <View style={styles.createAJobTextContainer}>
+                <AppText style={styles.createAJobText}>Sign up and Create a Job</AppText>
+              </View>
+            )} */}
+            {!isLogIn && (
+              <>
+                <View style={styles.iconTextContainer}>
+                  <AppBoldText style={styles.titleText}>Enter Email</AppBoldText>
+                </View>
+                <TextInput
+                  style={styles.textInput}
+                  value={email}
+                  clearTextOnFocus={true}
+                  onChangeText={onChangeEmail}
+                  autoComplete='email'
+                  textContentType='emailAddress'
+                  textAlign='left'
+                />
+              </>
+            )}
+
+            <View style={styles.iconTextContainer}>
+              <AppBoldText style={styles.titleText}>Enter Phone Number</AppBoldText>
+              <AppText style={styles.subTitleText}>
+                We use this only to send you a one time password and make sure all users have verified US phone numbers
+              </AppText>
+            </View>
+            <TextInput
+              style={styles.textInput}
+              value={phoneNumber}
+              clearTextOnFocus={true}
+              onChangeText={onChangePhoneNumber}
+              keyboardType='numeric'
+              textAlign='left'
+            />
+            <KeeperSelectButton
+              buttonStyles={styles.submitButton}
+              textStyles={styles.submitText}
+              disabled={!isValid}
+              onPress={onNextButtonPress}
+              title='SUBMIT'
+            />
+          </View>
         </View>
-      </KeyboardAwareScrollView>
+      </ScrollView>
     </View>
   );
 };
