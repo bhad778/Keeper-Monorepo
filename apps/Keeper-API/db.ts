@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { db } from 'keeperEnvironment';
 
 mongoose.Promise = global.Promise;
 let isConnected;
@@ -9,7 +8,9 @@ const connectToDatabase = () => {
     return Promise.resolve();
   }
 
-  return mongoose.connect(db).then(db => {
+  console.log('process.env.DB', process.env.DB);
+
+  return mongoose.connect(process.env.DB || '').then(db => {
     isConnected = db.connections[0].readyState;
   });
 };

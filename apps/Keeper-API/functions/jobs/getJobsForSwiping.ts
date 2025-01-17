@@ -1,5 +1,4 @@
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
-import { extractErrorMessage, escapeRegex } from 'keeperUtils';
 import * as Joi from 'joi';
 import { TSwipe } from 'keeperTypes';
 
@@ -9,12 +8,9 @@ import ValidateBody from '../validateBody';
 import Job from '../../models/Job';
 import { getItemsForSwipingLimit, headers, seniorDevYearsOfEpxerience } from '../../constants';
 import Swipe from '../../models/Swipe';
+import { escapeRegex, extractErrorMessage } from '../../keeperApiUtils';
 
-module.exports.getJobsForSwiping = async (
-  event: APIGatewayEvent,
-  context: Context,
-  callback: APIGatewayProxyCallback,
-) => {
+module.exports.handler = async (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
   context.callbackWaitsForEmptyEventLoop = false;
 
   try {
@@ -120,9 +116,7 @@ module.exports.getJobsForSwiping = async (
     });
   } catch (error) {
     const errorMessage = extractErrorMessage(error);
-
     console.error('Error in getJobsForSwiping:', errorMessage || error);
-
     callback(null, {
       statusCode: 400,
       headers,

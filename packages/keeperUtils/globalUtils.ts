@@ -1,8 +1,8 @@
 import * as countries from 'i18n-iso-countries';
 import { stateAbbreviations } from 'keeperConstants';
+import axios, { AxiosError } from 'axios';
 
 import { TEmployeePastJob, TEmployeeSettings } from '../keeperTypes';
-import axios, { AxiosError } from 'axios';
 
 export const getLargestNumberFromArray = (numbersArray: number[] | string[]) => {
   let largest = numbersArray[0];

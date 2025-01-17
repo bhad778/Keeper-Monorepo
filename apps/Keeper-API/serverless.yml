@@ -50,6 +50,9 @@ package:
   exclude:
     - ../../** # Exclude everything outside the keeper-api folder
     - '!./**' # Include only files from the current folder
+    - node_modules/react-native/**
+    - node_modules/expo/**
+    - node_modules/@expo/**
 
 plugins:
   - serverless-offline

@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
-import { normalizeLocation, normalizeTitle, normalizeUrl, normalizeCompanyName } from 'keeperUtils';
+
+import { normalizeLocation, normalizeTitle, normalizeUrl, normalizeCompanyName } from '../keeperApiUtils';
 
 const JobSchema = new mongoose.Schema({
   // devdog fields
