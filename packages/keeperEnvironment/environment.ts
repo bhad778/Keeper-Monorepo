@@ -1,13 +1,12 @@
-import Constants from 'expo-constants';
+let env: Record<string, string> = {};
 
-// Determine the current environment (React Native, Node.js, or React)
-const isReactNative = typeof Constants !== 'undefined' && !!Constants.manifest;
+// Check the runtime environment
 const isNode = typeof process !== 'undefined' && process.versions != null && process.versions.node != null;
-
-let env: Record<string, string>;
+const isReactNative = !isNode && typeof navigator !== 'undefined';
 
 if (isReactNative) {
-  // React Native (Expo): Use Expo's Constants.manifest.extra
+  // Dynamically import expo-constants to avoid backend issues
+  const Constants = require('expo-constants').default;
   env = Constants.expoConfig?.extra || {};
 } else if (isNode) {
   // Node.js: Use dotenv to load environment variables
