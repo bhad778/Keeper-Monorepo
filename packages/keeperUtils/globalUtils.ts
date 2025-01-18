@@ -73,6 +73,58 @@ export const logApiError = (apiCallName: string, params: Record<string, any>, er
   }
 };
 
+export const normalizeCompanyName = (name: string) => {
+  if (!name) return null;
+
+  // Trim leading and trailing spaces
+  let normalizedName = name.trim();
+
+  // Remove text within parentheses and the parentheses themselves
+  normalizedName = normalizedName.replace(/\s*\(.*?\)\s*/g, '').trim();
+
+  // Remove trailing punctuation and common company suffixes
+  const suffixesToRemove = [
+    ', inc',
+    'inc',
+    'inc.',
+    ', llc',
+    'llc',
+    ', ltd',
+    'ltd',
+    'ltd.',
+    ', corp',
+    'corp',
+    'corp.',
+    ', co',
+    'co',
+    'co.',
+    ', incorporated',
+    'incorporated',
+  ];
+  const suffixRegex = new RegExp(`\\b(${suffixesToRemove.join('|')})\\b[.,\\s]*$`, 'i');
+  normalizedName = normalizedName.replace(suffixRegex, '').trim();
+
+  // Remove any trailing punctuation left over
+  normalizedName = normalizedName.replace(/[,.\s]+$/, '');
+
+  // Check for acronyms or short names (less than 4 characters)
+  if (normalizedName.length < 4) {
+    return normalizedName.toUpperCase();
+  }
+
+  // Capitalize words, except for conjunctions/prepositions/articles unless they are the first word
+  const lowerCaseExceptions = ['and', 'or', 'of', 'the', 'a', 'an', 'in', 'at', 'by', 'for', 'on', 'to', 'with', 'as'];
+  normalizedName = normalizedName.replace(/\b\w+\b/g, (word, index) => {
+    if (index === 0 || !lowerCaseExceptions.includes(word.toLowerCase())) {
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    } else {
+      return word.toLowerCase();
+    }
+  });
+
+  return normalizedName;
+};
+
 export const normalizeUrl = (url: string, removeQueryParams = false) => {
   if (!url) return null;
 

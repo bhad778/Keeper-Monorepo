@@ -9,8 +9,7 @@ import {
 } from 'keeperTypes';
 import { v4 as uuidv4 } from 'uuid';
 import { TechnologiesList } from 'keeperConstants';
-
-import { transformMonthToString } from './globalUtils';
+import { transformMonthToString } from 'keeperUtils';
 
 // we check if the companyName has already been added
 // because coreSignal has lots of duplicate data with job history

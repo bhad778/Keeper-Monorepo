@@ -1,11 +1,12 @@
 import * as Joi from 'joi';
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import axios from 'axios';
-import { extractErrorMessage } from 'keeperUtils';
-import { googleMapsApiKey } from 'keeperEnvironment';
 
 import { headers } from '../../constants';
 import ValidateBody from '../validateBody';
+import { extractErrorMessage } from '../../keeperApiUtils';
+
+const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
 
 export const handler = async (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
   context.callbackWaitsForEmptyEventLoop = false;

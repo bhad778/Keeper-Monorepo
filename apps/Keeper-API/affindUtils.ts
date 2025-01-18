@@ -1,8 +1,7 @@
 import { ResumeData, ResumeDataWorkExperienceItem, ResumeDataSkillsItem } from '@affinda/affinda';
+import { TechnologiesList } from 'keeperConstants';
 // import { TEmployeeEducation, TEmployeePastJob, TEmployeeSettings } from 'keeperTypes';
 // import { v4 as uuidv4 } from 'uuid';
-
-import { TechnologiesList } from '../keeperConstants';
 
 export const addAffindaSkillsToJobHistoryItem = (
   workItem: ResumeDataWorkExperienceItem,

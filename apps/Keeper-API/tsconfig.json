@@ -15,7 +15,9 @@
     "types/**/*",
     "models/**/*",
     "schemas/**/*",
-    "../../packages/**/*", // Include all files from the `packages` directory
+    "../../packages/keeperConstants/**/*",
+    "../../packages/keeperTypes/**/*",
+    "../../packages/keeperUtils/**/*",
     "../../global.d.ts"
   ],
   "exclude": [

@@ -1,6 +1,5 @@
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import * as Joi from 'joi';
-import { extractErrorMessage } from 'keeperUtils';
 import { AccountTypeEnum } from 'keeperTypes';
 import AWS from 'aws-sdk';
 
@@ -10,6 +9,7 @@ import ValidateBody from '../validateBody';
 import Employee from '../../models/Employee';
 import Job from '../../models/Job';
 import { AccountTypeSchema, TMatchSchema } from '../../schemas/globalSchemas';
+import { extractErrorMessage } from '../../keeperApiUtils';
 
 export const handler = async (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
   context.callbackWaitsForEmptyEventLoop = false;

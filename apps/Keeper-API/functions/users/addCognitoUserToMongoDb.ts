@@ -1,11 +1,11 @@
 import { Callback, CognitoUserPoolTriggerEvent, Context } from 'aws-lambda';
-import { extractErrorMessage } from 'keeperUtils';
 
 import connectToDatabase from '../../db';
 import { TEmployer, TEmployee } from 'keeperTypes';
 import Employee from '../../models/Employee';
 import { headers } from '../../constants';
 import Employer from '../../models/Employer';
+import { extractErrorMessage } from '../../keeperApiUtils';
 
 export const handler = async (
   event: CognitoUserPoolTriggerEvent, // Adjust the type if you have a specific schema for Cognito triggers

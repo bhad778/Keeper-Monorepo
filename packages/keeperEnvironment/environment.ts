@@ -10,19 +10,6 @@ if (isReactNative) {
   const Constants = require('expo-constants').default;
   env = Constants.expoConfig?.extra || {};
 } else if (isNode) {
-  console.log(`1
-    1
-    1
-    1
-    1
-    1
-    1
-    
-    1
-    1
-    1
-    
-    1`);
   // Node.js: Use dotenv to load environment variables
   const dotenv = require('dotenv');
   const path = require('path');
@@ -53,18 +40,6 @@ if (isReactNative) {
     crunchbaseCompaniesQueueUrl: process.env.VITE_CRUNCHBASE_COMPANIES_QUEUE_URL || '',
   };
 } else if (isWeb) {
-  console.log(`2
-    2
-    2
-    
-    2
-    2
-    2
-    2
-    2
-    2
-    
-    `);
   // Web: Use Vite's import.meta.env
   env = {
     apiUrl: import.meta.env.VITE_API_URL || '',
