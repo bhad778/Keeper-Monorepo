@@ -315,18 +315,18 @@ functions:
           method: post
           cors: true
 
-  addJobApplication:
-    handler: functions/jobApplications/addJobApplication.handler
+  addApplication:
+    handler: functions/applications/addApplication.handler
     events:
       - http:
-          path: addJobApplication
+          path: addApplication
           method: post
           cors: true
 
-  findJobApplicationByUserId:
-    handler: functions/jobApplications/findJobApplicationByUserId.handler
+  findApplicationsByUserId:
+    handler: functions/applications/findApplicationsByUserId.handler
     events:
       - http:
-          path: findJobApplicationByUserId
+          path: findApplicationsByUserId
           method: post
           cors: true

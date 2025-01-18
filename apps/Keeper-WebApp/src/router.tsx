@@ -12,6 +12,7 @@ import {
   GrowthEngine,
   PhoneNumber,
   EmployeeProfileScreen,
+  Applications,
 } from 'screens';
 import { PrivateRoute, OnlyPublicRoute, OnlyAdminRoute } from 'routes';
 
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
       {
         path: 'matches',
         element: <Matches />,
+      },
+      {
+        path: 'applications',
+        element: <Applications />,
       },
       {
         path: 'profile',

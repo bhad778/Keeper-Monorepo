@@ -1,13 +1,14 @@
 import { APIGatewayEvent, Context } from 'aws-lambda';
 import { extractErrorMessage } from 'keeperUtils';
 
-import JobApplication from '../../models/JobApplication';
+import Application from '../../models/Application';
 import { headers } from '../../constants';
 import connectToDatabase from '../../db';
 
 // ex payload
 // {
 //   "employeeId": "64a58544b219fe17f06f38d8",
+//   "jobId": "6785d6241bda7a0519f060a8"
 // }
 export const handler = async (event: APIGatewayEvent, context: Context) => {
   context.callbackWaitsForEmptyEventLoop = false;
@@ -18,54 +19,49 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
       throw new Error('Missing request body.');
     }
 
-    const { employeeId }: { employeeId: string } = JSON.parse(event.body);
+    const { employeeId, jobId }: { employeeId: string; jobId: string } = JSON.parse(event.body);
 
-    // Validate that employeeId is provided
-    if (!employeeId) {
+    // Validate that employeeId and jobId are provided
+    if (!employeeId || !jobId) {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ message: 'employeeId is required' }),
+        body: JSON.stringify({ message: 'employeeId and jobId are required' }),
       };
     }
 
     // Connect to the database
     await connectToDatabase();
 
-    // Query job applications for the user
-    const jobApplications = await JobApplication.find({ employeeId })
-      .populate('jobId') // Populate the jobId with actual job data
-      .exec();
+    // Create a new job application document
+    const newApplication = new Application({
+      employeeId,
+      jobId,
+    });
 
-    // If no job applications are found
-    if (!jobApplications || jobApplications.length === 0) {
-      return {
-        statusCode: 404,
-        headers,
-        body: JSON.stringify({ message: 'No job applications found for this user' }),
-      };
-    }
+    // Save the job application
+    await newApplication.save();
 
-    console.info(`Found ${jobApplications.length} job application(s).`);
+    console.info('Job application created successfully.');
 
     return {
-      statusCode: 200,
+      statusCode: 201,
       headers,
       body: JSON.stringify({
         success: true,
-        jobApplications,
+        message: 'Job application created successfully',
       }),
     };
   } catch (error) {
     const errorMessage = extractErrorMessage(error);
 
-    console.error(`Error querying job applications: ${errorMessage}`);
+    console.error(`Error creating job application: ${errorMessage}`);
     return {
       statusCode: 500,
       headers,
       body: JSON.stringify({
         success: false,
-        error: errorMessage,
+        errorMessage: errorMessage,
       }),
     };
   }

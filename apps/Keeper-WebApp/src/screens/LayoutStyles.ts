@@ -62,6 +62,11 @@ export const useStyles = (currentPath: string, isAJobSelected: boolean) => {
       color: currentPath.includes('matches') ? theme.color.pink : 'white',
       whiteSpace: 'nowrap',
     },
+    employeeApplicationsNav: {
+      fontSize: 28,
+      color: currentPath.includes('applications') ? theme.color.pink : 'white',
+      whiteSpace: 'nowrap',
+    },
     employeeMatchesText: {
       fontSize: 28,
       color: currentPath.includes('matches') ? theme.color.pink : 'white',
@@ -70,6 +75,11 @@ export const useStyles = (currentPath: string, isAJobSelected: boolean) => {
     matchesNavText: {
       fontSize: 28,
       color: currentPath.includes('matches') ? theme.color.pink : 'white',
+      whiteSpace: 'nowrap',
+    },
+    applicationsNavText: {
+      fontSize: 28,
+      color: currentPath.includes('applications') ? theme.color.pink : 'white',
       whiteSpace: 'nowrap',
     },
     profileNavText: {

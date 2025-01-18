@@ -44,7 +44,7 @@ const Layout = () => {
 
   useEffect(() => {
     let localHasNotification = false;
-    matches?.map((match) => {
+    matches?.map(match => {
       if (match?.custom.hasNotification) {
         localHasNotification = true;
       }
@@ -93,7 +93,7 @@ const Layout = () => {
                 updated: new Date(),
                 description: message.text || '',
               },
-            })
+            }),
           );
         } else if (messageEvent.message.type === 'match') {
           const jobId = messageEvent.message.matchData?.custom?.jobId;
@@ -153,10 +153,15 @@ const Layout = () => {
             </Link>
           )}
 
-          <Link style={{ ...styles.navItem, ...styles.matchesNav }} to={`matches`}>
+          {/* <Link style={{ ...styles.navItem, ...styles.matchesNav }} to={`matches`}>
             <WithBadge hasNotification={hasNotification}>
               <AppHeaderText style={styles.employeeMatchesText}>Matches</AppHeaderText>
             </WithBadge>
+          </Link>
+          */}
+
+          <Link style={{ ...styles.navItem, ...styles.employeeApplicationsNav }} to={`applications`}>
+            <AppHeaderText style={styles.applicationsNavText}>Applications</AppHeaderText>
           </Link>
         </div>
 

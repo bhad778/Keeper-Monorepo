@@ -4,21 +4,21 @@ import Employee from './Employee';
 import Job from './Job';
 
 // Job Application Interface
-interface IJobApplication extends Document {
+interface IApplication extends Document {
   employeeId: mongoose.Schema.Types.ObjectId; // Reference to the User model
   jobId: mongoose.Schema.Types.ObjectId; // Reference to the Job model
   createdAt: Date; // Date when the user applied
 }
 
-const jobApplicationSchema = new Schema<IJobApplication>({
+const applicationSchema = new Schema<IApplication>({
   employeeId: { type: mongoose.Schema.Types.ObjectId, ref: Employee, required: true },
   jobId: { type: mongoose.Schema.Types.ObjectId, ref: Job, required: true },
   createdAt: { type: Date, default: Date.now },
 });
 
-jobApplicationSchema.index({ userId: 1 }); // Index for querying by userId
-jobApplicationSchema.index({ jobId: 1 });
+applicationSchema.index({ userId: 1 }); // Index for querying by userId
+applicationSchema.index({ jobId: 1 });
 
-const JobApplication = mongoose.model<IJobApplication>('JobApplication', jobApplicationSchema);
+const Application = mongoose.model<IApplication>('Application', applicationSchema);
 
-export default JobApplication;
+export default Application;

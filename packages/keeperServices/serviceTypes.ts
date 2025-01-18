@@ -1,6 +1,15 @@
 import { QueryOptions, RootFilterQuery } from 'mongoose';
 import { OperationEnum, TJob, TCompany } from 'keeperTypes';
 
+export type TAddApplication = {
+  employeeId: string;
+  jobId: string;
+};
+
+export type TFindApplicationsByUserId = {
+  employeeId: string;
+};
+
 export type TFindCompanyPayload = {
   query: RootFilterQuery<TCompany>; // Query can include any subset of TCompany fields
   operation?: OperationEnum; // Defaults to 'findOne'

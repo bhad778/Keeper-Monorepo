@@ -3,7 +3,9 @@ import { apiUrl } from 'keeperEnvironment';
 
 type ApiResponse<T> = {
   success: boolean;
-  result: T;
+  data?: T;
+  message?: string;
+  errorMessage?: string;
 };
 
 export const postRequest = <T>(endpoint: string, payload?: any): Promise<ApiResponse<T>> => {

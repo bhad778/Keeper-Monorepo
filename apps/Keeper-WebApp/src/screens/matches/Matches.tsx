@@ -101,10 +101,6 @@ const Matches = () => {
     [employersJobs],
   );
 
-  // useEffect(() => {
-
-  // }, []);
-
   const setSelectedChannelRedux = useCallback(
     (newValue: TMatch | undefined) => {
       dispatch(setSelectedChannel(newValue));

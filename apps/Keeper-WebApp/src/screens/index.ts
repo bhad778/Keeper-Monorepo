@@ -15,8 +15,10 @@ import GrowthEngine from 'screens/growthEngine/GrowthEngine';
 import PhoneNumber from 'screens/phoneNumber/PhoneNumber';
 import NameAndCompany from 'screens/nameAndCompany/NameAndCompany';
 import EmployeeProfileScreen from 'screens/employeeProfileScreen/EmployeeProfileScreen';
+import Applications from 'screens/applications/Applications';
 
 export {
+  Applications,
   Matches,
   AccountType,
   EmployeeProfile,
