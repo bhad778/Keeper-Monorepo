@@ -1,5 +1,4 @@
-import { TCompany, TJob } from 'keeperTypes';
-import { UpdateWriteOpResult } from 'mongoose';
+import { TJob } from 'keeperTypes';
 
 import { TAddApplication, TFindApplicationsByUserId } from './serviceTypes';
 import { postRequest } from './serviceUtils';
