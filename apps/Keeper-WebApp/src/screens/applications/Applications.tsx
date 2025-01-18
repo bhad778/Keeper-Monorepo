@@ -1,5 +1,5 @@
 import { RootState } from 'reduxStore/store';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Grid, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { ApplicationsService } from 'keeperServices';
@@ -8,17 +8,21 @@ import { TJob } from 'keeperTypes';
 import useStyles from './ApplicationsStyles';
 
 const Applications = () => {
-  const accountType = useSelector((state: RootState) => state.loggedInUser.accountType);
+  const employeeId = useSelector((state: RootState) => state.loggedInUser._id);
 
   const [applications, setApplications] = useState<TJob[]>();
 
-  const dispatch = useDispatch();
   const styles = useStyles(true);
 
   useEffect(() => {
-    ApplicationsService.findApplicationsByUserId({ employeeId: 'asdf' }).then(res => {
-      res.data && setApplications(res.data);
-    });
+    ApplicationsService.findApplicationsByUserId({ employeeId: employeeId || '' })
+      .then(res => {
+        console.log('Applications:', res.data);
+        res.data && setApplications(res.data);
+      })
+      .catch(error => {
+        console.error('Error finding applications:', error);
+      });
   }, []);
 
   return (

@@ -10,6 +10,19 @@ if (isReactNative) {
   const Constants = require('expo-constants').default;
   env = Constants.expoConfig?.extra || {};
 } else if (isNode) {
+  console.log(`1
+    1
+    1
+    1
+    1
+    1
+    1
+    
+    1
+    1
+    1
+    
+    1`);
   // Node.js: Use dotenv to load environment variables
   const dotenv = require('dotenv');
   const path = require('path');
@@ -19,48 +32,60 @@ if (isReactNative) {
 
   // Map environment variables with VITE_ prefixes to regular keys for consistency
   env = {
-    API_URL: process.env.VITE_API_URL || '',
-    AFFINDA_KEY: process.env.VITE_AFFINDA_KEY || '',
-    AFFINDA_WORKSPACE_ID: process.env.VITE_AFFINDA_WORKSPACE_ID || '',
-    GOOGLE_MAPS_ROOT_URL:
+    apiUrl: process.env.VITE_API_URL || '',
+    affindaKey: process.env.VITE_AFFINDA_KEY || '',
+    affindaWorkspaceId: process.env.VITE_AFFINDA_WORKSPACE_ID || '',
+    googleMapsRootUrl:
       process.env.VITE_GOOGLE_MAPS_ROOT_URL ||
       'https://maps.googleapis.com/maps/api/place/autocomplete/json?types=geocode',
-    GOOGLE_MAPS_API_KEY: process.env.VITE_GOOGLE_MAPS_API_KEY || '',
-    PUBNUB_PUBLISH_KEY: process.env.VITE_PUBNUB_PUBLISH_KEY || '',
-    PUBNUB_SUBSCRIBE_KEY: process.env.VITE_PUBNUB_SUBSCRIBE_KEY || '',
-    BRANDFETCH_API_KEY: process.env.VITE_BRANDFETCH_API_KEY || '',
-    DB: process.env.VITE_DB || '',
-    CORESIGNAL_API_KEY: process.env.VITE_CORESIGNAL_API_KEY || '',
-    BRIGHTDATA_API_KEY: process.env.VITE_BRIGHTDATA_API_KEY || '',
-    JOBS_QUEUE_URL: process.env.VITE_JOBS_QUEUE_URL || '',
-    GEOLOCATION_QUEUE_URL: process.env.VITE_GEOLOCATION_QUEUE_URL || '',
-    SOURCE_WEBSITE_COMPANIES_QUEUE_URL: process.env.VITE_SOURCE_WEBSITE_COMPANIES_QUEUE_URL || '',
-    GLASSDOOR_COMPANIES_QUEUE_URL: process.env.VITE_GLASSDOOR_COMPANIES_QUEUE_URL || '',
-    GLASSDOOR_REVIEWS_QUEUE_URL: process.env.VITE_GLASSDOOR_REVIEWS_QUEUE_URL || '',
-    CRUNCHBASE_COMPANIES_QUEUE_URL: process.env.VITE_CRUNCHBASE_COMPANIES_QUEUE_URL || '',
+    googleMapsApiKey: process.env.VITE_GOOGLE_MAPS_API_KEY || '',
+    pubnubPublishKey: process.env.VITE_PUBNUB_PUBLISH_KEY || '',
+    pubnubSubscribeKey: process.env.VITE_PUBNUB_SUBSCRIBE_KEY || '',
+    brandFetchApiKey: process.env.VITE_BRANDFETCH_API_KEY || '',
+    db: process.env.VITE_DB || '',
+    coreSignalApiKey: process.env.VITE_CORESIGNAL_API_KEY || '',
+    brightDataApiKey: process.env.VITE_BRIGHTDATA_API_KEY || '',
+    jobsQueueUrl: process.env.VITE_JOBS_QUEUE_URL || '',
+    geoLocationQueueUrl: process.env.VITE_GEOLOCATION_QUEUE_URL || '',
+    sourceWebsiteCompaniesQueueUrl: process.env.VITE_SOURCE_WEBSITE_COMPANIES_QUEUE_URL || '',
+    glassdoorCompaniesQueueUrl: process.env.VITE_GLASSDOOR_COMPANIES_QUEUE_URL || '',
+    glassdoorReviewsQueueUrl: process.env.VITE_GLASSDOOR_REVIEWS_QUEUE_URL || '',
+    crunchbaseCompaniesQueueUrl: process.env.VITE_CRUNCHBASE_COMPANIES_QUEUE_URL || '',
   };
 } else if (isWeb) {
+  console.log(`2
+    2
+    2
+    
+    2
+    2
+    2
+    2
+    2
+    2
+    
+    `);
   // Web: Use Vite's import.meta.env
   env = {
-    API_URL: import.meta.env.VITE_API_URL || '',
-    AFFINDA_KEY: import.meta.env.VITE_AFFINDA_KEY || '',
-    AFFINDA_WORKSPACE_ID: import.meta.env.VITE_AFFINDA_WORKSPACE_ID || '',
-    GOOGLE_MAPS_ROOT_URL:
+    apiUrl: import.meta.env.VITE_API_URL || '',
+    affindaKey: import.meta.env.VITE_AFFINDA_KEY || '',
+    affindaWorkspaceId: import.meta.env.VITE_AFFINDA_WORKSPACE_ID || '',
+    googleMapsRootUrl:
       import.meta.env.VITE_GOOGLE_MAPS_ROOT_URL ||
       'https://maps.googleapis.com/maps/api/place/autocomplete/json?types=geocode',
-    GOOGLE_MAPS_API_KEY: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '',
-    PUBNUB_PUBLISH_KEY: import.meta.env.VITE_PUBNUB_PUBLISH_KEY || '',
-    PUBNUB_SUBSCRIBE_KEY: import.meta.env.VITE_PUBNUB_SUBSCRIBE_KEY || '',
-    BRANDFETCH_API_KEY: import.meta.env.VITE_BRANDFETCH_API_KEY || '',
-    DB: import.meta.env.VITE_DB || '',
-    CORESIGNAL_API_KEY: import.meta.env.VITE_CORESIGNAL_API_KEY || '',
-    BRIGHTDATA_API_KEY: import.meta.env.VITE_BRIGHTDATA_API_KEY || '',
-    JOBS_QUEUE_URL: import.meta.env.VITE_JOBS_QUEUE_URL || '',
-    GEOLOCATION_QUEUE_URL: import.meta.env.VITE_GEOLOCATION_QUEUE_URL || '',
-    SOURCE_WEBSITE_COMPANIES_QUEUE_URL: import.meta.env.VITE_SOURCE_WEBSITE_COMPANIES_QUEUE_URL || '',
-    GLASSDOOR_COMPANIES_QUEUE_URL: import.meta.env.VITE_GLASSDOOR_COMPANIES_QUEUE_URL || '',
-    GLASSDOOR_REVIEWS_QUEUE_URL: import.meta.env.VITE_GLASSDOOR_REVIEWS_QUEUE_URL || '',
-    CRUNCHBASE_COMPANIES_QUEUE_URL: import.meta.env.VITE_CRUNCHBASE_COMPANIES_QUEUE_URL || '',
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '',
+    pubnubPublishKey: import.meta.env.VITE_PUBNUB_PUBLISH_KEY || '',
+    pubnubSubscribeKey: import.meta.env.VITE_PUBNUB_SUBSCRIBE_KEY || '',
+    brandFetchApiKey: import.meta.env.VITE_BRANDFETCH_API_KEY || '',
+    db: import.meta.env.VITE_DB || '',
+    coreSignalApiKey: import.meta.env.VITE_CORESIGNAL_API_KEY || '',
+    brightDataApiKey: import.meta.env.VITE_BRIGHTDATA_API_KEY || '',
+    jobsQueueUrl: import.meta.env.VITE_JOBS_QUEUE_URL || '',
+    geoLocationQueueUrl: import.meta.env.VITE_GEOLOCATION_QUEUE_URL || '',
+    sourceWebsiteCompaniesQueueUrl: import.meta.env.VITE_SOURCE_WEBSITE_COMPANIES_QUEUE_URL || '',
+    glassdoorCompaniesQueueUrl: import.meta.env.VITE_GLASSDOOR_COMPANIES_QUEUE_URL || '',
+    glassdoorReviewsQueueUrl: import.meta.env.VITE_GLASSDOOR_REVIEWS_QUEUE_URL || '',
+    crunchbaseCompaniesQueueUrl: import.meta.env.VITE_CRUNCHBASE_COMPANIES_QUEUE_URL || '',
   };
 }
 

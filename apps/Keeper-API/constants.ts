@@ -8,7 +8,7 @@ export const SENDER_EMAIL = 'bryan@keepertechjobs.com';
 
 export const headers = {
   'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
-  ' Access-Control-Allow-Methods': '*',
+  'Access-Control-Allow-Methods': '*',
   'Access-Control-Allow-Origin': '*',
 };
 

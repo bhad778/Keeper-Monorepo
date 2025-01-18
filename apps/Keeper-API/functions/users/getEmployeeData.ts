@@ -10,12 +10,12 @@ import Employee from '../../models/Employee';
 import { extractErrorMessage } from '../../keeperApiUtils';
 
 export const handler = async (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
-  console.log('Handler started');
+  console.info('Handler started');
   context.callbackWaitsForEmptyEventLoop = false;
 
   try {
     // Validate the request body
-    console.log('Event body:', event.body);
+    console.info('Event body:', event.body);
     if (!event.body) {
       throw new Error('Missing request body.');
     }
@@ -25,19 +25,19 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       isPing: Joi.boolean(),
     });
 
-    console.log('Validating request body against schema');
+    console.info('Validating request body against schema');
     const isError = ValidateBody(event, getEmployeeDataSchema, callback);
     if (isError) {
-      console.log('Validation failed');
+      console.info('Validation failed');
       return;
     }
 
     const { phoneNumber, isPing } = JSON.parse(event.body);
-    console.log('Parsed request body:', { phoneNumber, isPing });
+    console.info('Parsed request body:', { phoneNumber, isPing });
 
     // Handle ping request
     if (isPing) {
-      console.log('Ping request received');
+      console.info('Ping request received');
       return callback(null, {
         statusCode: 200,
         headers,
@@ -45,14 +45,14 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       });
     }
 
-    console.log('Connecting to the database');
+    console.info('Connecting to the database');
     await connectToDatabase();
-    console.log('Database connection successful');
+    console.info('Database connection successful');
 
     // Fetch employee data
-    console.log(`Fetching employee data for phone number: ${phoneNumber}`);
+    console.info(`Fetching employee data for phone number: ${phoneNumber}`);
     const employee = await Employee.findOne({ phoneNumber }).exec();
-    console.log('Employee data:', employee);
+    console.info('Employee data:', employee);
 
     if (!employee) {
       throw new Error(`Employee with phone number ${phoneNumber} not found.`);
@@ -60,15 +60,15 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
 
     // Update preferences with required education enum
     const user = employee.toObject();
-    console.log('Employee object:', user);
+    console.info('Employee object:', user);
 
     // Fetch jobs for swiping
-    console.log('Fetching jobs for swiping');
+    console.info('Fetching jobs for swiping');
     const jobsForSwipingResponse = await axios.post(`${process.env.ROOT_URL}/getJobsForSwiping`, {
       userId: user._id.toString(),
       preferences: user.preferences,
     });
-    console.log('Jobs for swiping response:', jobsForSwipingResponse.data);
+    console.info('Jobs for swiping response:', jobsForSwipingResponse.data);
 
     // Prepare the response data
     const loggedInEmployeeData: TLoggedInEmployee = {
@@ -90,7 +90,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       jobsForSwiping: jobsForSwipingResponse.data,
     };
 
-    console.log('Return data prepared:', returnData);
+    console.info('Return data prepared:', returnData);
 
     // Return success response
     callback(null, {
