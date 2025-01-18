@@ -2,7 +2,7 @@ import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import * as Joi from 'joi';
 import { extractErrorMessage } from 'keeperUtils';
 import { AccountTypeEnum } from 'keeperTypes';
-import { AWS } from 'keeperEnvironment';
+import AWS from 'aws-sdk';
 
 import { colors, headers, SENDER_EMAIL } from '../../constants';
 import connectToDatabase from '../../db';
