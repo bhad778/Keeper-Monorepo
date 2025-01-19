@@ -12,14 +12,18 @@
     "skipLibCheck": true // Skip type checking for declaration files
   },
   "include": [
-    "utils/**/*",
     "functions/**/*",
-    "../../packages/**/*", // Include all files from the `packages` directory
+    "../../packages/keeperConstants/**/*",
+    "../../packages/keeperTypes/**/*",
+    "../../packages/keeperUtils/**/*",
     "../../global.d.ts"
   ],
   "exclude": [
     "node_modules", // Exclude node_modules
     "dist", // Exclude build directory
+    "../Keeper-WebApp/**", // Exclude unrelated apps
+    "../Keeper-UI/**", // Exclude unrelated apps
+    "../Keeper-API/**", // Exclude unrelated apps
     "**/*.test.ts" // Exclude test files
   ]
 }

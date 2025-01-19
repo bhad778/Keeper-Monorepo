@@ -1,13 +1,19 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "module": "CommonJS",
+    "module": "CommonJS", // Ensure compatibility with Node.js
+    "baseUrl": ".", // Base URL for module resolution
     "rootDir": "../../", // Set to the monorepo root to include all relevant files
-    "baseUrl": "./", // Base URL for module resolution
-    "outDir": "./dist", // Ensure compiled output is placed in the correct directory
+    "outDir": "./dist", // Compiled output directory
     "strict": true, // Enable strict type checking
     "esModuleInterop": true, // Enable ES module compatibility
-    "skipLibCheck": true // Skip type checking for declaration files
+    "skipLibCheck": true, // Skip type checking for declaration files
+    "noImplicitAny": false,
+    "paths": {
+      "keeperConstants/*": ["../../packages/keeperConstants/*"],
+      "keeperTypes/*": ["../../packages/keeperTypes/*"],
+      "keeperUtils/*": ["../../packages/keeperUtils/*"]
+    }
   },
   "include": [
     "utils/**/*",
@@ -23,8 +29,9 @@
   "exclude": [
     "node_modules", // Exclude node_modules
     "dist", // Exclude build directory
-    "../Keeper-WebApp/**",
-    "../Keeper-UI/**",
+    "../Keeper-WebApp/**", // Exclude unrelated apps
+    "../Keeper-UI/**", // Exclude unrelated apps
+    "../Keeper-Queues-Service/**", // Exclude unrelated apps
     "**/*.test.ts" // Exclude test files
   ]
 }

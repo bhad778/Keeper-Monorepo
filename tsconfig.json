@@ -5,8 +5,6 @@
     "lib": ["ESNext", "DOM"],
     "moduleResolution": "node",
     "baseUrl": ".",
-    "rootDir": ".",
-    "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -14,10 +12,10 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "paths": {
-      "keeperApi/*": ["apps/Keeper-API/*"],
-      "keeperQueuesService/*": ["apps/Keeper-Queues-Service/*"],
-      "keeperUi/*": ["apps/Keeper-UI/*"],
-      "keeperWebApp/*": ["apps/Keeper-WebApp/*"],
+      // "keeperApi/*": ["apps/Keeper-API/*"],
+      // "keeperQueuesService/*": ["apps/Keeper-Queues-Service/*"],
+      // "keeperUi/*": ["apps/Keeper-UI/*"],
+      // "keeperWebApp/*": ["apps/Keeper-WebApp/*"],
       "keeperAssets/*": ["packages/keeperAssets/*"],
       "keeperConstants/*": ["packages/keeperConstants/*"],
       "keeperEnvironment/*": ["packages/keeperEnvironment/*"],
@@ -26,6 +24,6 @@
       "keeperUtils/*": ["packages/keeperUtils/*"]
     }
   },
-  "include": ["apps/**/*", "packages/**/*", "global.d.ts", "packages/keeperEnvironment/awsConfig.ts"],
+  "include": ["packages/**/*", "global.d.ts"],
   "exclude": ["node_modules", "dist", "coverage"]
 }
