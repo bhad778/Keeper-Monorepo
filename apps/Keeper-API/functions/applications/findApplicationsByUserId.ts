@@ -37,15 +37,6 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
       .populate('jobId') // Populate the jobId with actual job data
       .exec();
 
-    // If no job applications are found
-    if (!applications || applications.length === 0) {
-      return {
-        statusCode: 404,
-        headers,
-        body: JSON.stringify({ message: 'No job applications found for this user' }),
-      };
-    }
-
     console.info(`Found ${applications.length} job application(s).`);
 
     return {
