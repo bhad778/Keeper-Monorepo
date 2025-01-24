@@ -1,10 +1,10 @@
 import { APIGatewayEvent, Context, Callback } from 'aws-lambda';
 import { OperationEnum } from 'keeperTypes';
-import { extractErrorMessage } from 'keeperUtils';
 
 import Company from '../../models/Company'; // Adjust the path based on your project structure
 import { headers } from '../../constants'; // Reusable headers for responses
 import connectToDatabase from '../../db';
+import { extractErrorMessage } from '../../keeperApiUtils';
 
 // ex payload-
 // {

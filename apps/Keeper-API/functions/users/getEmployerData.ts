@@ -1,7 +1,7 @@
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import * as Joi from 'joi';
 import axios from 'axios';
-import { extractErrorMessage } from 'keeperUtils';
+import { extractErrorMessage } from 'keeperUtils/backendUtils';
 
 import { headers } from '../../constants';
 import connectToDatabase from '../../db';

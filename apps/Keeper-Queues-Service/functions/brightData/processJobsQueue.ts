@@ -30,7 +30,7 @@ export const handler = async (event: SQSEvent) => {
 
       // Step 1: Check if the job already exists in the database
       const jobExists = await JobsService.findJob({ query: { applyLink: job.applyLink } });
-      if (jobExists.success && jobExists.result) {
+      if (jobExists.success && jobExists.data) {
         console.info(`Job already exists: ${job.applyLink}. Skipping.`);
         return;
       }

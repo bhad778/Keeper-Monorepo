@@ -1,10 +1,10 @@
 import { APIGatewayEvent, Context } from 'aws-lambda';
 import { OperationEnum } from 'keeperTypes';
-import { extractErrorMessage } from 'keeperUtils';
 
 import Job from '../../models/Job';
 import { headers } from '../../constants';
 import connectToDatabase from '../../db';
+import { extractErrorMessage } from '../../keeperApiUtils';
 
 // ex payload-
 // {

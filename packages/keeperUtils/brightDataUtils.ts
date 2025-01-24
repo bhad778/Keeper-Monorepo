@@ -22,7 +22,7 @@ import {
   normalizeCompanyName,
   normalizeLocation,
   normalizeUrl,
-} from 'keeperUtils';
+} from 'keeperUtils/backendUtils';
 import { TechnologiesList } from 'keeperConstants';
 import { CompaniesService } from 'keeperServices';
 import AWS from 'aws-sdk';

@@ -1,10 +1,10 @@
 import { APIGatewayEvent, Context, Callback } from 'aws-lambda';
 import { OperationEnum } from 'keeperTypes';
-import { extractErrorMessage } from 'keeperUtils';
 
 import Company from '../../models/Company';
 import { headers } from '../../constants';
 import connectToDatabase from '../../db';
+import { extractErrorMessage } from '../../keeperApiUtils';
 
 // ex params-
 // {
@@ -49,7 +49,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
         headers,
         body: JSON.stringify({
           success: false,
-          result,
+          data: result,
         }),
       };
     }
@@ -59,7 +59,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       headers,
       body: JSON.stringify({
         success: true,
-        result,
+        data: result,
       }),
     };
   } catch (error) {

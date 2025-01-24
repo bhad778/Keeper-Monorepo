@@ -1,5 +1,5 @@
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
-import { extractErrorMessage } from 'keeperUtils';
+import { extractErrorMessage } from 'keeperUtils/backendUtils';
 
 import { headers } from '../../constants';
 import connectToDatabase from '../../db';

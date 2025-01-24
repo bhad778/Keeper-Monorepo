@@ -3,7 +3,7 @@ import * as Joi from 'joi';
 import { HydratedDocument } from 'mongoose';
 import axios from 'axios';
 import { AccountTypeEnum, TEmployee } from 'keeperTypes';
-import { getGeoLocationFromAddress, extractErrorMessage } from 'keeperUtils';
+import { getGeoLocationFromAddress, extractErrorMessage } from 'keeperUtils/backendUtils';
 
 import { headers } from '../../constants';
 import connectToDatabase from '../../db';

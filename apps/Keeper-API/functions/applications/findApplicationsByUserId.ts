@@ -1,9 +1,9 @@
 import { APIGatewayEvent, Context } from 'aws-lambda';
-import { extractErrorMessage } from 'keeperUtils';
 
 import Application from '../../models/Application';
 import { headers } from '../../constants';
 import connectToDatabase from '../../db';
+import { extractErrorMessage } from '../../keeperApiUtils';
 
 // ex payload
 // {
