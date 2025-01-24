@@ -10,6 +10,14 @@ export type TFindApplicationsByUserId = {
   employeeId: string;
 };
 
+export type TApplicationWithJob = {
+  _id: string;
+  employeeId: string;
+  jobId: TJob; // Use TJob here since you already have it
+  createdAt: string;
+  __v: number;
+};
+
 export type TFindCompanyPayload = {
   query: RootFilterQuery<TCompany>; // Query can include any subset of TCompany fields
   operation?: OperationEnum; // Defaults to 'findOne'

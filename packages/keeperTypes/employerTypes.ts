@@ -31,6 +31,7 @@ export type TEmployerFilterListOptions =
 
 // job in our database
 export type TJob = {
+  _id?: string;
   expoPushToken?: string | null;
   requiredYearsOfExperience: number;
   relevantSkills: string[];

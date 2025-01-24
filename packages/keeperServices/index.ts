@@ -4,5 +4,6 @@ import UsersService from './UsersService';
 import CompaniesService from './CompaniesService';
 import ThirdPartyService from './ThirdPartyService';
 import ApplicationsService from './ApplicationsService';
+export * from './serviceTypes';
 
 export { JobsService, MiscService, UsersService, CompaniesService, ThirdPartyService, ApplicationsService };

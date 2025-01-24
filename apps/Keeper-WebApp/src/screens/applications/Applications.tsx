@@ -2,17 +2,20 @@ import { RootState } from 'reduxStore/store';
 import { useSelector } from 'react-redux';
 import { Grid, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { ApplicationsService } from 'keeperServices';
+import { ApplicationsService, TApplicationWithJob } from 'keeperServices';
 import { TJob } from 'keeperTypes';
+import { Match } from 'components';
 
 import useStyles from './ApplicationsStyles';
+import { useTheme } from 'theme/theme.context';
 
 const Applications = () => {
   const employeeId = useSelector((state: RootState) => state.loggedInUser._id);
 
-  const [applications, setApplications] = useState<TJob[]>();
+  const [applications, setApplications] = useState<TApplicationWithJob[]>();
 
-  const styles = useStyles(true);
+  const styles = useStyles();
+  const { theme } = useTheme();
 
   useEffect(() => {
     ApplicationsService.findApplicationsByUserId({ employeeId: employeeId || '' })
@@ -25,16 +28,25 @@ const Applications = () => {
       });
   }, []);
 
+  const onMatchPress = (application: TJob) => {};
+
   return (
-    <Box sx={styles.container}>
-      <Grid container>
-        <Grid item xs={12}>
-          <Box sx={styles.header}>
-            <Box sx={styles.headerText}>Applications</Box>
-          </Box>
-        </Grid>
-      </Grid>
-    </Box>
+    <Grid container>
+      {applications?.map((application, index) => {
+        return (
+          <Match
+            key={index}
+            title={application.jobId.jobTitle}
+            text={application.jobId.jobSummary}
+            img={application.jobId.companyLogo || ''}
+            color={theme.color.pink}
+            isEmployee={false}
+            isCandidateSort={true}
+            onPress={onMatchPress}
+          />
+        );
+      })}
+    </Grid>
   );
 };
 
