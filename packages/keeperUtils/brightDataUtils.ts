@@ -25,11 +25,8 @@ import {
 } from 'keeperUtils/backendUtils';
 import { TechnologiesList } from 'keeperConstants';
 import { CompaniesService } from 'keeperServices';
-import AWS from 'aws-sdk';
 
 const brightDataApiKey = process.env.VITE_BRIGHTDATA_API_KEY;
-
-const sqs = new AWS.SQS();
 
 export const staggerTimeout = 30;
 export const snapshotNotReadyRequeueTimeout = 600; // 10 minutes
@@ -451,28 +448,6 @@ export const brightDataGlassdoorCompanyTransformer = (company: TBrightDataGlassd
   return transformedCompany;
 };
 
-export const brightDataCrunchbaseCompanyTransformer = (company: TBrightDataCrunchbaseCompany) => {
-  const transformedCompany: Partial<TCompany> = {
-    companyWebsiteUrl: normalizeUrl(company.website),
-    headquarters: normalizeLocation(company.address),
-    crunchbaseUrl: company.url,
-    countryCode: company.country_code,
-    companySize: company.num_employees,
-    lastCrunchbaseCompanyUpdate: new Date(),
-    companyType: company.company_type,
-    rating: company.cb_rank,
-    about: company.about,
-    socialMediaLinks: company.social_media_links,
-    foundedDate: company.founded_date,
-    contactEmail: company.contact_email,
-    contactPhone: company.contact_phone,
-    companyUUID: company.uuid,
-    logo: company.image,
-  };
-
-  return transformedCompany;
-};
-
 export const checkSnapshotStatusById = async snapshotId => {
   try {
     const response = await axios.get(`https://api.brightdata.com/datasets/v3/progress/${snapshotId}`, {
@@ -503,20 +478,6 @@ export const fetchSnapshotArrayDataById = async snapshotId => {
   }
 };
 
-export const checkIfCompanyExistsInDatabase = async (sourceWebsiteUrl: string) => {
-  try {
-    const queryPayload = {
-      query: { sourceWebsiteUrl },
-    };
-
-    const company = await CompaniesService.findCompany(queryPayload);
-    return !!company; // Returns true if the company exists, false otherwise
-  } catch (error) {
-    logApiError('checkIfCompanyExistsInDatabase', { sourceWebsiteUrl }, error);
-    throw error; // Let the caller handle the error
-  }
-};
-
 export const requestSnapshotByUrlAndFilters = async (url, filters) => {
   try {
     const response = await axios.post(url, filters, {
@@ -532,34 +493,24 @@ export const requestSnapshotByUrlAndFilters = async (url, filters) => {
   }
 };
 
-export const sendMessageToQueue = async (queueUrl: string, messageBody: any, delaySeconds?: number) => {
-  try {
-    await sqs
-      .sendMessage({
-        QueueUrl: queueUrl,
-        MessageBody: JSON.stringify(messageBody),
-        DelaySeconds: delaySeconds, // Delay before the message is visible in the queue
-      })
-      .promise();
-    console.info(`Message queued with delay of ${delaySeconds || 'zero'} seconds:`, messageBody);
-  } catch (error) {
-    console.error(`Error queuing message to queue ${queueUrl}:`, error);
-    logApiError('sendMessageToQueue', { queueUrl, messageBody }, error);
-    throw error; // Let the caller handle the error
-  }
-};
+export const brightDataCrunchbaseCompanyTransformer = (company: TBrightDataCrunchbaseCompany) => {
+  const transformedCompany: Partial<TCompany> = {
+    companyWebsiteUrl: normalizeUrl(company.website),
+    headquarters: normalizeLocation(company.address),
+    crunchbaseUrl: company.url,
+    countryCode: company.country_code,
+    companySize: company.num_employees,
+    lastCrunchbaseCompanyUpdate: new Date(),
+    companyType: company.company_type,
+    rating: company.cb_rank,
+    about: company.about,
+    socialMediaLinks: company.social_media_links,
+    foundedDate: company.founded_date,
+    contactEmail: company.contact_email,
+    contactPhone: company.contact_phone,
+    companyUUID: company.uuid,
+    logo: company.image,
+  };
 
-export const requestWithRetry = async (requestFunction, maxRetries = 3, delay = 1000) => {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await requestFunction();
-    } catch (error) {
-      console.error(`Attempt ${attempt} failed:`, error);
-      if (attempt < maxRetries) {
-        await new Promise(resolve => setTimeout(resolve, delay * attempt)); // Exponential backoff
-      } else {
-        throw error; // Let the caller handle the error after max retries
-      }
-    }
-  }
+  return transformedCompany;
 };

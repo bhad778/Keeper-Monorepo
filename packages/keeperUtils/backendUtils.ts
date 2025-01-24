@@ -1,5 +1,55 @@
+import AWS from 'aws-sdk';
 import axios, { AxiosError } from 'axios';
 import { stateAbbreviations } from 'keeperConstants';
+import { CompaniesService } from 'keeperServices';
+
+const sqs = new AWS.SQS();
+
+export const checkIfCompanyExistsInDatabase = async (sourceWebsiteUrl: string) => {
+  try {
+    const queryPayload = {
+      query: { sourceWebsiteUrl },
+    };
+
+    const company = await CompaniesService.findCompany(queryPayload);
+    return !!company; // Returns true if the company exists, false otherwise
+  } catch (error) {
+    logApiError('checkIfCompanyExistsInDatabase', { sourceWebsiteUrl }, error);
+    throw error; // Let the caller handle the error
+  }
+};
+
+export const sendMessageToQueue = async (queueUrl: string, messageBody: any, delaySeconds?: number) => {
+  try {
+    await sqs
+      .sendMessage({
+        QueueUrl: queueUrl,
+        MessageBody: JSON.stringify(messageBody),
+        DelaySeconds: delaySeconds, // Delay before the message is visible in the queue
+      })
+      .promise();
+    console.info(`Message queued with delay of ${delaySeconds || 'zero'} seconds:`, messageBody);
+  } catch (error) {
+    console.error(`Error queuing message to queue ${queueUrl}:`, error);
+    logApiError('sendMessageToQueue', { queueUrl, messageBody }, error);
+    throw error; // Let the caller handle the error
+  }
+};
+
+export const requestWithRetry = async (requestFunction, maxRetries = 3, delay = 1000) => {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await requestFunction();
+    } catch (error) {
+      console.error(`Attempt ${attempt} failed:`, error);
+      if (attempt < maxRetries) {
+        await new Promise(resolve => setTimeout(resolve, delay * attempt)); // Exponential backoff
+      } else {
+        throw error; // Let the caller handle the error after max retries
+      }
+    }
+  }
+};
 
 export const shuffleArray = (array: any[]) => {
   const shuffledArray = [...array];

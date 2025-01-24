@@ -30,9 +30,6 @@ const brightDataApiKey = process.env.VITE_BRIGHTDATA_API_KEY;
 
 const sqs = new AWS.SQS();
 
-export const staggerTimeout = 30;
-export const snapshotNotReadyRequeueTimeout = 600; // 10 minutes
-
 const linkedInRequiredYearsOfExperienceTransformer = (
   job_seniority_level: TBrightDataLinkedInJob['job_seniority_level'],
 ): number => {

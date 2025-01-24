@@ -6,6 +6,7 @@ import {
   glassdoorCompaniesQueueUrl,
   sourceWebsiteCompaniesQueueUrl,
 } from 'keeperEnvironment';
+import { sendMessageToQueue, extractErrorMessage } from 'keeperUtils/backendUtils';
 import {
   brightDataIndeedCompanyTransformer,
   brightDataLinkedInCompanyTransformer,
@@ -13,10 +14,8 @@ import {
   fetchSnapshotArrayDataById,
   requestSnapshotByUrlAndFilters,
   snapshotNotReadyRequeueTimeout,
-  sendMessageToQueue,
   staggerTimeout,
 } from 'keeperUtils/brightDataUtils';
-import { extractErrorMessage } from 'keeperUtils';
 import {
   getCrunchbaseCompanyInfoSnapshotUrl,
   getGlassdoorCompanyInfoSnapshotUrl,

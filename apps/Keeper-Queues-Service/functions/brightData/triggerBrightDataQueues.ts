@@ -1,6 +1,7 @@
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import { JobSourceWebsiteEnum, TJobsQueueMessage } from 'keeperTypes';
-import { requestSnapshotByUrlAndFilters, sendMessageToQueue, staggerTimeout } from 'keeperUtils';
+import { sendMessageToQueue } from 'keeperUtils/backendUtils';
+import { requestSnapshotByUrlAndFilters, staggerTimeout } from 'keeperUtils/brightDataUtils';
 import { staggerQueueUrl } from 'keeperEnvironment';
 import { getIndeedJobSnapshotUrl, getLinkedInJobSnapshotUrl, linkedInFiltersUrl } from 'keeperConstants';
 

@@ -1,16 +1,23 @@
 import { SQSEvent } from 'aws-lambda';
 import { TBrightDataGlassdoorCompany } from 'keeperTypes';
-import { extractErrorMessage, logApiError, normalizeLocation, normalizeUrl } from 'keeperUtils';
+import {} from 'keeperUtils';
 import { CompaniesService } from 'keeperServices';
+import {
+  normalizeCompanyName,
+  sendMessageToQueue,
+  extractErrorMessage,
+  logApiError,
+  normalizeLocation,
+  normalizeUrl,
+} from 'keeperUtils/backendUtils';
 import {
   brightDataGlassdoorCompanyTransformer,
   checkSnapshotStatusById,
   fetchSnapshotArrayDataById,
-  normalizeCompanyName,
   requestSnapshotByUrlAndFilters,
   snapshotNotReadyRequeueTimeout,
-  sendMessageToQueue,
-} from 'keeperUtils';
+} from 'keeperUtils/brightDataUtils';
+
 import { glassdoorReviewsQueueUrl, glassdoorCompaniesQueueUrl, crunchbaseCompaniesQueueUrl } from 'keeperEnvironment';
 import { getGlassdoorCompanyInfoSnapshotUrl, glassdoorSearchUrl } from 'keeperConstants';
 

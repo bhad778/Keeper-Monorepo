@@ -5,13 +5,16 @@ import {
   normalizeLocation,
   normalizeUrl,
   sendMessageToQueue,
-  brightDataCrunchbaseCompanyTransformer,
-  checkSnapshotStatusById,
-  fetchSnapshotArrayDataById,
   normalizeCompanyName,
+} from 'keeperUtils/backendUtils';
+import {
+  brightDataCrunchbaseCompanyTransformer,
   requestSnapshotByUrlAndFilters,
   snapshotNotReadyRequeueTimeout,
-} from 'keeperUtils';
+  checkSnapshotStatusById,
+  fetchSnapshotArrayDataById,
+} from 'keeperUtils/brightDataUtils';
+
 import { CompaniesService } from 'keeperServices';
 import { crunchbaseCompaniesQueueUrl } from 'keeperEnvironment';
 import { getCrunchbaseCompanyInfoSnapshotUrl } from 'keeperConstants';

@@ -1,11 +1,7 @@
 import { SQSEvent } from 'aws-lambda';
 import { JobsService, CompaniesService } from 'keeperServices';
-import {
-  sendMessageToQueue,
-  requestSnapshotByUrlAndFilters,
-  extractErrorMessage,
-  snapshotNotReadyRequeueTimeout,
-} from 'keeperUtils';
+import { sendMessageToQueue, extractErrorMessage } from 'keeperUtils/backendUtils';
+import { snapshotNotReadyRequeueTimeout, requestSnapshotByUrlAndFilters } from 'keeperUtils/brightDataUtils';
 import { geoLocationQueueUrl, jobsQueueUrl, sourceWebsiteCompaniesQueueUrl } from 'keeperEnvironment';
 import { TJob, JobSourceWebsiteEnum } from 'keeperTypes';
 import { getIndeedCompanySnapshotUrl, getLinkedInCompanySnapshotUrl } from 'keeperConstants';

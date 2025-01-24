@@ -1,13 +1,13 @@
 import { SQSEvent } from 'aws-lambda';
+import { sendMessageToQueue } from 'keeperUtils/backendUtils';
 import {
-  sendMessageToQueue,
-  fetchSnapshotArrayDataById,
   indeedJobTransformer,
   linkedInJobTransformer,
+  fetchSnapshotArrayDataById,
   checkSnapshotStatusById,
   snapshotNotReadyRequeueTimeout,
   staggerTimeout,
-} from 'keeperUtils';
+} from 'keeperUtils/brightDataUtils';
 import { jobsQueueUrl, staggerQueueUrl } from 'keeperEnvironment';
 import { JobSourceWebsiteEnum } from 'keeperTypes';
 
