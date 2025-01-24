@@ -1,8 +1,10 @@
 import { SQSEvent } from 'aws-lambda';
 import { TBrightDataCrunchbaseCompany } from 'keeperTypes';
-import { extractErrorMessage, normalizeLocation, normalizeUrl, sendMessageToQueue } from 'keeperUtils';
-import { CompaniesService } from 'keeperServices';
 import {
+  extractErrorMessage,
+  normalizeLocation,
+  normalizeUrl,
+  sendMessageToQueue,
   brightDataCrunchbaseCompanyTransformer,
   checkSnapshotStatusById,
   fetchSnapshotArrayDataById,
@@ -10,6 +12,7 @@ import {
   requestSnapshotByUrlAndFilters,
   snapshotNotReadyRequeueTimeout,
 } from 'keeperUtils';
+import { CompaniesService } from 'keeperServices';
 import { crunchbaseCompaniesQueueUrl } from 'keeperEnvironment';
 import { getCrunchbaseCompanyInfoSnapshotUrl } from 'keeperConstants';
 

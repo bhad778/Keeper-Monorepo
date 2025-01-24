@@ -10,7 +10,7 @@ import {
   requestSnapshotByUrlAndFilters,
   snapshotNotReadyRequeueTimeout,
   sendMessageToQueue,
-} from 'keeperUtils/brightDataUtils';
+} from 'keeperUtils';
 import { glassdoorReviewsQueueUrl, glassdoorCompaniesQueueUrl, crunchbaseCompaniesQueueUrl } from 'keeperEnvironment';
 import { getGlassdoorCompanyInfoSnapshotUrl, glassdoorSearchUrl } from 'keeperConstants';
 

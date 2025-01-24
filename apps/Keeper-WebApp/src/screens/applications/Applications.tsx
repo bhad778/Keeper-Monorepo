@@ -28,7 +28,7 @@ const Applications = () => {
       });
   }, []);
 
-  const onMatchPress = (application: TJob) => {};
+  const onMatchPress = () => {};
 
   return (
     <Grid container>

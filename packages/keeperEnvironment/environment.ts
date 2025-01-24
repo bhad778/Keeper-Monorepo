@@ -38,6 +38,7 @@ if (isReactNative) {
     glassdoorCompaniesQueueUrl: process.env.VITE_GLASSDOOR_COMPANIES_QUEUE_URL || '',
     glassdoorReviewsQueueUrl: process.env.VITE_GLASSDOOR_REVIEWS_QUEUE_URL || '',
     crunchbaseCompaniesQueueUrl: process.env.VITE_CRUNCHBASE_COMPANIES_QUEUE_URL || '',
+    staggerQueueUrl: process.env.STAGGER_QUEUE_URL || '',
   };
 } else if (isWeb) {
   // Web: Use Vite's import.meta.env
@@ -82,4 +83,5 @@ export const {
   glassdoorCompaniesQueueUrl,
   glassdoorReviewsQueueUrl,
   crunchbaseCompaniesQueueUrl,
+  staggerQueueUrl,
 } = env;
