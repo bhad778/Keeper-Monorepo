@@ -3,13 +3,13 @@ import * as Joi from 'joi';
 import { HydratedDocument } from 'mongoose';
 import axios from 'axios';
 import { AccountTypeEnum, TEmployee } from 'keeperTypes';
-import { getGeoLocationFromAddress, extractErrorMessage } from 'keeperUtils/backendUtils';
 
 import { headers } from '../../constants';
 import connectToDatabase from '../../db';
 import ValidateBody from '../validateBody';
 import Employee from '../../models/Employee';
 import { AccountTypeSchema } from '../../schemas/globalSchemas';
+import { extractErrorMessage, getGeoLocationFromAddress } from '../../keeperApiUtils';
 
 const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
 

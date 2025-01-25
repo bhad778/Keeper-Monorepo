@@ -1,6 +1,5 @@
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import { TSwipe } from 'keeperTypes';
-import { convertMilesToMeters, escapeRegex, shuffleArray } from 'keeperUtils/backendUtils';
 
 import { getItemsForSwipingLimit, headers, seniorDevYearsOfEpxerience } from '../../constants';
 import connectToDatabase from '../../db';
@@ -9,7 +8,7 @@ import { JobPreferencesSchema } from '../../schemas/globalSchemas';
 import ValidateBody from '../validateBody';
 import Swipe from '../../models/Swipe';
 import Employee from '../../models/Employee';
-import { extractErrorMessage } from '../../keeperApiUtils';
+import { escapeRegex, extractErrorMessage, convertMilesToMeters, shuffleArray } from '../../keeperApiUtils';
 
 export const handler = async (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
   context.callbackWaitsForEmptyEventLoop = false;

@@ -1,6 +1,7 @@
 import mongoose, { InferSchemaType } from 'mongoose';
 import { JobSourceWebsiteEnum } from 'keeperTypes';
-import { normalizeLocation, normalizeUrl, normalizeCompanyName } from 'keeperUtils/backendUtils';
+
+import { normalizeLocation, normalizeUrl, normalizeCompanyName } from '../keeperApiUtils';
 
 const CompaniesSchema = new mongoose.Schema({
   createdAt: { type: Date, required: false, default: new Date() },
