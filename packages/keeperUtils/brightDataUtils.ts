@@ -230,6 +230,9 @@ export const linkedInJobTransformer = (brightDataJob: TBrightDataLinkedInJob): T
     relevantSkills: brightDataRequiredSkillsTransformer(brightDataJob.job_summary),
     compensation: linkedInSalaryTransformer(brightDataJob.job_base_pay_range) || null,
     sourceWebsite: JobSourceWebsiteEnum.LinkedIn,
+    benefits: null,
+    formattedCompensation: null,
+    locationFlexibility: null,
 
     sourceWebsiteApplicationUrl: brightDataJob.url,
     jobTitle: brightDataJob.job_title,
@@ -343,6 +346,9 @@ export const indeedJobTransformer = (brightDataIndeedJob: TBrightDataIndeedJob):
     relevantSkills: brightDataRequiredSkillsTransformer(brightDataIndeedJob.description_text),
     compensation: linkedInSalaryTransformer(brightDataIndeedJob.salary_formatted) || null,
     sourceWebsite: JobSourceWebsiteEnum.Indeed,
+    benefits: null,
+    formattedCompensation: null,
+    locationFlexibility: null,
 
     sourceWebsiteApplicationUrl: brightDataIndeedJob.url,
     jobTitle: brightDataIndeedJob.job_title,

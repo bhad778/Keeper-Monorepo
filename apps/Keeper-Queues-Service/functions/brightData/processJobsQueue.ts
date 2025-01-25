@@ -1,10 +1,12 @@
 import { SQSEvent } from 'aws-lambda';
-import { JobsService, CompaniesService } from 'keeperServices';
+import { JobsService, CompaniesService, ChatGPTService } from 'keeperServices';
 import { sendMessageToQueue, extractErrorMessage } from 'keeperUtils/backendUtils';
 import { snapshotNotReadyRequeueTimeout, requestSnapshotByUrlAndFilters } from 'keeperUtils/brightDataUtils';
 import { geoLocationQueueUrl, jobsQueueUrl, sourceWebsiteCompaniesQueueUrl } from 'keeperEnvironment';
 import { TJob, JobSourceWebsiteEnum } from 'keeperTypes';
 import { getIndeedCompanySnapshotUrl, getLinkedInCompanySnapshotUrl } from 'keeperConstants';
+
+import { massageJobDataPrompt } from '../../chatGPTPrompts';
 
 // example message-
 // {
@@ -31,7 +33,39 @@ export const handler = async (event: SQSEvent) => {
         return;
       }
 
-      // Step 2: Add the job to the database
+      try {
+        // Call ChatGPTService and get the response
+        const response = await ChatGPTService.handleChatGPTRequest(massageJobDataPrompt(job.jobSummary, job.jobTitle));
+
+        // Check if the response indicates success
+        if (response.success && response.data) {
+          // Parse the `data` field, which contains the stringified JSON object
+          const parsedDetails = JSON.parse(response.data);
+
+          console.info(`Extracted details: ${JSON.stringify(parsedDetails)}`);
+
+          // Add the extracted details to the job object
+          job.benefits = parsedDetails.benefits;
+          job.compensation = parsedDetails.compensation;
+          job.formattedCompensation = parsedDetails.formattedCompensation;
+          job.locationFlexibility = parsedDetails.locationFlexibility;
+          job.jobSummary = parsedDetails.jobSummary;
+        } else {
+          console.error(`Failed to extract details. Response: ${JSON.stringify(response)}`);
+          // Handle failure case (e.g., log error, skip job processing, etc.)
+        }
+      } catch (error) {
+        console.error(`Error processing ChatGPT response: ${error}`);
+        // Handle error case (e.g., log error, requeue message, etc.)
+      }
+
+      console.info(
+        `Successfully extracted details and addd them to job object. Heres the job data before we add it to the DB: ${JSON.stringify(
+          job,
+        )}`,
+      );
+
+      // Step 3: Add the job to the database
       await JobsService.addJob({ jobs: [job] });
 
       console.info(`Added job to the database for company: ${job.companyName}`);

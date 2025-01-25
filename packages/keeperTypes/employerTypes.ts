@@ -29,6 +29,12 @@ export type TEmployerFilterListOptions =
   | 'Work Auth'
   | 'Salary/Contract';
 
+export type TLocationFlexibility =
+  | 'onsite' // For 100% onsite jobs
+  | 'remote' // For 100% remote jobs
+  | `hybrid - ${number} days` // For hybrid jobs with a specific number of days
+  | 'hybrid'; // For hybrid jobs without a specific number of days
+
 // job in our database
 export type TJob = {
   _id?: string;
@@ -42,7 +48,10 @@ export type TJob = {
   hasGottenToEditProfileScreen?: boolean;
   hasReceivedLikeNotification?: boolean;
   compensation: TJobCompensation | null;
+  formattedCompensation: TJobCompensation | null;
   sourceWebsite: JobSourceWebsiteEnum;
+  benefits: string | null;
+  locationFlexibility: TLocationFlexibility | null;
 
   sourceWebsiteApplicationUrl: string;
   jobTitle: string;
@@ -63,8 +72,7 @@ export type TOnsiteSchedule = 'Remote' | 'Hybrid' | 'Office';
 
 export type TJobCompensation = {
   type: EmploymentTypeEnum;
-  payRange?: TCompensationRange;
-  salaryConversionRange?: TCompensationRange;
+  payRange?: { min: number; max: number };
 };
 
 export type TCompensationRange = {

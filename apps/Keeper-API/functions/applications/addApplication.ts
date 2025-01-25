@@ -46,7 +46,7 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
 
     return {
       statusCode: 201,
-      headers,
+      // headers,
       body: JSON.stringify({
         success: true,
         message: 'Job application created successfully',

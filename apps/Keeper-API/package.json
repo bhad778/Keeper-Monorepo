@@ -20,13 +20,14 @@
     "i18n-iso-countries": "^7.13.0",
     "joi": "^17.13.3",
     "mongoose": "^8.7.2",
+    "openai": "^4.80.1",
     "path": "^0.12.7",
     "serverless-prune-plugin": "^2.1.0",
     "stripe": "^17.2.0"
   },
   "devDependencies": {
-    "@types/aws-sdk": "^0.0.42",
     "@types/aws-lambda": "^8.10.145",
+    "@types/aws-sdk": "^0.0.42",
     "@types/joi": "^17.2.3",
     "@types/mongoose": "^5.11.97",
     "serverless": "^3.39.0",

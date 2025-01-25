@@ -18,7 +18,6 @@ import { JobSourceWebsiteEnum } from 'keeperTypes';
 //     "sourceWebsite": "LinkedIn"
 // }
 
-// problem- there will be linkedIN and indeed snapshots, they will both enqueue batches 50 at the same time
 export const handler = async (event: SQSEvent) => {
   const BATCH_SIZE = 50; // Number of jobs to process in each batch
 

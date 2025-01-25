@@ -71,6 +71,14 @@ custom:
     number: 3
 
 functions:
+  handleChatGPTRequest:
+    handler: functions/chatGPT/handleChatGPTRequest.handler
+    events:
+      - http:
+          path: handleChatGPTRequest
+          method: post
+          cors: true
+
   findCompany:
     handler: functions/companies/findCompany.handler
     events:

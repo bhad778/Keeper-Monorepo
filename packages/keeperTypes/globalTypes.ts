@@ -48,6 +48,7 @@ export type TGrowthEngineEntry = {
 export enum EmploymentTypeEnum {
   'Salary',
   'Contract',
+  'Contract To Hire',
 }
 
 export type TCompanySize = 'Startup' | 'Mid-Size' | 'Large';
