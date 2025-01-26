@@ -4,8 +4,8 @@ import { APIGatewayEvent, Context, APIGatewayProxyResult } from 'aws-lambda';
 import { headers } from '../../constants';
 import { extractErrorMessage } from '../../keeperApiUtils';
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY; // Ensure your API key is in the environment variables
-const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
+const CHATGPT_API_KEY = process.env.CHATGPT_API_KEY; // Ensure your API key is in the environment variables
+const CHATGPT_API_URL = 'https://api.openai.com/v1/chat/completions';
 
 export const handler = async (event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> => {
   context.callbackWaitsForEmptyEventLoop = false;
@@ -28,7 +28,7 @@ export const handler = async (event: APIGatewayEvent, context: Context): Promise
 
     // Make a POST request to the OpenAI API
     const response = await axios.post(
-      OPENAI_API_URL,
+      CHATGPT_API_URL,
       {
         model: 'gpt-3.5-turbo',
         messages: [{ role: 'user', content: prompt }],
@@ -37,7 +37,7 @@ export const handler = async (event: APIGatewayEvent, context: Context): Promise
       {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${OPENAI_API_KEY}`,
+          Authorization: `Bearer ${CHATGPT_API_KEY}`,
         },
       },
     );
