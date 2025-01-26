@@ -1,12 +1,11 @@
+import axios from 'axios';
 import { APIGatewayEvent, Context, APIGatewayProxyResult } from 'aws-lambda';
-import OpenAI from 'openai';
 
 import { headers } from '../../constants';
 import { extractErrorMessage } from '../../keeperApiUtils';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY!, // Make sure your API key is in your environment variables
-});
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY; // Ensure your API key is in the environment variables
+const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions';
 
 export const handler = async (event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> => {
   context.callbackWaitsForEmptyEventLoop = false;
@@ -27,20 +26,32 @@ export const handler = async (event: APIGatewayEvent, context: Context): Promise
       };
     }
 
-    // Call OpenAI with the given prompt
-    const response = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
-      messages: [{ role: 'user', content: prompt }],
-      max_tokens: 500,
-    });
+    // Make a POST request to the OpenAI API
+    const response = await axios.post(
+      OPENAI_API_URL,
+      {
+        model: 'gpt-3.5-turbo',
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 500,
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${OPENAI_API_KEY}`,
+        },
+      },
+    );
+
+    // Extract the response content
+    const completionContent = response.data.choices[0]?.message?.content || 'Empty response from ChatGPT';
 
     // Return the result to the client
     return {
       statusCode: 200,
+      headers,
       body: JSON.stringify({
         success: true,
-        headers,
-        data: response.choices[0]?.message?.content || 'Empty response from ChatGPT',
+        data: completionContent,
       }),
     };
   } catch (error) {
