@@ -1,6 +1,6 @@
 export const massageJobDataPrompt = (jobSummary: string, jobTitle: string) => {
   return `
-        Analyze the following job description and job title, then extract the following details:
+        Analyze the following job description and job title, then extract the following details. If you cant get a good answer for any of the details below, just return it null. For example, if you cant find a responsibilities or qualifications that you can list as an array of strings just return null. If you cant find a good description of the project they will be working on return null.  Make it seem like it was written by the person who is providing the job:
         1. Benefits: List any benefits mentioned in the job description (return as a single string or null if none are mentioned).
         2. Compensation: Extract the dollar compensation if mentioned (return as a string or null if not mentioned).
         3. Formatted compensation: Please return an object with this type:
@@ -24,8 +24,9 @@ export const massageJobDataPrompt = (jobSummary: string, jobTitle: string) => {
           - "remote" for 100% remote jobs,
           - "hybrid - x days" for hybrid jobs with x days mentioned,
           - "hybrid" if hybrid is mentioned but the number of days isn't specified.
-        5. Job summary: Provide a concise summary of the job's responsibilities and expectations (exclude benefits, location, or extra information).
-        6. Normalize the provided job title into a standard format, removing any extraneous information or location details. Here are some examples:
+        5. Job summary: Provide a general summary of the job description you were passed and try to exclude including stuff from other fields like benefits, qualifications, etc. 
+        6. Project: Provide a summary of the project that the potential employee will be working on (exclude benefits, location, qualifications, and responsibilities).
+        7. Normalize the provided job title into a standard format, removing any extraneous information or location details. Here are some examples:
           - "Senior Software Engineer (frontend), Product Foundation" -> "Senior Frontend Engineer"
           - "Senior Web Developer (hybrid in San Francisco)" -> "Senior Web Developer"
           - "Mid Level Full Stack React/node.js Developer" -> "Mid Level Full Stack Developer"
@@ -33,6 +34,8 @@ export const massageJobDataPrompt = (jobSummary: string, jobTitle: string) => {
           - "Software Engineer, Full Stack" -> "Full Stack Software Engineer"
           - "Principal Software Engineer - Frontend" -> "Principal Frontend Engineer"
           - "Software Engineer - Fullstack, Atlanta" -> "Full Stack Software Engineer"
+        8. Responsibilities: Extract the responsibilities mentioned in the job description (return as an array of strings or null if none are mentioned).
+        9. Qualifications: Extract the responsibilities mentioned in the job description (return as an array of strings or null if none are mentioned).
   
         Respond in JSON format with the following structure:
         {
@@ -40,8 +43,11 @@ export const massageJobDataPrompt = (jobSummary: string, jobTitle: string) => {
           "compensation": string | null,
           "formattedCompensation": { type: 'Salary' | 'Contract' | 'Contract To Hire'; payRange?: { min: number; max: number } } | null,
           "locationFlexibility": string | null,
+          "project": string | null,
           "jobSummary": string,
-          "jobTitle": string
+          "jobTitle": string,
+          "responsibilities": string[],
+          "qualifications": string[]
         }
   
         Job Description:
