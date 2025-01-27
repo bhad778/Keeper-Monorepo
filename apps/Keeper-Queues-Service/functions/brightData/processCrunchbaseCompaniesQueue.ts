@@ -16,7 +16,6 @@ import {
 } from 'keeperUtils/brightDataUtils';
 
 import { CompaniesService } from 'keeperServices';
-import { crunchbaseCompaniesQueueUrl } from 'keeperEnvironment';
 import { getCrunchbaseCompanyInfoSnapshotUrl } from 'keeperConstants';
 
 // {
@@ -26,6 +25,8 @@ import { getCrunchbaseCompanyInfoSnapshotUrl } from 'keeperConstants';
 //   "companyWebsiteUrl": null,
 //   "retries": 0
 // }
+
+const crunchbaseCompaniesQueueUrl = process.env.CRUNCHBASE_COMPANIES_QUEUE_URL;
 
 export const handler = async (event: SQSEvent) => {
   try {

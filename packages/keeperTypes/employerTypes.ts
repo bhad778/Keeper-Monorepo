@@ -50,8 +50,11 @@ export type TJob = {
   compensation: TJobCompensation | null;
   formattedCompensation: TJobCompensation | null;
   sourceWebsite: JobSourceWebsiteEnum;
-  benefits: string | null;
   locationFlexibility: TLocationFlexibility | null;
+  projectDescription: string | null;
+  benefits: string[] | null;
+  responsibilities: string[] | null;
+  qualifications: string[] | null;
 
   sourceWebsiteApplicationUrl: string;
   jobTitle: string;

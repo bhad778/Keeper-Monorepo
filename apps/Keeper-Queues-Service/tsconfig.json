@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "module": "CommonJS",
     "rootDir": "../../", // Set to the monorepo root to include all relevant files
     "baseUrl": "./", // Base URL for module resolution
     "paths": {

@@ -45,11 +45,15 @@ export const handler = async (event: SQSEvent) => {
           console.info(`Extracted details: ${JSON.stringify(parsedDetails)}`);
 
           // Add the extracted details to the job object
-          job.benefits = parsedDetails.benefits;
           job.compensation = parsedDetails.compensation;
           job.formattedCompensation = parsedDetails.formattedCompensation;
           job.locationFlexibility = parsedDetails.locationFlexibility;
           job.jobSummary = parsedDetails.jobSummary;
+          job.jobTitle = parsedDetails.jobTitle;
+          job.projectDescription = parsedDetails.projectDescription;
+          job.benefits = parsedDetails.benefits;
+          job.responsibilities = parsedDetails.responsibilities;
+          job.qualifications = parsedDetails.qualifications;
         } else {
           console.error(`Failed to extract details. Response: ${JSON.stringify(response)}`);
           // Handle failure case (e.g., log error, skip job processing, etc.)
