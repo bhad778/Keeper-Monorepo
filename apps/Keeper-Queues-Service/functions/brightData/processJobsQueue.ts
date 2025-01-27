@@ -36,6 +36,8 @@ export const handler = async (event: SQSEvent) => {
         return;
       }
 
+      let isSoftwareDevelopmentJob = false;
+
       try {
         // Call ChatGPTService and get the response
         const response = await ChatGPTService.handleChatGPTRequest(massageJobDataPrompt(job.jobSummary, job.jobTitle));
@@ -47,6 +49,8 @@ export const handler = async (event: SQSEvent) => {
 
           console.info(`Extracted details: ${JSON.stringify(parsedDetails)}`);
 
+          isSoftwareDevelopmentJob = parsedDetails.isSoftwareDevelopmentJob;
+
           // Add the extracted details to the job object
           job.compensation = parsedDetails.compensation;
           job.formattedCompensation = parsedDetails.formattedCompensation;
@@ -57,6 +61,8 @@ export const handler = async (event: SQSEvent) => {
           job.benefits = parsedDetails.benefits;
           job.responsibilities = parsedDetails.responsibilities;
           job.qualifications = parsedDetails.qualifications;
+          job.jobLevel = parsedDetails.jobLevel;
+          job.requiredYearsOfExperience = parsedDetails.requiredYearsOfExperience;
         } else {
           console.error(`Failed to extract details. Response: ${JSON.stringify(response)}`);
           // Handle failure case (e.g., log error, skip job processing, etc.)
@@ -71,6 +77,11 @@ export const handler = async (event: SQSEvent) => {
           job,
         )}`,
       );
+
+      if (!isSoftwareDevelopmentJob) {
+        console.info(`Job with this title- ${job.jobTitle} is not a software development job. Skipping.`);
+        return;
+      }
 
       // Step 3: Add the job to the database
       await JobsService.addJob({ jobs: [job] });

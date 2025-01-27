@@ -36,6 +36,9 @@ export const massageJobDataPrompt = (jobSummary: string, jobTitle: string) => {
         7. Benefits: List any benefits mentioned in the job description (return as an array of strings or null if none are mentioned).
         8. Responsibilities: Extract the responsibilities mentioned in the job description (return as an array of strings or null if none are mentioned).
         9. Qualifications: Extract the responsibilities mentioned in the job description (return as an array of strings or null if none are mentioned).
+        10. Is software development job: Return true if you think the job is a software development job where the potential employee would actually be writing code or leading software developers because software development expertise is needed to do so, return false otherwise.
+        11. Job Level: jobLevel can be one of the following: "Intern", "Entry", "Mid", "Senior", "Lead", "Principal", "Staff", "Director".
+        12. Required years of experience: Extract the required years of experience, this will be based on the jobLevel you get. intern: 0, entry: 0-1, mid: 2-5, senior: 5-8, lead: 8-10, principal: 10-15, staff: 15-20, director: 20+.
   
         Respond in JSON format with the following structure:
         {
@@ -46,8 +49,11 @@ export const massageJobDataPrompt = (jobSummary: string, jobTitle: string) => {
           "jobSummary": string,
           "jobTitle": string,
           "benefits": string[] | null,
-          "responsibilities": string[],
-          "qualifications": string[]
+          "responsibilities": string[] | null,
+          "qualifications": string[] | null,
+          "isSoftwareDevelopmentJob": boolean,
+          "jobLevel": 'Intern' | 'Entry' | 'Mid' | 'Senior' | 'Lead' | 'Principal' | 'Staff' | 'Director',
+          "requiredYearsOfExperience": number,
         }
   
         Job Description:

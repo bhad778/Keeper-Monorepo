@@ -22,6 +22,7 @@ const JobSchema = new mongoose.Schema({
   benefits: { type: Array, default: false, required: false },
   responsibilities: { type: Array, default: false, required: false },
   qualifications: { type: Array, default: false, required: false },
+  jobLevel: { type: String, default: null, required: false },
 
   // brightData fields
   // this is the url to the application from the source website

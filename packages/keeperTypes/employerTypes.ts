@@ -55,6 +55,7 @@ export type TJob = {
   benefits: string[] | null;
   responsibilities: string[] | null;
   qualifications: string[] | null;
+  jobLevel: string | null;
 
   sourceWebsiteApplicationUrl: string;
   jobTitle: string;
