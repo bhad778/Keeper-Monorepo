@@ -26,7 +26,7 @@ import { getCrunchbaseCompanyInfoSnapshotUrl } from 'keeperConstants';
 //   "retries": 0
 // }
 
-const crunchbaseCompaniesQueueUrl = process.env.CRUNCHBASE_COMPANIES_QUEUE_URL;
+const crunchbaseCompaniesQueueUrl = process.env.CRUNCHBASE_COMPANIES_QUEUE_URL as string;
 
 export const handler = async (event: SQSEvent) => {
   try {
