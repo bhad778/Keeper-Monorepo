@@ -49,7 +49,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     }
 
     // Fetch employer's jobs
-    const response = await axios.post(`${process.env.ROOT_URL}/getEmployersJobs`, {
+    const response = await axios.post(`${process.env.VITE_API_URL}/getEmployersJobs`, {
       userId: employer._id,
     });
 

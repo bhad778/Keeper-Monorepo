@@ -7,9 +7,9 @@ import { getIndeedCompanySnapshotUrl, getLinkedInCompanySnapshotUrl } from 'keep
 
 import { massageJobDataPrompt } from '../../chatGPTPrompts';
 
-const geoLocationQueueUrl = process.env.GEOLOCATION_QUEUE_URL as string;
-const jobsQueueUrl = process.env.JOBS_QUEUE_URL as string;
-const sourceWebsiteCompaniesQueueUrl = process.env.SOURCE_WEBSITE_COMPANIES_QUEUE_URL as string;
+const geoLocationQueueUrl = process.env.VITE_GEOLOCATION_QUEUE_URL as string;
+const jobsQueueUrl = process.env.VITE_JOBS_QUEUE_URL as string;
+const sourceWebsiteCompaniesQueueUrl = process.env.VITE_SOURCE_WEBSITE_COMPANIES_QUEUE_URL as string;
 
 // example message-
 // {

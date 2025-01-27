@@ -2,7 +2,7 @@ import { SQSEvent } from 'aws-lambda';
 import axios from 'axios';
 import { JobsService } from 'keeperServices';
 
-const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
+const googleMapsApiKey = process.env.VITE_GOOGLE_MAPS_API_KEY;
 
 export const handler = async (event: SQSEvent) => {
   // Ensure database connection is established

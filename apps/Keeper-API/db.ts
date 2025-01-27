@@ -8,9 +8,7 @@ const connectToDatabase = () => {
     return Promise.resolve();
   }
 
-  console.log('process.env.DB', process.env.DB);
-
-  return mongoose.connect(process.env.DB || '').then(db => {
+  return mongoose.connect(process.env.VITE_DB || '').then(db => {
     isConnected = db.connections[0].readyState;
   });
 };

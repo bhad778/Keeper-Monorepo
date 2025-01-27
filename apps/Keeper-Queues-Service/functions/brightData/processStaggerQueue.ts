@@ -10,13 +10,13 @@ import {
 } from 'keeperUtils/brightDataUtils';
 import { JobSourceWebsiteEnum } from 'keeperTypes';
 
-const jobsQueueUrl = process.env.JOBS_QUEUE_URL as string;
-const staggerQueueUrl = process.env.STAGGER_QUEUE_URL as string;
+const jobsQueueUrl = process.env.VITE_JOBS_QUEUE_URL as string;
+const staggerQueueUrl = process.env.VITE_STAGGER_QUEUE_URL as string;
 
 // this snapshot will yield an array of many jobs
 // example message-
 // {
-//     "snapshotId": "s_m4zl9nh512acix3jzh",
+//     "snapshotId": "s_m6ei1sqa28zkdqf3fe",
 //     "sourceWebsite": "LinkedIn"
 // }
 

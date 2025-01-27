@@ -7,7 +7,7 @@ import {
   snapshotNotReadyRequeueTimeout,
 } from 'keeperUtils/brightDataUtils';
 
-const glassdoorReviewsQueueUrl = process.env.GLASSDOOR_REVIEWS_QUEUE_URL as string;
+const glassdoorReviewsQueueUrl = process.env.VITE_GLASSDOOR_REVIEWS_QUEUE_URL as string;
 
 export const handler = async (event: SQSEvent) => {
   try {

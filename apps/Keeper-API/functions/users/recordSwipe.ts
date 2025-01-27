@@ -86,7 +86,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     const sendPushNotification = async () => {
       if (newSwipe.likeNotificationObject) {
         try {
-          await axios.post(`${process.env.ROOT_URL}/sendPubnubNotification`, {
+          await axios.post(`${process.env.VITE_API_URL}/sendPubnubNotification`, {
             messageObject: newSwipe.likeNotificationObject,
           });
         } catch (error) {

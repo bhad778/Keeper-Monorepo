@@ -47,14 +47,14 @@ export type TJob = {
   geoLocation?: TGeoLocation;
   hasGottenToEditProfileScreen?: boolean;
   hasReceivedLikeNotification?: boolean;
-  compensation: TJobCompensation | null;
+  compensation: string | null;
+  formattedCompensation: TJobCompensation | null;
   sourceWebsite: JobSourceWebsiteEnum;
   locationFlexibility: TLocationFlexibility | null;
   projectDescription: string | null;
   benefits: string[] | null;
   responsibilities: string[] | null;
   qualifications: string[] | null;
-  formattedCompensation: TJobCompensation | null;
 
   sourceWebsiteApplicationUrl: string;
   jobTitle: string;

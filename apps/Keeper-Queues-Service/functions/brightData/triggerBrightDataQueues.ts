@@ -6,7 +6,7 @@ import { getIndeedJobSnapshotUrl, getLinkedInJobSnapshotUrl, linkedInFiltersUrl 
 
 import { headers } from '../../../Keeper-API/constants';
 
-const staggerQueueUrl = process.env.STAGGER_QUEUE_URL as string;
+const staggerQueueUrl = process.env.VITE_STAGGER_QUEUE_URL as string;
 
 export const handler = async (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
   context.callbackWaitsForEmptyEventLoop = false;

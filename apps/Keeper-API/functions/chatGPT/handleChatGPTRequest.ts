@@ -4,7 +4,7 @@ import { APIGatewayEvent, Context, APIGatewayProxyResult } from 'aws-lambda';
 import { headers } from '../../constants';
 import { extractErrorMessage } from '../../keeperApiUtils';
 
-const CHATGPT_API_KEY = process.env.CHATGPT_API_KEY; // Ensure your API key is in the environment variables
+const CHATGPT_API_KEY = process.env.VITE_CHATGPT_API_KEY; // Ensure your API key is in the environment variables
 const CHATGPT_API_URL = 'https://api.openai.com/v1/chat/completions';
 
 export const handler = async (event: APIGatewayEvent, context: Context): Promise<APIGatewayProxyResult> => {

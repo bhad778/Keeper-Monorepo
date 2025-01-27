@@ -17,9 +17,9 @@ import {
   glassdoorSearchUrl,
 } from 'keeperConstants';
 
-const sourceWebsiteCompaniesQueueUrl = process.env.SOURCE_WEBSITE_COMPANIES_QUEUE_URL as string;
-const glassdoorCompaniesQueueUrl = process.env.GLASSDOOR_COMPANIES_QUEUE_URL as string;
-const crunchbaseCompaniesQueueUrl = process.env.CRUNCHBASE_COMPANIES_QUEUE_URL as string;
+const sourceWebsiteCompaniesQueueUrl = process.env.VITE_SOURCE_WEBSITE_COMPANIES_QUEUE_URL as string;
+const glassdoorCompaniesQueueUrl = process.env.VITE_GLASSDOOR_COMPANIES_QUEUE_URL as string;
+const crunchbaseCompaniesQueueUrl = process.env.VITE_CRUNCHBASE_COMPANIES_QUEUE_URL as string;
 
 // this snapshot will yield
 // {
