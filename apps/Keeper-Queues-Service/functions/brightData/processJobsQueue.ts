@@ -2,11 +2,14 @@ import { SQSEvent } from 'aws-lambda';
 import { JobsService, CompaniesService, ChatGPTService } from 'keeperServices';
 import { sendMessageToQueue, extractErrorMessage } from 'keeperUtils/backendUtils';
 import { snapshotNotReadyRequeueTimeout, requestSnapshotByUrlAndFilters } from 'keeperUtils/brightDataUtils';
-import { geoLocationQueueUrl, jobsQueueUrl, sourceWebsiteCompaniesQueueUrl } from 'keeperEnvironment';
 import { TJob, JobSourceWebsiteEnum } from 'keeperTypes';
 import { getIndeedCompanySnapshotUrl, getLinkedInCompanySnapshotUrl } from 'keeperConstants';
 
 import { massageJobDataPrompt } from '../../chatGPTPrompts';
+
+const geoLocationQueueUrl = process.env.GEOLOCATION_QUEUE_URL as string;
+const jobsQueueUrl = process.env.JOBS_QUEUE_URL as string;
+const sourceWebsiteCompaniesQueueUrl = process.env.SOURCE_WEBSITE_COMPANIES_QUEUE_URL as string;
 
 // example message-
 // {

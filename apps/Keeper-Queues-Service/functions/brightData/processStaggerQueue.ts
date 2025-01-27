@@ -8,8 +8,10 @@ import {
   snapshotNotReadyRequeueTimeout,
   staggerTimeout,
 } from 'keeperUtils/brightDataUtils';
-import { jobsQueueUrl, staggerQueueUrl } from 'keeperEnvironment';
 import { JobSourceWebsiteEnum } from 'keeperTypes';
+
+const jobsQueueUrl = process.env.JOBS_QUEUE_URL as string;
+const staggerQueueUrl = process.env.STAGGER_QUEUE_URL as string;
 
 // this snapshot will yield an array of many jobs
 // example message-

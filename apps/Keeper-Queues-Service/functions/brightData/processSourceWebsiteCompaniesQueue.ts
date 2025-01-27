@@ -1,11 +1,6 @@
 import { SQSEvent } from 'aws-lambda';
 import { JobSourceWebsiteEnum } from 'keeperTypes';
 import { CompaniesService } from 'keeperServices';
-import {
-  crunchbaseCompaniesQueueUrl,
-  glassdoorCompaniesQueueUrl,
-  sourceWebsiteCompaniesQueueUrl,
-} from 'keeperEnvironment';
 import { sendMessageToQueue, extractErrorMessage } from 'keeperUtils/backendUtils';
 import {
   brightDataIndeedCompanyTransformer,
@@ -21,6 +16,10 @@ import {
   getGlassdoorCompanyInfoSnapshotUrl,
   glassdoorSearchUrl,
 } from 'keeperConstants';
+
+const sourceWebsiteCompaniesQueueUrl = process.env.SOURCE_WEBSITE_COMPANIES_QUEUE_URL as string;
+const glassdoorCompaniesQueueUrl = process.env.GLASSDOOR_COMPANIES_QUEUE_URL as string;
+const crunchbaseCompaniesQueueUrl = process.env.CRUNCHBASE_COMPANIES_QUEUE_URL as string;
 
 // this snapshot will yield
 // {
