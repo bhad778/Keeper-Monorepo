@@ -47,17 +47,10 @@ const JobSchema = new mongoose.Schema({
 
 // export type TJobInfered = InferSchemaType<typeof JobSchema>;
 
-JobSchema.index({
-  createdAt: 1,
-  requiredYearsOfExperience: 1,
-  relevantSkills: 1,
-});
+JobSchema.index({ createdAt: 1, requiredYearsOfExperience: 1, relevantSkills: 1 });
 
-JobSchema.index({
-  createdAt: 1,
-  requiredYearsOfExperience: 1,
-  relevantSkills: 1,
-  geoLocation: '2dsphere',
-});
+JobSchema.index({ createdAt: 1, requiredYearsOfExperience: 1, relevantSkills: 1, geoLocation: '2dsphere' });
+
+JobSchema.index({ jobTitle: 'text', locationFlexibility: 'text', relevantSkills: 'text', jobLevel: 'text' });
 
 export default mongoose.model('Jobs', JobSchema);
