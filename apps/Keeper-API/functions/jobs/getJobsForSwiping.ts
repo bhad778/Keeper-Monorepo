@@ -136,6 +136,8 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
       jobTitle: 1,
       jobLevel: 1,
       locationFlexibility: 1,
+      formattedCompensation: 1,
+      applyLink: 1,
     })
       .sort(textSearch ? { score: { $meta: 'textScore' } } : {})
       .limit(getItemsForSwipingLimit)

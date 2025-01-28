@@ -2,10 +2,16 @@ import { TJob, TJobSettings } from 'keeperTypes';
 import { UpdateWriteOpResult } from 'mongoose';
 
 import { postRequest } from './serviceUtils';
-import { TAddJobPayload, TDeleteJobPayload, TFindJobPayload, TUpdateJobPayload } from './serviceTypes';
+import {
+  TAddJobPayload,
+  TDeleteJobPayload,
+  TFindJobPayload,
+  TGetJobsForSwipingPayload,
+  TUpdateJobPayload,
+} from './serviceTypes';
 
 const JobsService = {
-  getJobsForSwiping: (payload?: any) => postRequest('getJobsForSwiping', payload),
+  getJobsForSwiping: (payload?: TGetJobsForSwipingPayload) => postRequest('getJobsForSwiping', payload),
   getJobById: (payload: { jobId: string }) => postRequest('getJobById', payload),
   updateJobSettings: (payload: { jobId: string; updateJobSettingsObject: Partial<TJobSettings> }) =>
     postRequest('updateJobSettings', payload),

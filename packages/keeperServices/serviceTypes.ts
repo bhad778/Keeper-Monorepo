@@ -1,9 +1,17 @@
 import { QueryOptions, RootFilterQuery } from 'mongoose';
-import { OperationEnum, TJob, TCompany } from 'keeperTypes';
+import { OperationEnum, TJob, TCompany, TEmployeePreferences } from 'keeperTypes';
 
 export type TAddApplication = {
   employeeId: string;
   jobId: string;
+};
+
+export type TGetJobsForSwipingPayload = {
+  userId?: string; // ID of the user making the request
+  preferences?: TEmployeePreferences; // User's preferences for job search
+  isCount?: boolean; // Whether to return only the count of jobs
+  isPing?: boolean; // Whether the request is a ping check
+  textSearch?: string; // Text-based search query (e.g., "remote react developer")
 };
 
 export type TFindApplicationsByUserId = {

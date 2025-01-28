@@ -68,11 +68,13 @@ export const useStyles = () => {
       padding: '20px',
       borderRadius: '10px',
       backgroundColor: theme.color.darkGrey,
-      boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+      boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
       border: `1px solid ${theme.color.secondary}`,
       display: 'flex',
       flexDirection: 'column',
       gap: '10px',
+      transition: 'transform 0.2s, box-shadow 0.2s',
+      cursor: 'pointer',
     },
     jobTitle: {
       fontSize: '18px',
@@ -82,6 +84,30 @@ export const useStyles = () => {
     jobDescription: {
       fontSize: '14px',
       color: theme.color.text,
+      marginBottom: '5px',
+    },
+    applyButton: {
+      alignSelf: 'flex-start',
+      padding: '10px 20px',
+      borderRadius: '5px',
+      backgroundColor: theme.color.pink,
+      color: '#fff',
+      fontWeight: 'bold',
+      border: 'none',
+      cursor: 'pointer',
+      textDecoration: 'none',
+      textAlign: 'center',
+      transition: 'background-color 0.2s',
+    },
+    applyButtonText: {
+      color: theme.color.primary,
+    },
+    applyButtonHover: {
+      backgroundColor: theme.color.secondary,
+    },
+    jobCardHover: {
+      transform: 'scale(1.02)',
+      boxShadow: '0 6px 15px rgba(0, 0, 0, 0.3)',
     },
   };
 

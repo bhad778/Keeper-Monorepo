@@ -1,6 +1,6 @@
 export const colors = ['#F4C0FF', '#DCEF70', '#97DAFF', '#A0E0BF', '#FF6A52', '#CEE1EE', '#FED978'];
 
-export const getItemsForSwipingLimit = 30;
+export const getItemsForSwipingLimit = 200;
 
 export const seniorDevYearsOfEpxerience = 6;
 
