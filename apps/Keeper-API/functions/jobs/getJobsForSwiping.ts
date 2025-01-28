@@ -25,12 +25,13 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
       isPublic: Joi.boolean(),
       isCount: Joi.boolean(),
       isPing: Joi.boolean(),
+      textSearch: Joi.string().allow(''),
     });
 
     const isError = ValidateBody(event, getJobsForSwipingSchema, callback);
     if (isError) return;
 
-    const { preferences, userId, isPublic, isCount, isPing } = JSON.parse(event.body);
+    const { preferences, userId, isPublic, isCount, isPing, textSearch } = JSON.parse(event.body);
 
     // Handle ping request
     if (isPing) {
@@ -57,6 +58,7 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
       const { requiredYearsOfExperience, relevantSkills, isNew } = preferences;
 
       // Fetch swipes to exclude already swiped jobs
+      // TODO: make sure this is scalable
       const swipes = await Swipe.find({ ownerId: userId });
       const alreadySwipedOnIds = swipes.map(swipe => (swipe as TSwipe).receiverId || '');
 
@@ -86,6 +88,15 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
         };
       }
 
+      // Add text-based search filter
+      if (textSearch) {
+        const textSearchFilter = { $text: { $search: textSearch } };
+        if (!findObject.$and) {
+          findObject.$and = [];
+        }
+        findObject.$and.push(textSearchFilter);
+      }
+
       // Handle count request
       if (isCount) {
         const count = await Job.countDocuments(findObject).exec();
@@ -106,6 +117,7 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
       expoPushToken: 1,
       ownerId: 1,
     })
+      .sort(textSearch ? { score: { $meta: 'textScore' } } : {})
       .limit(getItemsForSwipingLimit)
       .exec();
 
