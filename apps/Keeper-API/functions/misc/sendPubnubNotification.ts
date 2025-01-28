@@ -7,8 +7,8 @@ import { headers } from '../../constants';
 import ValidateBody from '../validateBody';
 import { PubnubNotificationMessageObjectSchema } from '../../schemas/globalSchemas';
 
-const pubnubPublishKey = process.env.PUBNUB_PUBLISH_KEY;
-const pubnubSubscribeKey = process.env.PUBNUB_SUBSCRIBE_KEY;
+const pubnubPublishKey = process.env.VITE_PUBNUB_PUBLISH_KEY;
+const pubnubSubscribeKey = process.env.VITE_PUBNUB_SUBSCRIBE_KEY;
 
 export const handler = async (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
   context.callbackWaitsForEmptyEventLoop = false;

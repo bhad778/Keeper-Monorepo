@@ -8,17 +8,18 @@ import {
   snapshotNotReadyRequeueTimeout,
   staggerTimeout,
 } from 'keeperUtils/brightDataUtils';
-import { jobsQueueUrl, staggerQueueUrl } from 'keeperEnvironment';
 import { JobSourceWebsiteEnum } from 'keeperTypes';
+
+const jobsQueueUrl = process.env.VITE_JOBS_QUEUE_URL as string;
+const staggerQueueUrl = process.env.VITE_STAGGER_QUEUE_URL as string;
 
 // this snapshot will yield an array of many jobs
 // example message-
 // {
-//     "snapshotId": "s_m4zl9nh512acix3jzh",
+//     "snapshotId": "s_m6ei1sqa28zkdqf3fe",
 //     "sourceWebsite": "LinkedIn"
 // }
 
-// problem- there will be linkedIN and indeed snapshots, they will both enqueue batches 50 at the same time
 export const handler = async (event: SQSEvent) => {
   const BATCH_SIZE = 50; // Number of jobs to process in each batch
 

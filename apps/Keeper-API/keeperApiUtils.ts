@@ -1,5 +1,103 @@
-import { AxiosError } from 'axios';
+import axios, { AxiosError } from 'axios';
 import { stateAbbreviations } from 'keeperConstants';
+
+export const transformMonthToString = (month: string) => {
+  let monthValue = month;
+  if (!monthValue) {
+    monthValue = '';
+  }
+  switch (monthValue) {
+    case '01':
+      return 'January';
+    case '02':
+      return 'February';
+    case '03':
+      return 'March';
+    case '04':
+      return 'April';
+    case '05':
+      return 'May';
+    case '06':
+      return 'June';
+    case '07':
+      return 'July';
+    case '08':
+      return 'August';
+    case '09':
+      return 'September';
+    case '10':
+      return 'October';
+    case '11':
+      return 'November';
+    case '12':
+      return 'December';
+
+    case 'January':
+      return '01';
+    case 'February':
+      return '02';
+    case 'March':
+      return '03';
+    case 'April':
+      return '04';
+    case 'May':
+      return '05';
+    case 'June':
+      return '06';
+    case 'July':
+      return '07';
+    case 'August':
+      return '08';
+    case 'September':
+      return '09';
+    case 'October':
+      return '10';
+    case 'November':
+      return '11';
+    case 'December':
+      return '12';
+    default:
+      return 'Enter Date!';
+  }
+};
+
+export const getGeoLocationFromAddress = async (address, googleMapsApiKey) => {
+  const uriEncodedAddress = encodeURIComponent(address);
+
+  try {
+    const res = await axios.get(
+      `https://maps.googleapis.com/maps/api/geocode/json?address=${uriEncodedAddress}&key=${googleMapsApiKey}`,
+    );
+
+    const data = res.data;
+
+    if (data.status !== 'OK' || data.results.length === 0) {
+      console.error(`Geocoding API returned no results for address: ${address}`);
+      return null;
+    }
+
+    const location = data.results[0].geometry.location;
+
+    if (!location.lat || !location.lng) {
+      console.error(
+        `Geolocation data is missing latitude or longitude for address: ${address}. Location data: ${JSON.stringify(
+          location,
+        )}`,
+      );
+      return null;
+    }
+
+    const coordinates = [location.lng, location.lat]; // [longitude, latitude]
+
+    return {
+      type: 'Point',
+      coordinates,
+    };
+  } catch (error) {
+    console.error(`Error fetching geolocation for address: ${address}`, error);
+    return null;
+  }
+};
 
 export const normalizeUrl = (url: string, removeQueryParams = false) => {
   if (!url) return null;
@@ -169,6 +267,30 @@ export const normalizeCompanyName = (name: string) => {
 
 export const escapeRegex = (text: string) => {
   return text.replace(/[/\-\\^$*+?.()|[\]{}]/g, '\\$&');
+};
+
+export const shuffleArray = (array: any[]) => {
+  const shuffledArray = [...array];
+
+  let currentIndex = shuffledArray.length;
+
+  // While there remain elements to shuffle...
+  while (currentIndex != 0) {
+    // Pick a remaining element...
+    const randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [shuffledArray[currentIndex], shuffledArray[randomIndex]] = [
+      shuffledArray[randomIndex],
+      shuffledArray[currentIndex],
+    ];
+  }
+  return shuffledArray;
+};
+
+export const convertMilesToMeters = (miles: number) => {
+  return Math.round(miles * 1609.344);
 };
 
 export const extractErrorMessage = (error: unknown): string => {

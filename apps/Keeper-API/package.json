@@ -6,7 +6,8 @@
   "main": "handler.js",
   "scripts": {
     "start": "sls offline",
-    "clean": "rm -rf node_modules && rm -rf yarn.lock && rm -rf package-lock.json && npm install",
+    "clean": "yarn clean-webpack ; rm -rf node_modules && rm -rf yarn.lock && rm -rf package-lock.json && npm install",
+    "clean-webpack": "rm -rf .webpack .serverless",
     "deploy-dev": "WEBPACK_PARALLEL=TRUE NODE_OPTIONS='--max-old-space-size=16384' npx serverless deploy",
     "deploy-prod": "sls deploy --stage production",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -25,8 +26,8 @@
     "stripe": "^17.2.0"
   },
   "devDependencies": {
-    "@types/aws-sdk": "^0.0.42",
     "@types/aws-lambda": "^8.10.145",
+    "@types/aws-sdk": "^0.0.42",
     "@types/joi": "^17.2.3",
     "@types/mongoose": "^5.11.97",
     "serverless": "^3.39.0",

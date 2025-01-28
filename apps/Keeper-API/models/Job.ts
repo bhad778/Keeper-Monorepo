@@ -12,10 +12,17 @@ const JobSchema = new mongoose.Schema({
   receivedLikes: { type: Array, default: [], required: false },
   matches: { type: Array, default: [], required: false },
   relevantSkills: { type: Array, default: [], required: false },
-  compensation: { type: Object, default: null, required: false },
+  compensation: { type: String, default: null, required: false },
+  formattedCompensation: { type: Object, default: null, required: false },
   requiredYearsOfExperience: { type: Number, default: 0, required: false },
   // this is Indeed, LinkedIn, etc
   sourceWebsite: { type: String, default: null, required: false },
+  locationFlexibility: { type: String, default: false, required: false },
+  projectDescription: { type: String, default: false, required: false },
+  benefits: { type: Array, default: false, required: false },
+  responsibilities: { type: Array, default: false, required: false },
+  qualifications: { type: Array, default: false, required: false },
+  jobLevel: { type: String, default: null, required: false },
 
   // brightData fields
   // this is the url to the application from the source website
@@ -40,17 +47,10 @@ const JobSchema = new mongoose.Schema({
 
 // export type TJobInfered = InferSchemaType<typeof JobSchema>;
 
-JobSchema.index({
-  createdAt: 1,
-  requiredYearsOfExperience: 1,
-  relevantSkills: 1,
-});
+JobSchema.index({ createdAt: 1, requiredYearsOfExperience: 1, relevantSkills: 1 });
 
-JobSchema.index({
-  createdAt: 1,
-  requiredYearsOfExperience: 1,
-  relevantSkills: 1,
-  geoLocation: '2dsphere',
-});
+JobSchema.index({ createdAt: 1, requiredYearsOfExperience: 1, relevantSkills: 1, geoLocation: '2dsphere' });
+
+JobSchema.index({ jobTitle: 'text', locationFlexibility: 'text', relevantSkills: 'text', jobLevel: 'text' });
 
 export default mongoose.model('Jobs', JobSchema);

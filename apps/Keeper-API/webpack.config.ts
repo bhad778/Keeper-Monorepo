@@ -2,7 +2,7 @@ import * as path from 'path';
 import * as slsw from 'serverless-webpack';
 const nodeExternals = require('webpack-node-externals');
 
-const stage = process.env.STAGE || 'development';
+const stage = process.env.VITE_STAGE || 'development';
 
 export default {
   entry: slsw.lib.entries, // Automatically discover functions from serverless.yml

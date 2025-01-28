@@ -6,7 +6,7 @@ import { headers } from '../../constants';
 import ValidateBody from '../validateBody';
 import { extractErrorMessage } from '../../keeperApiUtils';
 
-const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
+const googleMapsApiKey = process.env.VITE_GOOGLE_MAPS_API_KEY;
 
 export const handler = async (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
   context.callbackWaitsForEmptyEventLoop = false;

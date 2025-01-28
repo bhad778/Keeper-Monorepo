@@ -1,7 +1,7 @@
 import { Callback, CognitoUserPoolTriggerEvent, Context } from 'aws-lambda';
+import { TEmployer, TEmployee } from 'keeperTypes';
 
 import connectToDatabase from '../../db';
-import { TEmployer, TEmployee } from 'keeperTypes';
 import Employee from '../../models/Employee';
 import { headers } from '../../constants';
 import Employer from '../../models/Employer';

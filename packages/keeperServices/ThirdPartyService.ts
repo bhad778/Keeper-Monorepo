@@ -1,4 +1,5 @@
-import { affindaKey, affindaWorkspaceId } from 'keeperEnvironment';
+const affindaKey = process.env.VITE_AFFINDA_KEY as string;
+const affindaWorkspaceId = process.env.VITE_AFFINDA_WORKSPACE_ID as string;
 
 const useThirdPartyService = () => {
   const uploadResumeToParser = (base64: string | Blob) => {

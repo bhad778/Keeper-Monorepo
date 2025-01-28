@@ -1,12 +1,12 @@
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import * as Joi from 'joi';
 import axios from 'axios';
-import { extractErrorMessage } from 'keeperUtils/backendUtils';
 
 import { headers } from '../../constants';
 import connectToDatabase from '../../db';
 import Employer from '../../models/Employer';
 import ValidateBody from '../validateBody';
+import { extractErrorMessage } from '../../keeperApiUtils';
 
 export const handler = async (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
   context.callbackWaitsForEmptyEventLoop = false;
@@ -49,7 +49,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     }
 
     // Fetch employer's jobs
-    const response = await axios.post(`${process.env.ROOT_URL}/getEmployersJobs`, {
+    const response = await axios.post(`${process.env.VITE_API_URL}/getEmployersJobs`, {
       userId: employer._id,
     });
 

@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { apiUrl } from 'keeperEnvironment';
 
 type ApiResponse<T> = {
   success: boolean;
@@ -7,6 +6,8 @@ type ApiResponse<T> = {
   message?: string;
   errorMessage?: string;
 };
+
+const apiUrl = process.env.VITE_API_URL;
 
 export const postRequest = <T>(endpoint: string, payload?: any): Promise<ApiResponse<T>> => {
   return axios

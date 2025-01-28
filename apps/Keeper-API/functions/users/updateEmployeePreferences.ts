@@ -1,12 +1,12 @@
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import * as Joi from 'joi';
-import { extractErrorMessage } from 'keeperUtils/backendUtils';
 
 import { headers } from '../../constants';
 import connectToDatabase from '../../db';
 import ValidateBody from '../validateBody';
 import Employee from '../../models/Employee';
 import { EmployeePreferencesSchema } from '../../schemas/globalSchemas';
+import { extractErrorMessage } from '../../keeperApiUtils';
 
 export const handler = async (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
   context.callbackWaitsForEmptyEventLoop = false;

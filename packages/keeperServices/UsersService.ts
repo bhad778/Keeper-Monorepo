@@ -1,4 +1,5 @@
 import { TAccountType, TMatch, TSwipe, TEmployeeSettings } from 'keeperTypes';
+
 import { postRequest } from './serviceUtils';
 
 // make this use user service and make updateUserSettings always have loggedInUser id and account type

@@ -2,10 +2,11 @@ import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import { JobSourceWebsiteEnum, TJobsQueueMessage } from 'keeperTypes';
 import { sendMessageToQueue } from 'keeperUtils/backendUtils';
 import { requestSnapshotByUrlAndFilters, staggerTimeout } from 'keeperUtils/brightDataUtils';
-import { staggerQueueUrl } from 'keeperEnvironment';
-import { getIndeedJobSnapshotUrl, getLinkedInJobSnapshotUrl, linkedInFiltersUrl } from 'keeperConstants';
+import { getIndeedJobSnapshotUrl, getLinkedInJobSnapshotUrl, indeedFilters, linkedInFilters } from 'keeperConstants';
 
 import { headers } from '../../../Keeper-API/constants';
+
+const staggerQueueUrl = process.env.VITE_STAGGER_QUEUE_URL as string;
 
 export const handler = async (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
   context.callbackWaitsForEmptyEventLoop = false;
@@ -15,37 +16,6 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
   try {
     // Define filters for LinkedIn and Indeed
     console.info('Defining filters for LinkedIn and Indeed.');
-    const linkedInFilters = [
-      {
-        url: linkedInFiltersUrl,
-      },
-    ];
-
-    const indeedFilters = [
-      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Atlanta, GA' },
-      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Los Angeles, CA' },
-      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'New York, NY' },
-      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Chicago, IL' },
-      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Austin, TX' },
-      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Boston, MA' },
-      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Seattle, WA' },
-      {
-        country: 'US',
-        domain: 'indeed.com',
-        keyword_search: 'software engineer',
-        location: 'San Francisco, CA',
-      },
-      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Washington, DC' },
-      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Denver, CO' },
-      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Miami, FL' },
-      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'San Jose, CA' },
-      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Boulder, CO' },
-      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Durham, NC' },
-      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Bloomington, IL' },
-      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Huntsville, AL' },
-      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Charlotte, NC' },
-      { country: 'US', domain: 'indeed.com', keyword_search: 'software engineer', location: 'Baltimore, MD' },
-    ];
 
     // Fetch snapshots for LinkedIn and Indeed concurrently
     let linkedInSnapshotId, indeedSnapshotId;

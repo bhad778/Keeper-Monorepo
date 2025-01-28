@@ -64,7 +64,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
 
     // Fetch jobs for swiping
     console.info('Fetching jobs for swiping');
-    const jobsForSwipingResponse = await axios.post(`${process.env.ROOT_URL}/getJobsForSwiping`, {
+    const jobsForSwipingResponse = await axios.post(`${process.env.VITE_API_URL}/getJobsForSwiping`, {
       userId: user._id.toString(),
       preferences: user.preferences,
     });

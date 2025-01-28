@@ -1,12 +1,13 @@
 import { SQSEvent } from 'aws-lambda';
 import { CompaniesService } from 'keeperServices';
-import { glassdoorReviewsQueueUrl } from 'keeperEnvironment';
 import { sendMessageToQueue } from 'keeperUtils/backendUtils';
 import {
   checkSnapshotStatusById,
   fetchSnapshotArrayDataById,
   snapshotNotReadyRequeueTimeout,
 } from 'keeperUtils/brightDataUtils';
+
+const glassdoorReviewsQueueUrl = process.env.VITE_GLASSDOOR_REVIEWS_QUEUE_URL as string;
 
 export const handler = async (event: SQSEvent) => {
   try {

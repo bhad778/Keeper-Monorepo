@@ -3,15 +3,15 @@ import * as Joi from 'joi';
 import { HydratedDocument } from 'mongoose';
 import axios from 'axios';
 import { AccountTypeEnum, TEmployee } from 'keeperTypes';
-import { getGeoLocationFromAddress, extractErrorMessage } from 'keeperUtils/backendUtils';
 
 import { headers } from '../../constants';
 import connectToDatabase from '../../db';
 import ValidateBody from '../validateBody';
 import Employee from '../../models/Employee';
 import { AccountTypeSchema } from '../../schemas/globalSchemas';
+import { extractErrorMessage, getGeoLocationFromAddress } from '../../keeperApiUtils';
 
-const googleMapsApiKey = process.env.GOOGLE_MAPS_API_KEY;
+const googleMapsApiKey = process.env.VITE_GOOGLE_MAPS_API_KEY;
 
 export const handler = async (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
   context.callbackWaitsForEmptyEventLoop = false;
@@ -106,7 +106,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     let itemsForSwiping = [];
     if (isEmployee && !isIncomplete) {
       try {
-        const response = await axios.post(`${process.env.ROOT_URL}/getJobsForSwiping`, {
+        const response = await axios.post(`${process.env.VITE_API_URL}/getJobsForSwiping`, {
           userId,
           preferences: preferencesObject,
         });

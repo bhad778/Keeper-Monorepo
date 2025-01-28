@@ -217,6 +217,7 @@ export const indeedSalaryTransformer = (
   }
 };
 
+// everything that we dont set here is because were gonna get it later in processJobsQueue through chatGPT
 export const linkedInJobTransformer = (brightDataJob: TBrightDataLinkedInJob): TJob => {
   const transformedJob: TJob = {
     expoPushToken: null as unknown as string,
@@ -226,10 +227,20 @@ export const linkedInJobTransformer = (brightDataJob: TBrightDataLinkedInJob): T
     geoLocation: null as unknown as TGeoLocation,
     hasGottenToEditProfileScreen: false,
     hasReceivedLikeNotification: false,
+    // we replace this with chatGPT if chatGPT finds an answer for it
     requiredYearsOfExperience: linkedInRequiredYearsOfExperienceTransformer(brightDataJob.job_seniority_level),
+    // we replace this with chatGPT if chatGPT finds an answer for it
     relevantSkills: brightDataRequiredSkillsTransformer(brightDataJob.job_summary),
-    compensation: linkedInSalaryTransformer(brightDataJob.job_base_pay_range) || null,
+    compensation: null,
     sourceWebsite: JobSourceWebsiteEnum.LinkedIn,
+    // we replace this with chatGPT if chatGPT finds an answer for it
+    formattedCompensation: linkedInSalaryTransformer(brightDataJob.job_base_pay_range) || null,
+    locationFlexibility: null,
+    projectDescription: null,
+    benefits: null,
+    responsibilities: null,
+    qualifications: null,
+    jobLevel: null,
 
     sourceWebsiteApplicationUrl: brightDataJob.url,
     jobTitle: brightDataJob.job_title,
@@ -330,6 +341,7 @@ export const brightDataLinkedInCompanyTransformer = (company: TBrightDataLinkedI
   return transformedJob;
 };
 
+// everything that we dont set here is because were gonna get it later in processJobsQueue through chatGPT
 export const indeedJobTransformer = (brightDataIndeedJob: TBrightDataIndeedJob): TJob => {
   const transformedJob: TJob = {
     expoPushToken: undefined,
@@ -339,10 +351,20 @@ export const indeedJobTransformer = (brightDataIndeedJob: TBrightDataIndeedJob):
     geoLocation: undefined,
     hasGottenToEditProfileScreen: false,
     hasReceivedLikeNotification: false,
+    // we replace this with chatGPT if chatGPT finds an answer for it
     requiredYearsOfExperience: indeedRequiredYearsOfExperienceTransformer(brightDataIndeedJob.job_title),
+    // we replace this with chatGPT if chatGPT finds an answer for it
     relevantSkills: brightDataRequiredSkillsTransformer(brightDataIndeedJob.description_text),
-    compensation: linkedInSalaryTransformer(brightDataIndeedJob.salary_formatted) || null,
+    compensation: null,
+    // we replace this with chatGPT if chatGPT finds an answer for it
+    formattedCompensation: linkedInSalaryTransformer(brightDataIndeedJob.salary_formatted) || null,
     sourceWebsite: JobSourceWebsiteEnum.Indeed,
+    locationFlexibility: null,
+    projectDescription: null,
+    benefits: null,
+    responsibilities: null,
+    qualifications: null,
+    jobLevel: null,
 
     sourceWebsiteApplicationUrl: brightDataIndeedJob.url,
     jobTitle: brightDataIndeedJob.job_title,

@@ -1,9 +1,9 @@
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
-import { extractErrorMessage } from 'keeperUtils/backendUtils';
 
 import { headers } from '../../constants';
 import connectToDatabase from '../../db';
 import Employer from '../../models/Employer';
+import { extractErrorMessage } from '../../keeperApiUtils';
 
 // the employee/employer object is going to have most data needed
 // for the whole app, so this is used on app load for matches, settings, etc.

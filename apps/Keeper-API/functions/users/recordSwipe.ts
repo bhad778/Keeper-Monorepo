@@ -1,7 +1,6 @@
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import * as Joi from 'joi';
 import axios from 'axios';
-import { extractErrorMessage } from 'keeperUtils/backendUtils';
 import AWS from 'aws-sdk';
 
 import { headers, SENDER_EMAIL } from '../../constants';
@@ -11,6 +10,7 @@ import Employee from '../../models/Employee';
 import Job from '../../models/Job';
 import Employer from '../../models/Employer';
 import Swipe from '../../models/Swipe';
+import { extractErrorMessage } from '../../keeperApiUtils';
 
 export const handler = async (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
   context.callbackWaitsForEmptyEventLoop = false;
@@ -86,7 +86,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     const sendPushNotification = async () => {
       if (newSwipe.likeNotificationObject) {
         try {
-          await axios.post(`${process.env.ROOT_URL}/sendPubnubNotification`, {
+          await axios.post(`${process.env.VITE_API_URL}/sendPubnubNotification`, {
             messageObject: newSwipe.likeNotificationObject,
           });
         } catch (error) {

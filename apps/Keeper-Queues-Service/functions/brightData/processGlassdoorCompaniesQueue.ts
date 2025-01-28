@@ -1,6 +1,5 @@
 import { SQSEvent } from 'aws-lambda';
 import { TBrightDataGlassdoorCompany } from 'keeperTypes';
-import {} from 'keeperUtils';
 import { CompaniesService } from 'keeperServices';
 import {
   normalizeCompanyName,
@@ -17,9 +16,10 @@ import {
   requestSnapshotByUrlAndFilters,
   snapshotNotReadyRequeueTimeout,
 } from 'keeperUtils/brightDataUtils';
-
-import { glassdoorReviewsQueueUrl, glassdoorCompaniesQueueUrl, crunchbaseCompaniesQueueUrl } from 'keeperEnvironment';
 import { getGlassdoorCompanyInfoSnapshotUrl, glassdoorSearchUrl } from 'keeperConstants';
+
+const glassdoorCompaniesQueueUrl = process.env.VITE_GLASSDOOR_COMPANIES_QUEUE_URL as string;
+const crunchbaseCompaniesQueueUrl = process.env.VITE_CRUNCHBASE_COMPANIES_QUEUE_URL as string;
 
 // {
 //   "snapshotId": "s_m501jgtk1otvx27w6f",
