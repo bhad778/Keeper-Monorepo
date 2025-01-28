@@ -1,5 +1,6 @@
-const affindaKey = process.env.VITE_AFFINDA_KEY as string;
-const affindaWorkspaceId = process.env.VITE_AFFINDA_WORKSPACE_ID as string;
+// TODO: PUT THIS INTO BACKEND API SO WE DONT HAVE TO EXPOSE
+const affindaKey = 'aff_e3c2ea8157f4a53a150f68d13e17cebaf8326fab';
+const affindaWorkspaceId = 'ViTkWMXy';
 
 const useThirdPartyService = () => {
   const uploadResumeToParser = (base64: string | Blob) => {

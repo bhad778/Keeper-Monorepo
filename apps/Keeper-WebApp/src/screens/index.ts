@@ -16,8 +16,10 @@ import PhoneNumber from 'screens/phoneNumber/PhoneNumber';
 import NameAndCompany from 'screens/nameAndCompany/NameAndCompany';
 import EmployeeProfileScreen from 'screens/employeeProfileScreen/EmployeeProfileScreen';
 import Applications from 'screens/applications/Applications';
+import FindJob from 'screens/findJob/findJob';
 
 export {
+  FindJob,
   Applications,
   Matches,
   AccountType,

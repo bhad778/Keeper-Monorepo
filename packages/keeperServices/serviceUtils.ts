@@ -7,7 +7,8 @@ type ApiResponse<T> = {
   errorMessage?: string;
 };
 
-const apiUrl = process.env.VITE_API_URL;
+// const apiUrl = process.env.VITE_API_URL;
+const apiUrl = 'https://mzl4y00fba.execute-api.us-east-1.amazonaws.com/dev';
 
 export const postRequest = <T>(endpoint: string, payload?: any): Promise<ApiResponse<T>> => {
   return axios
