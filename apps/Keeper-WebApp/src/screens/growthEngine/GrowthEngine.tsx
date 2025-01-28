@@ -16,7 +16,7 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import { Button, TableHead } from '@mui/material';
-import { AppBoldText, KeeperSelectButton, KeeperTextInput, LoadingSpinner } from 'components';
+import { AppBoldText, KeeperTextInput, LoadingSpinner } from 'components';
 import { useEffect, useState } from 'react';
 import { MiscService } from 'services';
 import { TGrowthEngineEntry } from 'types/globalTypes';
@@ -53,24 +53,22 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
 
   return (
     <Box sx={{ flexShrink: 0, ml: 2.5 }}>
-      <IconButton onClick={handleFirstPageButtonClick} disabled={page === 0} aria-label="first page">
+      <IconButton onClick={handleFirstPageButtonClick} disabled={page === 0} aria-label='first page'>
         {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
       </IconButton>
-      <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label="previous page">
+      <IconButton onClick={handleBackButtonClick} disabled={page === 0} aria-label='previous page'>
         {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
       </IconButton>
       <IconButton
         onClick={handleNextButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="next page"
-      >
+        aria-label='next page'>
         {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
       </IconButton>
       <IconButton
         onClick={handleLastPageButtonClick}
         disabled={page >= Math.ceil(count / rowsPerPage) - 1}
-        aria-label="last page"
-      >
+        aria-label='last page'>
         {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
       </IconButton>
     </Box>
@@ -99,7 +97,7 @@ export default function CustomPaginationActionsTable() {
   const classes = muiStyles();
 
   useEffect(() => {
-    MiscService.getGrowthEngineEntries().then((res) => {
+    MiscService.getGrowthEngineEntries().then(res => {
       setRows(res);
       setOriginalRows(res);
     });
@@ -148,13 +146,13 @@ export default function CustomPaginationActionsTable() {
     setIsAddLoading(true);
     MiscService.addGrowthEngineEntry(newEntry)
       .then(() => {
-        setRows((prev) => [...prev, newEntry]);
-        setOriginalRows((prev) => [...prev, newEntry]);
+        setRows(prev => [...prev, newEntry]);
+        setOriginalRows(prev => [...prev, newEntry]);
         setIsAddLoading(false);
 
         resetInputs();
       })
-      .catch((error) => {
+      .catch(error => {
         toast.error('There was an error adding entry to Growth Engine:', error);
         setIsAddLoading(false);
       });
@@ -166,35 +164,35 @@ export default function CustomPaginationActionsTable() {
         <KeeperTextInput
           onChange={setEmail}
           value={email}
-          label="Email"
+          label='Email'
           containerStyles={styles.smallTextContainer}
           inputStyles={styles.smallTextInput}
         />
         <KeeperTextInput
           onChange={setFirstName}
           value={firstName}
-          label="First Name"
+          label='First Name'
           containerStyles={styles.smallTextContainer}
           inputStyles={styles.smallTextInput}
         />
         <KeeperTextInput
           onChange={setAccountType}
           value={accountType}
-          label="Account Type"
+          label='Account Type'
           containerStyles={styles.smallTextContainer}
           inputStyles={styles.smallTextInput}
         />
         <KeeperTextInput
           onChange={setYearsOfExperience}
           value={yearsOfExperience}
-          label="Years Of Experience"
+          label='Years Of Experience'
           containerStyles={styles.smallTextContainer}
           inputStyles={styles.smallTextInput}
         />
         <KeeperTextInput
           onChange={setMainSkill}
           value={mainSkill}
-          label="Main Skill"
+          label='Main Skill'
           containerStyles={styles.smallTextContainer}
           inputStyles={styles.smallTextInput}
         />
@@ -203,22 +201,21 @@ export default function CustomPaginationActionsTable() {
       <div style={styles.addEntryButtonContainer}>
         <Button
           style={!email ? styles.disabledAddEntryButton : styles.addEntryButton}
-          variant="contained"
-          component="label"
+          variant='contained'
+          component='label'
           onClick={onAddEntryClick}
-          disabled={!email}
-        >
+          disabled={!email}>
           {isAddLoading ? (
-            <LoadingSpinner size="30" />
+            <LoadingSpinner size='30' />
           ) : (
             <AppBoldText style={styles.uploadResumeText}>Add Entry</AppBoldText>
           )}
         </Button>
       </div>
 
-      <KeeperTextInput onChange={textInputOnChange} label="Search" containerStyles={styles.searchContainer} />
+      <KeeperTextInput onChange={textInputOnChange} label='Search' containerStyles={styles.searchContainer} />
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 200 }} stickyHeader aria-label="custom pagination table">
+        <Table sx={{ minWidth: 200 }} stickyHeader aria-label='custom pagination table'>
           <TableHead sx={styles.grey}>
             <TableRow sx={styles.grey}>
               <TableCell>Email</TableCell>
@@ -229,7 +226,7 @@ export default function CustomPaginationActionsTable() {
             </TableRow>
           </TableHead>
           <TableBody sx={styles.tableBody}>
-            {(rowsPerPage > 0 ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : rows).map((row) => (
+            {(rowsPerPage > 0 ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage) : rows).map(row => (
               <TableRow key={row.email}>
                 <TableCell className={classes.root}>{row.email}</TableCell>
                 <TableCell className={classes.root}>{row.firstName}</TableCell>
