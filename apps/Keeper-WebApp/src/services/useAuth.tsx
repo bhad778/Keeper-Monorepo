@@ -85,7 +85,6 @@ const useAuth = () => {
         // then user is not already logged in
         // setInitialScreen('AccountType');
         logOut();
-        navigate('/accountType');
       }
       // toast.error(genericErrorMessage);
       // console.error('Loading initial app data error', error);
@@ -105,7 +104,7 @@ const useAuth = () => {
     try {
       await Auth.signOut();
       resetReduxData();
-      navigate('/accountType');
+      navigate('/browse/findJobs');
     } catch (error) {
       console.error('error signing out: ', error);
     }

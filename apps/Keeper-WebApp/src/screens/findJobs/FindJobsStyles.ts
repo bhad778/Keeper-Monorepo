@@ -14,7 +14,7 @@ export const useStyles = () => {
     sidebar: {
       width: '25%',
       padding: '20px',
-      backgroundColor: theme.color.secondary,
+      backgroundColor: theme.color.primary,
       display: 'flex',
       flexDirection: 'column',
       gap: '20px',
@@ -67,8 +67,9 @@ export const useStyles = () => {
     jobCard: {
       padding: '20px',
       borderRadius: '10px',
-      backgroundColor: theme.color.keeperGrey,
+      backgroundColor: theme.color.darkGrey,
       boxShadow: '0 2px 5px rgba(0, 0, 0, 0.1)',
+      border: `1px solid ${theme.color.secondary}`,
       display: 'flex',
       flexDirection: 'column',
       gap: '10px',

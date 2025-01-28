@@ -1,7 +1,7 @@
 // FindJob.tsx
 import React from 'react';
 
-import useStyles from './findJobStyles';
+import useStyles from './FindJobsStyles';
 
 const FindJob: React.FC = () => {
   const styles = useStyles();

@@ -13,6 +13,7 @@ import {
   PhoneNumber,
   EmployeeProfileScreen,
   Applications,
+  FindJobs,
 } from 'screens';
 import { PrivateRoute, OnlyPublicRoute, OnlyAdminRoute } from 'routes';
 
@@ -40,6 +41,7 @@ const router = createBrowserRouter([
         path: 'matches',
         element: <Matches />,
       },
+
       {
         path: 'applications',
         element: <Applications />,
@@ -64,6 +66,7 @@ const router = createBrowserRouter([
         path: 'discover',
         element: <Discover />,
       },
+
       {
         path: 'jobBoard',
         element: <JobBoard />,
@@ -81,9 +84,18 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        path: 'discover/:accountTypeParam?/:yearsOfExperienceParam?/:mainSkillParam?/:jobOrResumeIdParam?',
-        element: <Discover />,
+        path: 'findJobs',
+        element: (
+          <OnlyPublicRoute>
+            <FindJobs />
+          </OnlyPublicRoute>
+        ),
       },
+      // {
+      //   index: true,
+      //   path: 'discover/:accountTypeParam?/:yearsOfExperienceParam?/:mainSkillParam?/:jobOrResumeIdParam?',
+      //   element: <Discover />,
+      // },
       {
         path: 'matches',
         element: <Matches />,
@@ -94,6 +106,7 @@ const router = createBrowserRouter([
       },
     ],
   },
+
   {
     path: '/accountType',
     element: (

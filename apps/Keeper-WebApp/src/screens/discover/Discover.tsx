@@ -26,7 +26,7 @@ import KeeperLogo from '../../assets/images/keeperLogo.png';
 import { useStyles } from './DiscoverStyles';
 
 type DiscoverProps = {
-  onBackClick: () => void;
+  onBackClick?: () => void;
 };
 
 // this component handles the actual swiping- the matching, the carousel, etc
