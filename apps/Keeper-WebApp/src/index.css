@@ -7,6 +7,12 @@
   --chat--light__hover--3: #1e1e1e;
 } */
 
+/* Prevent overscroll/bounce on the entire webpage */
+html,
+body {
+  overscroll-behavior: none;
+}
+
 textarea {
   border: none !important;
   resize: none;

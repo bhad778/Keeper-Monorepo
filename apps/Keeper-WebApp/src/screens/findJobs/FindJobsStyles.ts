@@ -1,3 +1,4 @@
+import { navBarHeight } from 'constants/globalConstants';
 import { useTheme } from 'theme/theme.context';
 
 export const useStyles = () => {
@@ -8,8 +9,16 @@ export const useStyles = () => {
       display: 'flex',
       flexDirection: 'row',
       width: '100vw',
-      height: '100vh',
+      height: `calc(100vh - ${navBarHeight}px)`,
       backgroundColor: theme.color.primary,
+      overflow: 'hidden', // Prevent the entire page from scrolling
+    },
+    fullPageSpinner: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '100%',
+      height: `calc(100vh - ${navBarHeight}px)`, // Takes full height minus navbar
     },
     sidebar: {
       width: '25%',
@@ -62,7 +71,16 @@ export const useStyles = () => {
       display: 'grid',
       gridTemplateColumns: 'repeat(2, 1fr)',
       gap: '20px',
-      overflowY: 'scroll',
+      overflowY: 'scroll', // Makes this section scrollable
+      height: `calc(100vh - ${navBarHeight}px)`,
+      position: 'relative', // Ensures the spinner is correctly centered
+    },
+    jobGridSpinner: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '100%',
+      height: '100px', // Fixed height for bottom spinner
     },
     jobCard: {
       padding: '20px',

@@ -1,5 +1,4 @@
-// FindJob.tsx
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { TGetJobsForSwipingPayload } from 'keeperServices';
 import { JobsService } from 'services';
 import { LoadingSpinner } from 'components';
@@ -12,9 +11,17 @@ const defaultPayload: TGetJobsForSwipingPayload = {
   textSearch: 'react',
 };
 
+const ITEMS_PER_PAGE = 30;
+const PRELOAD_OFFSET = 2000; // Load next batch when 500px from bottom
+
 const FindJob = () => {
   const [jobs, setJobs] = useState<TJob[]>([]);
+  const [displayedJobs, setDisplayedJobs] = useState<TJob[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [loadingMore, setLoadingMore] = useState<boolean>(false);
+
+  const loadingMoreRef = useRef(false); // Prevent multiple triggers
+  const jobGridRef = useRef<HTMLDivElement | null>(null); // Ref for scrolling container
 
   const styles = useStyles();
 
@@ -24,6 +31,7 @@ const FindJob = () => {
         setLoading(true);
         const response = await JobsService.getJobsForSwiping(defaultPayload);
         setJobs(response || []);
+        setDisplayedJobs((response || []).slice(0, ITEMS_PER_PAGE));
       } catch (error) {
         console.error('Error fetching jobs:', error);
       } finally {
@@ -34,10 +42,51 @@ const FindJob = () => {
     fetchJobs();
   }, []);
 
+  const loadMoreJobs = useCallback(() => {
+    if (loadingMoreRef.current || displayedJobs.length >= jobs.length) return; // Stop if already loading or all jobs are loaded
+
+    loadingMoreRef.current = true;
+    setLoadingMore(true);
+
+    setTimeout(() => {
+      setDisplayedJobs(prevDisplayedJobs => {
+        const nextPageJobs = jobs.slice(prevDisplayedJobs.length, prevDisplayedJobs.length + ITEMS_PER_PAGE);
+        loadingMoreRef.current = false;
+        setLoadingMore(false);
+        return [...prevDisplayedJobs, ...nextPageJobs];
+      });
+    }, 500); // Small delay for smooth loading
+  }, [jobs, displayedJobs]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!jobGridRef.current) return;
+
+      const { scrollTop, scrollHeight, clientHeight } = jobGridRef.current;
+
+      if (scrollTop + clientHeight >= scrollHeight - PRELOAD_OFFSET) {
+        loadMoreJobs();
+      }
+    };
+
+    const jobGridElement = jobGridRef.current;
+    if (jobGridElement) {
+      jobGridElement.addEventListener('scroll', handleScroll);
+    }
+
+    return () => {
+      if (jobGridElement) {
+        jobGridElement.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, [loadMoreJobs]);
+
   return (
     <div style={styles.container}>
       {loading ? (
-        <LoadingSpinner />
+        <div style={styles.fullPageSpinner}>
+          <LoadingSpinner />
+        </div>
       ) : (
         <>
           {/* Sidebar with Search and Filters */}
@@ -76,9 +125,10 @@ const FindJob = () => {
           </div>
 
           {/* Job List Grid */}
-          <div style={styles.jobGrid}>
-            {jobs.map(job => (
+          <div style={styles.jobGrid} ref={jobGridRef}>
+            {displayedJobs.map((job, index) => (
               <div key={job._id} style={styles.jobCard}>
+                <h4 style={styles.jobTitle}>{index + 1}</h4>
                 <h4 style={styles.jobTitle}>{job.jobTitle}</h4>
                 <p style={styles.jobDescription}>
                   {job.formattedCompensation?.payRange
@@ -93,6 +143,12 @@ const FindJob = () => {
                 </a>
               </div>
             ))}
+            {/* Show loading spinner only if there are more jobs to load */}
+            {/* {loadingMore && displayedJobs.length < jobs.length && (
+              <div style={styles.jobGridSpinner}>
+                <LoadingSpinner />
+              </div>
+            )} */}
           </div>
         </>
       )}
