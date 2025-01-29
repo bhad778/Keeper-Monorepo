@@ -128,11 +128,16 @@ const FindJob = () => {
       <>
         {/* Sidebar with Search and Filters */}
         <div style={styles.sidebar}>
-          <input type='text' placeholder='Search jobs...' style={styles.searchBar} onChange={handleSearchChange} />
+          <input
+            type='text'
+            placeholder='Senior react developer...'
+            style={styles.searchBar}
+            onChange={handleSearchChange}
+          />
 
           {/* Job Level Filter */}
           <div style={styles.filterGroup}>
-            <h3 style={styles.filterTitle}>Job Level</h3>
+            <h3 style={styles.filterTitle}>Seniority Level</h3>
             <div style={styles.filterOptions}>
               {Object.values(JobLevel).map(level => (
                 <button
