@@ -63,35 +63,63 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
     let findObject: any = {};
 
     if (preferences) {
-      const { requiredYearsOfExperience, relevantSkills } = preferences;
+      const { requiredYearsOfExperience, relevantSkills, jobLevel, locationFlexibility } = preferences;
 
       // Fetch swipes to exclude already swiped jobs
       // TODO: make sure this is scalable
       const swipes = await Swipe.find({ ownerId: userId });
-      const alreadySwipedOnIds = swipes.map(swipe => (swipe as TSwipe).receiverId || '');
+      const alreadySwipedOnIds = swipes?.map(swipe => (swipe as TSwipe).receiverId || '');
 
       // Create case-insensitive regex for relevant skills
-      const caseInsensitiveSkillsRegExArray = relevantSkills.map((text: string) => new RegExp(escapeRegex(text), 'i'));
+      const caseInsensitiveSkillsRegExArray = relevantSkills?.map((text: string) => new RegExp(escapeRegex(text), 'i'));
 
       const isSeniorDev = requiredYearsOfExperience >= seniorDevYearsOfEpxerience;
 
-      const searchFilters: any = [
-        { _id: { $nin: alreadySwipedOnIds } },
-        {
-          'settings.requiredYearsOfExperience': {
-            $lte: isSeniorDev ? 40 : requiredYearsOfExperience + 3,
+      const searchFilters: any = [];
+
+      // filter out any jobs that the user has already swiped on
+      if (alreadySwipedOnIds?.length > 0) {
+        searchFilters.push({ _id: { $nin: alreadySwipedOnIds } });
+      }
+
+      // filter by requiredYearsOfExperience
+      if (requiredYearsOfExperience && typeof requiredYearsOfExperience === 'number') {
+        searchFilters.push(
+          {
+            requiredYearsOfExperience: {
+              $lte: isSeniorDev ? 40 : requiredYearsOfExperience + 3,
+            },
           },
-        },
-        {
-          'settings.requiredYearsOfExperience': {
-            $gte: requiredYearsOfExperience - 3,
+          {
+            requiredYearsOfExperience: {
+              $gte: requiredYearsOfExperience - 3,
+            },
           },
-        },
-        { 'settings.relevantSkills': { $in: caseInsensitiveSkillsRegExArray } },
-      ];
+        );
+      }
+
+      // filter by relevantSkills**
+      if (relevantSkills && relevantSkills?.length > 0 && caseInsensitiveSkillsRegExArray?.length > 0) {
+        searchFilters.push({ relevantSkills: { $in: caseInsensitiveSkillsRegExArray } });
+      }
+
+      // filter by locationFlexibility (case-insensitive, removing dashes)
+      if (locationFlexibility?.length > 0) {
+        const normalizedLocationFlexibility = locationFlexibility.map(text => text.replace(/-/g, '')); // Remove dashes
+        const caseInsensitiveLocationFlexibility = normalizedLocationFlexibility.map(
+          text => new RegExp(`^${escapeRegex(text)}$`, 'i'),
+        );
+        searchFilters.push({ locationFlexibility: { $in: caseInsensitiveLocationFlexibility } });
+      }
+
+      // filter by jobLevel (case-insensitive)
+      if (jobLevel?.length > 0) {
+        const caseInsensitiveJobLevel = jobLevel.map(text => new RegExp(`^${escapeRegex(text)}$`, 'i'));
+        searchFilters.push({ jobLevel: { $in: caseInsensitiveJobLevel } });
+      }
 
       findObject = {
-        $and: searchFilters,
+        $or: searchFilters,
       };
     }
 
@@ -126,8 +154,6 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
       }
       findObject.$and.push(textSearchFilter);
     }
-
-    console.info('findObject:', JSON.stringify(findObject));
 
     // Fetch jobs for swiping
     const jobs = await Job.find(findObject, {

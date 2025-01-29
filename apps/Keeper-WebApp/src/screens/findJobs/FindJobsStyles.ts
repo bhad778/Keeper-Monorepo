@@ -58,12 +58,11 @@ export const useStyles = () => {
       border: 'none',
       cursor: 'pointer',
       fontSize: '14px',
+      transition: 'background-color 0.2s, transform 0.2s',
     },
-    locationSearch: {
-      padding: '10px',
-      borderRadius: '5px',
-      border: `1px solid white`,
-      fontSize: '16px',
+    filterButtonSelected: {
+      backgroundColor: theme.color.pink, // Ensure this matches your selected filter style
+      transform: 'scale(1.1)', // Slight scale effect for selected filters
     },
     jobGrid: {
       width: '75%',

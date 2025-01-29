@@ -72,6 +72,7 @@ export type TEmployeeEducation =
 export type TEmployeePreferences = {
   searchRadius?: number;
   jobLevel?: JobLevel[];
+  requiredYearsOfExperience?: number;
   locationFlexibility?: string[];
   geoLocation?: TGeoLocation | null;
   relevantSkills?: Array<string>;
