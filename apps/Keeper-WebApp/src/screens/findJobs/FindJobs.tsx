@@ -1,8 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { TGetJobsForSwipingPayload } from 'keeperServices';
-import { JobsService } from 'services';
+import { TGetJobsForSwipingPayload, JobsService } from 'keeperServices';
 import { LoadingSpinner } from 'components';
-import { TJob } from 'keeperTypes';
+import { JobLevel, TJob } from 'keeperTypes';
 
 import useStyles from './FindJobsStyles';
 
@@ -30,8 +29,8 @@ const FindJob = () => {
       try {
         setLoading(true);
         const response = await JobsService.getJobsForSwiping(defaultPayload);
-        setJobs(response || []);
-        setDisplayedJobs((response || []).slice(0, ITEMS_PER_PAGE));
+        setJobs(response.data || []);
+        setDisplayedJobs((response.data || []).slice(0, ITEMS_PER_PAGE));
       } catch (error) {
         console.error('Error fetching jobs:', error);
       } finally {
@@ -97,7 +96,7 @@ const FindJob = () => {
             <div style={styles.filterGroup}>
               <h3 style={styles.filterTitle}>Job Level</h3>
               <div style={styles.filterOptions}>
-                {['Entry', 'Intern', 'Mid', 'Senior'].map(level => (
+                {Object.values(JobLevel).map(level => (
                   <button key={level} style={styles.filterButton}>
                     {level}
                   </button>

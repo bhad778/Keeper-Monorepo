@@ -35,6 +35,17 @@ export type TLocationFlexibility =
   | `hybrid - ${number} days` // For hybrid jobs with a specific number of days
   | 'hybrid'; // For hybrid jobs without a specific number of days
 
+export enum JobLevel {
+  Intern = 'Intern',
+  Entry = 'Entry',
+  Mid = 'Mid',
+  Senior = 'Senior',
+  Lead = 'Lead',
+  Principal = 'Principal',
+  Staff = 'Staff',
+  Director = 'Director',
+}
+
 // job in our database
 export type TJob = {
   _id?: string;
@@ -55,7 +66,7 @@ export type TJob = {
   benefits: string[] | null;
   responsibilities: string[] | null;
   qualifications: string[] | null;
-  jobLevel: string | null;
+  jobLevel: JobLevel | null;
 
   sourceWebsiteApplicationUrl: string;
   jobTitle: string;

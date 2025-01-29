@@ -11,7 +11,7 @@ import {
 } from './serviceTypes';
 
 const JobsService = {
-  getJobsForSwiping: (payload?: TGetJobsForSwipingPayload) => postRequest('getJobsForSwiping', payload),
+  getJobsForSwiping: (payload?: TGetJobsForSwipingPayload) => postRequest<TJob[]>('getJobsForSwiping', payload),
   getJobById: (payload: { jobId: string }) => postRequest('getJobById', payload),
   updateJobSettings: (payload: { jobId: string; updateJobSettingsObject: Partial<TJobSettings> }) =>
     postRequest('updateJobSettings', payload),

@@ -148,7 +148,10 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
     return callback(null, {
       statusCode: 200,
       headers,
-      body: JSON.stringify(jobs),
+      body: JSON.stringify({
+        success: true,
+        data: jobs,
+      }),
     });
   } catch (error) {
     const errorMessage = extractErrorMessage(error);
