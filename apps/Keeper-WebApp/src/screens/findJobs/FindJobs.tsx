@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import { TGetJobsForSwipingPayload, JobsService } from 'keeperServices';
 import { LoadingSpinner } from 'components';
 import { JobLevel, TJob } from 'keeperTypes';
+import { TechnologiesList } from 'keeperConstants';
 
 import useStyles from './FindJobsStyles';
 
@@ -11,6 +12,7 @@ const defaultPayload: TGetJobsForSwipingPayload = {
   preferences: {
     jobLevel: [],
     locationFlexibility: [],
+    relevantSkills: [],
   },
 };
 
@@ -103,8 +105,8 @@ const FindJob = () => {
     }, SEARCH_DEBOUNCE_DELAY);
   };
 
-  // Handle toggling job levels and location flexibility filters
-  const toggleFilter = (key: 'jobLevel' | 'locationFlexibility', value: string) => {
+  // Handle toggling filters (jobLevel, locationFlexibility, relevantSkills)
+  const toggleFilter = (key: 'jobLevel' | 'locationFlexibility' | 'relevantSkills', value: string) => {
     setFilters(prevFilters => {
       const currentValues = prevFilters.preferences?.[key] || [];
       const newValues = currentValues.includes(value)
@@ -142,7 +144,7 @@ const FindJob = () => {
                       : styles.filterButton.backgroundColor,
                   }}
                   onClick={() => toggleFilter('jobLevel', level)}>
-                  {level}
+                  <span style={styles.buttonText}>{level}</span>
                 </button>
               ))}
             </div>
@@ -162,7 +164,27 @@ const FindJob = () => {
                       : styles.filterButton.backgroundColor,
                   }}
                   onClick={() => toggleFilter('locationFlexibility', option)}>
-                  {option}
+                  <span style={styles.buttonText}>{option}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Skills Filter */}
+          <div style={styles.filterGroup}>
+            <h3 style={styles.filterTitle}>Skills</h3>
+            <div style={styles.skillOptions}>
+              {TechnologiesList.map((skill: string) => (
+                <button
+                  key={skill}
+                  style={{
+                    ...styles.skillButton,
+                    backgroundColor: filters.preferences?.relevantSkills?.includes(skill)
+                      ? styles.filterButtonSelected.backgroundColor
+                      : styles.skillButton.backgroundColor,
+                  }}
+                  onClick={() => toggleFilter('relevantSkills', skill)}>
+                  <span style={styles.buttonText}>{skill}</span>
                 </button>
               ))}
             </div>
@@ -188,11 +210,10 @@ const FindJob = () => {
                 <p style={styles.jobDescription}>{job.locationFlexibility}</p>
                 <p style={styles.jobDescription}>{job.jobLevel}</p>
                 <a href={job.applyLink} target='_blank' rel='noopener noreferrer' style={styles.applyButton}>
-                  <span style={styles.applyButtonText}>Apply</span>
+                  <span style={styles.buttonText}>Apply</span>
                 </a>
               </div>
             ))}
-            {/* Show loading spinner only if there are more jobs to load */}
             {loadingMore && displayedJobs.length < jobs.length && (
               <div style={styles.jobGridSpinner}>
                 <LoadingSpinner />

@@ -116,7 +116,7 @@ export const useStyles = () => {
       textAlign: 'center',
       transition: 'background-color 0.2s',
     },
-    applyButtonText: {
+    buttonText: {
       color: theme.color.primary,
     },
     applyButtonHover: {
@@ -125,6 +125,29 @@ export const useStyles = () => {
     jobCardHover: {
       transform: 'scale(1.02)',
       boxShadow: '0 6px 15px rgba(0, 0, 0, 0.3)',
+    },
+
+    // **Styles for Skills Filter**
+    skillOptions: {
+      display: 'flex',
+      flexWrap: 'wrap',
+      gap: '6px',
+      maxHeight: '370px', // Optional: Set max height to prevent excessive scrolling
+      overflowY: 'auto',
+    },
+    skillButton: {
+      padding: '5px 8px', // Smaller padding for skills buttons
+      borderRadius: '15px',
+      backgroundColor: theme.color.secondary,
+      color: '#fff',
+      border: 'none',
+      cursor: 'pointer',
+      fontSize: '12px', // Smaller font size
+      transition: 'background-color 0.2s, transform 0.2s',
+    },
+    skillButtonSelected: {
+      backgroundColor: theme.color.pink,
+      transform: 'scale(1.05)', // Slight scale effect for selected filters
     },
   };
 
