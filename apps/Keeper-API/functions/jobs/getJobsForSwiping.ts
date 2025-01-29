@@ -143,8 +143,6 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
       .limit(getItemsForSwipingLimit)
       .exec();
 
-    console.log('jobs:', jobs);
-
     return callback(null, {
       statusCode: 200,
       headers,

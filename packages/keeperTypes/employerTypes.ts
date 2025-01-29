@@ -46,6 +46,17 @@ export enum JobLevel {
   Director = 'Director',
 }
 
+export enum JobLevelEnum {
+  intern = 0,
+  entry = 0,
+  mid = 3,
+  senior = 6,
+  lead = 8,
+  principal = 11,
+  staff = 11,
+  director = 11,
+}
+
 // job in our database
 export type TJob = {
   _id?: string;

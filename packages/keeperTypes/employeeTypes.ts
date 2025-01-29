@@ -1,4 +1,4 @@
-import { TOnsiteSchedule } from './employerTypes';
+import { JobLevel, TOnsiteSchedule } from './employerTypes';
 import {
   TGeoLocation,
   TAccountType,
@@ -71,7 +71,8 @@ export type TEmployeeEducation =
 
 export type TEmployeePreferences = {
   searchRadius?: number;
-  requiredYearsOfExperience?: number;
+  jobLevel?: JobLevel[];
+  locationFlexibility?: string[];
   geoLocation?: TGeoLocation | null;
   relevantSkills?: Array<string>;
   isRemote?: boolean;
