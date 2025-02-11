@@ -196,13 +196,13 @@ const FindJob = () => {
           </div>
         </div>
 
-        <div style={styles.jobGridContainer} ref={jobGridRef}>
+        <div style={styles.jobGridContainer}>
           {loading ? (
             <div style={styles.fullPageSpinner}>
               <LoadingSpinner />
             </div>
           ) : (
-            <div style={styles.jobGrid}>
+            <div style={styles.jobGrid} ref={jobGridRef}>
               {displayedJobs.map((job, index) => (
                 <div key={job._id} style={styles.jobCard}>
                   <h4 style={styles.jobTitle}>{index + 1}</h4>
@@ -222,11 +222,11 @@ const FindJob = () => {
               ))}
             </div>
           )}
-          {loadingMore && displayedJobs.length < jobs.length && (
+          {/* {loadingMore && displayedJobs.length < jobs.length && (
             <div style={styles.jobGridSpinner}>
               <LoadingSpinner />
             </div>
-          )}
+          )} */}
         </div>
       </>
     </div>
