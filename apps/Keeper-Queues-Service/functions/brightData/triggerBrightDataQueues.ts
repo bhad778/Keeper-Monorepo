@@ -49,7 +49,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
 
     console.info('Successfully validated snapshot IDs.');
 
-    const jobsQueueMessages: TJobsQueueMessage[] = [
+    const staggerQueueMessages: TJobsQueueMessage[] = [
       {
         snapshotId: linkedInSnapshotId,
         sourceWebsite: JobSourceWebsiteEnum.LinkedIn,
@@ -71,7 +71,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       // starting the first pipeline on the 2.5 mark then the next one on the 5 mark means both of those entire processes from here on out
       // are staggered. I did * 3 at the end just to be safe, for example 2.5 * 3 is 7.5 and I just wanted to spread them out a little more to start
       await Promise.all(
-        jobsQueueMessages.map(
+        staggerQueueMessages.map(
           (message, index) =>
             sendMessageToQueue(staggerQueueUrl as string, message, index * ((staggerTimeout / 2) * 3)), // 7.5 minutes
         ),
@@ -90,7 +90,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       headers,
       body: JSON.stringify({
         message: 'Successfully added LinkedIn and Indeed snapshots to the Jobs Queue',
-        snapshots: jobsQueueMessages,
+        snapshots: staggerQueueMessages,
       }),
     };
   } catch (error) {

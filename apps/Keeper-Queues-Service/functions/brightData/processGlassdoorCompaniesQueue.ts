@@ -19,7 +19,6 @@ import {
 import { getGlassdoorCompanyInfoSnapshotUrl, glassdoorSearchUrl } from 'keeperConstants';
 
 const glassdoorCompaniesQueueUrl = process.env.VITE_GLASSDOOR_COMPANIES_QUEUE_URL as string;
-const crunchbaseCompaniesQueueUrl = process.env.VITE_CRUNCHBASE_COMPANIES_QUEUE_URL as string;
 
 // {
 //   "snapshotId": "s_m501jgtk1otvx27w6f",

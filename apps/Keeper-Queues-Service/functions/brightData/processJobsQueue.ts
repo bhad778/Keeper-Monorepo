@@ -1,7 +1,11 @@
 import { SQSEvent } from 'aws-lambda';
 import { JobsService, CompaniesService, ChatGPTService } from 'keeperServices';
 import { sendMessageToQueue, extractErrorMessage } from 'keeperUtils/backendUtils';
-import { snapshotNotReadyRequeueTimeout, requestSnapshotByUrlAndFilters } from 'keeperUtils/brightDataUtils';
+import {
+  snapshotNotReadyRequeueTimeout,
+  requestSnapshotByUrlAndFilters,
+  generateTags,
+} from 'keeperUtils/brightDataUtils';
 import { TJob, JobSourceWebsiteEnum } from 'keeperTypes';
 import { getIndeedCompanySnapshotUrl, getLinkedInCompanySnapshotUrl } from 'keeperConstants';
 
@@ -62,8 +66,19 @@ export const handler = async (event: SQSEvent) => {
           job.benefits = parsedDetails.benefits;
           job.responsibilities = parsedDetails.responsibilities;
           job.qualifications = parsedDetails.qualifications;
-          job.jobLevel = parsedDetails.jobLevel;
           job.requiredYearsOfExperience = parsedDetails.requiredYearsOfExperience;
+          job.jobLevel = parsedDetails.jobLevel;
+          job.tags = [
+            ...new Set([
+              ...(job.tags ?? []),
+              ...(generateTags(
+                parsedDetails.jobTitle,
+                parsedDetails.locationFlexibility,
+                job.relevantSkills,
+                parsedDetails.jobLevel,
+              ) ?? []),
+            ]),
+          ];
         } else {
           console.error(`Failed to extract details. Response: ${JSON.stringify(response)}`);
           // Handle failure case (e.g., log error, skip job processing, etc.)

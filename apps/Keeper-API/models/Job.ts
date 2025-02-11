@@ -23,8 +23,9 @@ const JobSchema = new mongoose.Schema({
   projectDescription: { type: String, default: null, required: false },
   benefits: { type: Array, default: [], required: false },
   responsibilities: { type: Array, default: [], required: false },
-  qualifications: { type: Array, default: null, required: false },
+  qualifications: { type: Array, default: [], required: false },
   jobLevel: { type: String, default: null, required: false },
+  tags: { type: Array, default: [], required: false },
 
   // brightData fields
   // this is the url to the application from the source website
@@ -53,6 +54,12 @@ JobSchema.index({ createdAt: 1, requiredYearsOfExperience: 1, relevantSkills: 1 
 
 JobSchema.index({ createdAt: 1, requiredYearsOfExperience: 1, relevantSkills: 1, geoLocation: '2dsphere' });
 
-JobSchema.index({ jobTitle: 'text', locationFlexibility: 'text', relevantSkills: 'text', jobLevel: 'text' });
+JobSchema.index({
+  jobTitle: 'text',
+  locationFlexibility: 'text',
+  relevantSkills: 'text',
+  jobLevel: 'text',
+  tags: 'text',
+});
 
 export default mongoose.model('Jobs', JobSchema);

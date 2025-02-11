@@ -30,9 +30,10 @@ export const handler = async (event: APIGatewayEvent, context: Context): Promise
     const response = await axios.post(
       CHATGPT_API_URL,
       {
-        model: 'gpt-3.5-turbo',
+        model: 'gpt-4o',
         messages: [{ role: 'user', content: prompt }],
-        max_tokens: 500,
+        max_tokens: 1000,
+        temperature: 0.2,
       },
       {
         headers: {

@@ -14,6 +14,8 @@ import {
   TCompany,
   TGeoLocation,
   TBrightDataCrunchbaseCompany,
+  TLocationFlexibility,
+  JobLevel,
 } from 'keeperTypes';
 import {
   extractDollarNumbers,
@@ -24,12 +26,13 @@ import {
   normalizeUrl,
 } from 'keeperUtils/backendUtils';
 import { TechnologiesList } from 'keeperConstants';
-import { CompaniesService } from 'keeperServices';
 
 const brightDataApiKey = process.env.VITE_BRIGHTDATA_API_KEY;
 
 export const staggerTimeout = 30;
 export const snapshotNotReadyRequeueTimeout = 600; // 10 minutes
+
+const defaultTags = ['developer', 'dev', 'engineer', 'software'];
 
 const linkedInRequiredYearsOfExperienceTransformer = (
   job_seniority_level: TBrightDataLinkedInJob['job_seniority_level'],
@@ -50,6 +53,57 @@ const linkedInRequiredYearsOfExperienceTransformer = (
     default:
       return 0;
   }
+};
+
+export const generateTags = (
+  jobTitle: string,
+  locationFlexibility: TLocationFlexibility | null,
+  relevantSkills: string[] | null,
+  jobLevel: JobLevel | null,
+): string[] => {
+  // Define keyword groups and their synonyms
+  const keywordGroups: { [key: string]: string[] } = {
+    fullstack: ['fullstack', 'full-stack', 'full stack'],
+    frontend: ['frontend', 'front end', 'front-end', 'ui', 'interface'],
+    backend: ['backend', 'back end', 'back-end'],
+    ai: ['ai', 'artificial intelligence'],
+    ml: ['ml', 'machine learning'],
+    react: ['react', 'reactjs', 'react.js'],
+    next: ['next', 'nextjs', 'next.js'],
+    nuxt: ['nuxt', 'nuxtjs', 'nuxt.js'],
+    angular: ['angular', 'angularjs'],
+    vue: ['vue', 'vuejs', 'vue.js'],
+    node: ['node', 'nodejs', 'node.js'],
+    mid: ['mid', 'mid-level', 'mid level'],
+    entry: ['entry', 'junior'],
+  };
+
+  const tags = new Set<string>();
+
+  // Helper function that adds only matching keywords based on keywordGroups
+  const addMatchingTags = (text: string | null) => {
+    if (!text) return;
+    const lowerText = text.toLowerCase();
+    Object.entries(keywordGroups).forEach(([groupKey, variants]) => {
+      if (variants.some(variant => lowerText.includes(variant))) {
+        variants.forEach(tag => tags.add(tag));
+      }
+    });
+  };
+
+  // Process the provided fields only through addMatchingTags:
+  addMatchingTags(jobTitle);
+  if (locationFlexibility) {
+    addMatchingTags(locationFlexibility);
+  }
+  if (relevantSkills) {
+    relevantSkills.forEach(skill => addMatchingTags(skill));
+  }
+  if (jobLevel) {
+    addMatchingTags(jobLevel);
+  }
+
+  return Array.from(tags);
 };
 
 const brightDataRequiredSkillsTransformer = (job_summary: string): string[] => {
@@ -242,6 +296,7 @@ export const linkedInJobTransformer = (brightDataJob: TBrightDataLinkedInJob): T
     responsibilities: null,
     qualifications: null,
     jobLevel: null,
+    tags: defaultTags,
 
     sourceWebsiteApplicationUrl: brightDataJob.url,
     jobTitle: brightDataJob.job_title,
@@ -367,6 +422,7 @@ export const indeedJobTransformer = (brightDataIndeedJob: TBrightDataIndeedJob):
     responsibilities: null,
     qualifications: null,
     jobLevel: null,
+    tags: defaultTags,
 
     sourceWebsiteApplicationUrl: brightDataIndeedJob.url,
     jobTitle: brightDataIndeedJob.job_title,
