@@ -48,6 +48,9 @@ const FindJob = () => {
 
   // Fetch jobs when filters change
   useEffect(() => {
+    if (jobGridRef.current) {
+      jobGridRef.current.scrollTo({ top: 0 });
+    }
     fetchJobs(filters);
   }, [filters]);
 
