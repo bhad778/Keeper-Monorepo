@@ -4,7 +4,7 @@ import { normalizeLocation, normalizeTitle, normalizeUrl, normalizeCompanyName }
 import Company from './Company';
 
 const JobSchema = new mongoose.Schema({
-  // devdog fields
+  // keeper fields
   companyId: { type: mongoose.Schema.Types.ObjectId, ref: Company, default: null, required: false },
   createdAt: { type: Date, default: Date.now, required: false },
   geoLocation: { type: Object, default: null, required: false },
