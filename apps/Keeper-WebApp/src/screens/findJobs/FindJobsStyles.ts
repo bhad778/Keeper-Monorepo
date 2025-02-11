@@ -67,14 +67,15 @@ export const useStyles = () => {
     jobGridContainer: {
       width: '75%',
       padding: '20px',
+      height: `calc(100vh - ${navBarHeight}px)`,
     },
     jobGrid: {
       width: '100%',
+      height: '100%',
       display: 'grid',
       gridTemplateColumns: 'repeat(2, 1fr)',
       gap: '20px',
       overflowY: 'scroll', // Makes this section scrollable
-      height: `calc(100vh - ${navBarHeight}px)`,
       position: 'relative', // Ensures the spinner is correctly centered
     },
     jobGridSpinner: {

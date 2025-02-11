@@ -165,6 +165,7 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
       formattedCompensation: 1,
       applyLink: 1,
     })
+      .populate('companyId')
       .sort(textSearch ? { score: { $meta: 'textScore' } } : {})
       .limit(getItemsForSwipingLimit)
       .exec();
