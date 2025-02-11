@@ -33,7 +33,7 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
       headers,
       body: JSON.stringify({
         success: true,
-        result: addResult,
+        data: addResult,
       }),
     };
   } catch (error) {

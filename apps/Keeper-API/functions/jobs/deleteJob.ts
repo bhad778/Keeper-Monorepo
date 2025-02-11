@@ -72,7 +72,7 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
       headers,
       body: JSON.stringify({
         success: true,
-        result: deleteResult.deletedCount,
+        data: deleteResult.deletedCount,
       }),
     };
   } catch (error) {

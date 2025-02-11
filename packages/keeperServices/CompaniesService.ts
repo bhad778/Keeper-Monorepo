@@ -6,8 +6,7 @@ import { postRequest } from './serviceUtils';
 
 const CompaniesService = {
   findCompany: (payload: TFindCompanyPayload) => postRequest<TCompany | null>('findCompany', payload),
-  updateCompany: (payload: TUpdateCompanyPayload) =>
-    postRequest<UpdateWriteOpResult | TCompany | null>('updateCompany', payload),
+  updateCompany: (payload: TUpdateCompanyPayload) => postRequest<TCompany | null>('updateCompany', payload),
 };
 
 export default CompaniesService;

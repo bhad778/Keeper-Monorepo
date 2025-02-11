@@ -1,9 +1,11 @@
 import mongoose from 'mongoose';
 
 import { normalizeLocation, normalizeTitle, normalizeUrl, normalizeCompanyName } from '../keeperApiUtils';
+import Company from './Company';
 
 const JobSchema = new mongoose.Schema({
   // devdog fields
+  companyId: { type: mongoose.Schema.Types.ObjectId, ref: Company, default: null, required: false },
   createdAt: { type: Date, default: Date.now, required: false },
   geoLocation: { type: Object, default: null, required: false },
   hasGottenGeoLocationData: { type: Boolean, default: false, required: false },
@@ -17,11 +19,11 @@ const JobSchema = new mongoose.Schema({
   requiredYearsOfExperience: { type: Number, default: 0, required: false },
   // this is Indeed, LinkedIn, etc
   sourceWebsite: { type: String, default: null, required: false },
-  locationFlexibility: { type: String, default: false, required: false },
-  projectDescription: { type: String, default: false, required: false },
-  benefits: { type: Array, default: false, required: false },
-  responsibilities: { type: Array, default: false, required: false },
-  qualifications: { type: Array, default: false, required: false },
+  locationFlexibility: { type: String, default: null, required: false },
+  projectDescription: { type: String, default: null, required: false },
+  benefits: { type: Array, default: [], required: false },
+  responsibilities: { type: Array, default: [], required: false },
+  qualifications: { type: Array, default: null, required: false },
   jobLevel: { type: String, default: null, required: false },
 
   // brightData fields

@@ -19,10 +19,10 @@ const JobsService = {
   getEmployersJobs: (payload: { userId: string }) => postRequest('getEmployersJobs', payload),
   updateJobPreferences: (payload: any) => postRequest('updateJobPreferences', payload),
   recordJobsSwipes: (payload: any) => postRequest('recordJobsSwipes', payload),
-  addJob: (payload: TAddJobPayload) => postRequest('addJob', payload),
+  addJob: (payload: TAddJobPayload) => postRequest<TJob[]>('addJob', payload),
   deleteJob: (payload: TDeleteJobPayload) => postRequest('deleteJob', payload),
   findJob: (payload: TFindJobPayload) => postRequest<TJob | null>('findJob', payload),
-  updateJob: (payload: TUpdateJobPayload) => postRequest<UpdateWriteOpResult | TJob | null>('updateJob', payload),
+  updateJob: (payload: TUpdateJobPayload) => postRequest<TJob | null>('updateJob', payload),
 };
 
 export default JobsService;

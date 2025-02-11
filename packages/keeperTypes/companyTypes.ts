@@ -1,6 +1,7 @@
 import { JobSourceWebsiteEnum } from './brightDataTypes';
 
 export type TCompany = {
+  _id?: string;
   createdAt?: Date;
   lastSourceWebsiteUpdate?: Date | null;
   lastGlassdoorCompanyUpdate?: Date | null;

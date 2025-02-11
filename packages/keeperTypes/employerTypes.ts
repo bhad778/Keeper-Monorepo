@@ -60,6 +60,7 @@ export enum JobLevelEnum {
 // job in our database
 export type TJob = {
   _id?: string;
+  companyId: string | null;
   expoPushToken?: string | null;
   requiredYearsOfExperience: number;
   relevantSkills: string[];

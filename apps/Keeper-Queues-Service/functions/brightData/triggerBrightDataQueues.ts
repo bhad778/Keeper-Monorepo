@@ -11,7 +11,7 @@ const staggerQueueUrl = process.env.VITE_STAGGER_QUEUE_URL as string;
 export const handler = async (event: APIGatewayEvent, context: Context, callback: APIGatewayProxyCallback) => {
   context.callbackWaitsForEmptyEventLoop = false;
 
-  console.info('Starting addJobSnapshotsToQueue function.');
+  console.info('Starting triggerBrightdataQueues function.');
 
   try {
     // Define filters for LinkedIn and Indeed
@@ -99,7 +99,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ message: 'Failed to add job snapshots to the Jobs Queue', error }),
+      body: JSON.stringify({ message: 'Error in the most outer try catch block', error }),
     };
   }
 };

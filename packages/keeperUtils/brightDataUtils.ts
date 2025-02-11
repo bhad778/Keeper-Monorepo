@@ -220,6 +220,7 @@ export const indeedSalaryTransformer = (
 // everything that we dont set here is because were gonna get it later in processJobsQueue through chatGPT
 export const linkedInJobTransformer = (brightDataJob: TBrightDataLinkedInJob): TJob => {
   const transformedJob: TJob = {
+    companyId: null,
     expoPushToken: null as unknown as string,
     createdAt: new Date(),
     receivedLikes: [],
@@ -344,6 +345,7 @@ export const brightDataLinkedInCompanyTransformer = (company: TBrightDataLinkedI
 // everything that we dont set here is because were gonna get it later in processJobsQueue through chatGPT
 export const indeedJobTransformer = (brightDataIndeedJob: TBrightDataIndeedJob): TJob => {
   const transformedJob: TJob = {
+    companyId: null,
     expoPushToken: undefined,
     createdAt: new Date(),
     receivedLikes: [],

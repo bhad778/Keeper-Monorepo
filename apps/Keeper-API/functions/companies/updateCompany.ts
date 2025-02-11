@@ -80,8 +80,7 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       headers,
       body: JSON.stringify({
         success: true,
-        updatedCount: operation === 'updateMany' ? updateResult.matchedCount : 1,
-        updatedCompany: operation === 'updateOne' ? updateResult : null,
+        data: updateResult,
       }),
     };
   } catch (error) {

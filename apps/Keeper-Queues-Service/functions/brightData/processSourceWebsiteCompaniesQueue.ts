@@ -1,6 +1,6 @@
 import { SQSEvent } from 'aws-lambda';
 import { JobSourceWebsiteEnum } from 'keeperTypes';
-import { CompaniesService } from 'keeperServices';
+import { CompaniesService, JobsService, TUpdateJobPayload } from 'keeperServices';
 import { sendMessageToQueue, extractErrorMessage } from 'keeperUtils/backendUtils';
 import {
   brightDataIndeedCompanyTransformer,
@@ -24,19 +24,21 @@ const crunchbaseCompaniesQueueUrl = process.env.VITE_CRUNCHBASE_COMPANIES_QUEUE_
 // this snapshot will yield
 // {
 //   "snapshotId": "s_m5kgyfxs1km7azb6yh",
-//   "sourceWebsite": "LinkedIn"
+//   "sourceWebsite": "LinkedIn",
+//   "jobId": "2342342",
 // }
 
 // the companies queue holds messages that are just snapshotIds, and these snapshotIds hold data
 export const handler = async (event: SQSEvent) => {
   const promises = event.Records.map(async record => {
-    let snapshotId: string | undefined, sourceWebsite: string | undefined;
+    let snapshotId: string | undefined, sourceWebsite: string | undefined, jobId: string | undefined;
 
     try {
       const messageBody = JSON.parse(record.body);
 
       snapshotId = messageBody.snapshotId;
       sourceWebsite = messageBody.sourceWebsite;
+      jobId = messageBody.jobId;
 
       console.info(`Processing message with this data- ${JSON.stringify(messageBody)}`);
 
@@ -90,7 +92,7 @@ export const handler = async (event: SQSEvent) => {
       console.info(`Upserting company data for ${transformedCompany.companyName} into the database.`);
 
       // Step 4: Upsert company data into the database
-      const updateResponse = await CompaniesService.updateCompany({
+      const updateCompanyResponse = await CompaniesService.updateCompany({
         query: {
           $or: [
             { sourceWebsiteUrl: transformedCompany.sourceWebsiteUrl },
@@ -101,12 +103,31 @@ export const handler = async (event: SQSEvent) => {
         options: { upsert: true },
       });
 
-      if (!updateResponse || !updateResponse.success) {
+      if (!updateCompanyResponse || !updateCompanyResponse.success) {
         console.error(`Failed to upsert company data for ${transformedCompany.companyName}.`);
         return;
       }
 
       console.info(`Successfully upserted company data for ${transformedCompany.companyName}.`);
+
+      const updateJobPayload: TUpdateJobPayload = {
+        query: { _id: jobId },
+        updateData: { companyId: updateCompanyResponse.data ? updateCompanyResponse?.data._id : '' },
+      };
+
+      // Update the job in the database with geolocation data
+      const updateJobResponse = await JobsService.updateJob(updateJobPayload);
+
+      if (!updateJobResponse || !updateJobResponse.success) {
+        console.error(
+          `Failed to update companyId in job for jobId ${jobId} with this updateCompanyResponse.data ${JSON.stringify(
+            updateCompanyResponse?.data,
+          )}.`,
+        );
+        return;
+      }
+
+      console.info(`Successfully updated companyId in job for jobId ${jobId}.`);
 
       try {
         // Step 5: Request Glassdoor snapshot

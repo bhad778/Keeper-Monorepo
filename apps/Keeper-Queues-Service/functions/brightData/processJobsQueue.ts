@@ -16,6 +16,7 @@ const sourceWebsiteCompaniesQueueUrl = process.env.VITE_SOURCE_WEBSITE_COMPANIES
 //     "job": a transformed job object,
 //     "sourceWebsite": "LinkedIn"
 // }
+
 export const handler = async (event: SQSEvent) => {
   const promises = event.Records.map(async record => {
     const messageBody = JSON.parse(record.body) as { job: TJob; sourceWebsite: JobSourceWebsiteEnum };
@@ -84,7 +85,14 @@ export const handler = async (event: SQSEvent) => {
       }
 
       // Step 3: Add the job to the database
-      await JobsService.addJob({ jobs: [job] });
+      const addJobResult = await JobsService.addJob({ jobs: [job] });
+
+      if (!addJobResult.success) {
+        console.error(`Failed to add job to the database: ${JSON.stringify(addJobResult)}`);
+        return;
+      }
+
+      const insertedJobDataId = addJobResult.data?.[0]?._id;
 
       console.info(`Added job to the database for company: ${job.companyName}`);
 
@@ -138,6 +146,7 @@ export const handler = async (event: SQSEvent) => {
           const sourceWebsiteQueueMessage = {
             snapshotId: companySnapshotId,
             sourceWebsite,
+            jobId: insertedJobDataId,
           };
 
           await sendMessageToQueue(sourceWebsiteCompaniesQueueUrl, sourceWebsiteQueueMessage);
