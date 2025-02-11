@@ -196,36 +196,38 @@ const FindJob = () => {
           </div>
         </div>
 
-        {loading ? (
-          <div style={styles.fullPageSpinner}>
-            <LoadingSpinner />
-          </div>
-        ) : (
-          <div style={styles.jobGrid} ref={jobGridRef}>
-            {displayedJobs.map((job, index) => (
-              <div key={job._id} style={styles.jobCard}>
-                <h4 style={styles.jobTitle}>{index + 1}</h4>
-                <h4 style={styles.jobTitle}>{job.jobTitle}</h4>
-                <p style={styles.jobDescription}>
-                  {job.formattedCompensation?.payRange
-                    ? `$${job.formattedCompensation.payRange.min} - $${job.formattedCompensation.payRange.max}`
-                    : 'Salary range not provided'}
-                </p>
-                <p style={styles.jobDescription}>{job.jobLocation}</p>
-                <p style={styles.jobDescription}>{job.locationFlexibility}</p>
-                <p style={styles.jobDescription}>{job.jobLevel}</p>
-                <a href={job.applyLink} target='_blank' rel='noopener noreferrer' style={styles.applyButton}>
-                  <span style={styles.buttonText}>Apply</span>
-                </a>
-              </div>
-            ))}
-            {loadingMore && displayedJobs.length < jobs.length && (
-              <div style={styles.jobGridSpinner}>
-                <LoadingSpinner />
-              </div>
-            )}
-          </div>
-        )}
+        <div style={styles.jobGridContainer} ref={jobGridRef}>
+          {loading ? (
+            <div style={styles.fullPageSpinner}>
+              <LoadingSpinner />
+            </div>
+          ) : (
+            <div style={styles.jobGrid}>
+              {displayedJobs.map((job, index) => (
+                <div key={job._id} style={styles.jobCard}>
+                  <h4 style={styles.jobTitle}>{index + 1}</h4>
+                  <h4 style={styles.jobTitle}>{job.jobTitle}</h4>
+                  <p style={styles.jobDescription}>
+                    {job.formattedCompensation?.payRange
+                      ? `$${job.formattedCompensation.payRange.min} - $${job.formattedCompensation.payRange.max}`
+                      : 'Salary range not provided'}
+                  </p>
+                  <p style={styles.jobDescription}>{job.jobLocation}</p>
+                  <p style={styles.jobDescription}>{job.locationFlexibility}</p>
+                  <p style={styles.jobDescription}>{job.jobLevel}</p>
+                  <a href={job.applyLink} target='_blank' rel='noopener noreferrer' style={styles.applyButton}>
+                    <span style={styles.buttonText}>Apply</span>
+                  </a>
+                </div>
+              ))}
+            </div>
+          )}
+          {loadingMore && displayedJobs.length < jobs.length && (
+            <div style={styles.jobGridSpinner}>
+              <LoadingSpinner />
+            </div>
+          )}
+        </div>
       </>
     </div>
   );

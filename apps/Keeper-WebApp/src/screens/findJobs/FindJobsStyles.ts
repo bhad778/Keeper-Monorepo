@@ -64,9 +64,12 @@ export const useStyles = () => {
       backgroundColor: theme.color.pink, // Ensure this matches your selected filter style
       transform: 'scale(1.1)', // Slight scale effect for selected filters
     },
-    jobGrid: {
+    jobGridContainer: {
       width: '75%',
       padding: '20px',
+    },
+    jobGrid: {
+      width: '100%',
       display: 'grid',
       gridTemplateColumns: 'repeat(2, 1fr)',
       gap: '20px',
