@@ -26,6 +26,8 @@ export const massageJobDataPrompt = (jobSummary: string, jobTitle: string) => {
             - "remote" for 100% remote jobs,
             - "hybrid - x days" for hybrid jobs with a specified number of days,
             - "hybrid" if hybrid is mentioned but the number of days is not specified.
+            - return "remote" if it mentions that it can be remote at all. So for example if it says remote or hybrid, return remote.
+            - if you cant get a good answer for this, return "remote"
 
         4. Job summary: Provide a general summary of the job description you were passed and try to exclude including stuff from other fields like benefits, qualifications, etc.
 

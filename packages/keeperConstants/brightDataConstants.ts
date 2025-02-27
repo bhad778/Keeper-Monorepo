@@ -1,13 +1,13 @@
 export const getCrunchbaseCompanyInfoSnapshotUrl =
-  'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1vijqt9jfj7olije&include_errors=true&type=discover_new&discover_by=keyword';
+  'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1vijqt9jfj7olije&include_errors=true&type=discover_new&discover_by=keyword&limit_per_input=5';
 
 export const getGlassdoorCompanyInfoSnapshotUrl =
-  'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7j0bx501ockwldaqf&include_errors=true&type=discover_new&discover_by=keyword';
+  'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7j0bx501ockwldaqf&include_errors=true&type=discover_new&discover_by=keyword&limit_per_input=5';
 
 export const glassdoorSearchUrl = 'https://www.glassdoor.com/Search/results.htm?keyword=';
 
 export const glassdoorReviewsSnapshotUrl =
-  'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7j1po0921hbu0ri1z&include_errors=true';
+  'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l7j1po0921hbu0ri1z&include_errors=true&limit_per_input=30';
 
 export const getLinkedInCompanySnapshotUrl =
   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1vikfnt1wgvvqz95w&include_errors=true';
@@ -47,18 +47,18 @@ const cities = [
 
 export const linkedInFilters = cities.map(city => ({
   location: city,
-  keyword: 'software developer',
-  country: 'US', // Conditional logic for country if needed
+  keyword: 'remote software developer',
+  country: 'US',
   time_range: 'Any time',
   job_type: '',
   experience_level: '',
-  remote: '',
+  remote: 'Remote',
   company: '',
 }));
 
 export const indeedFilters = cities.map(city => ({
   country: 'US',
   domain: 'indeed.com',
-  keyword_search: 'software engineer',
+  keyword_search: 'remote software developer',
   location: city,
 }));
