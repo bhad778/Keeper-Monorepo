@@ -4,7 +4,7 @@ import PubNub, { StatusEvent, MessageEvent } from 'pubnub';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { addMatches, addReceivedLike, updateMatch, updateMatchNotificationRedux } from 'reduxStore';
-import { AppHeaderText, InitialsAvatar, WithBadge } from 'components';
+import { AppBoldText, AppHeaderText, InitialsAvatar, WithBadge } from 'components';
 import KeeperLogo from 'assets/images/keeperLogo.png';
 import { useLocation } from 'react-router-dom';
 import { getMatchesFromEmployersJobs } from 'utils';
@@ -133,7 +133,9 @@ const Layout = () => {
   return (
     <div style={styles.container}>
       <div style={styles.navBar}>
-        <img src={KeeperLogo} style={styles.logo} />
+        <Link to='/' style={{ textDecoration: 'none' }}>
+          <AppBoldText style={styles.logoText}>Keeper</AppBoldText>
+        </Link>
 
         <div style={styles.navLinksContainer}>
           <Link style={{ ...styles.navItem, ...styles.discoverNav }} to={'discover'}>
