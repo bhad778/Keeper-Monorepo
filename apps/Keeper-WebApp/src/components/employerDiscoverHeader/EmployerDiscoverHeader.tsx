@@ -240,13 +240,13 @@ const EmployerDiscoverHeader = () => {
       if (isLoggedIn) {
         navigate('/employeeHome/profile');
       } else {
-        navigate('/browse/profile');
+        navigate('/profile');
       }
     } else {
       if (isLoggedIn) {
         navigate('/employerHome/jobBoard');
       } else {
-        navigate('/browse/profile');
+        navigate('/profile');
       }
     }
   };

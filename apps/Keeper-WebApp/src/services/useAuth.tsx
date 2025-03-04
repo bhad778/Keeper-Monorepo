@@ -104,7 +104,7 @@ const useAuth = () => {
     try {
       await Auth.signOut();
       resetReduxData();
-      navigate('/browse/exploreJobs');
+      navigate('/exploreJobs');
     } catch (error) {
       console.error('error signing out: ', error);
     }

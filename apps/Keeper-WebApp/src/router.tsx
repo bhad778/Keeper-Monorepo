@@ -4,7 +4,6 @@ import {
   ViewResume,
   Matches,
   AccountType,
-  LandingScreen,
   Layout,
   ErrorScreen,
   Discover,
@@ -20,8 +19,32 @@ import { PrivateRoute, OnlyPublicRoute, OnlyAdminRoute } from 'routes';
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <LandingScreen />,
+    element: <Layout />,
     errorElement: <ErrorScreen />,
+    children: [
+      {
+        index: true,
+        path: 'exploreJobs',
+        element: (
+          <OnlyPublicRoute>
+            <FindJobs />
+          </OnlyPublicRoute>
+        ),
+      },
+      // {
+      //   index: true,
+      //   path: 'discover/:accountTypeParam?/:yearsOfExperienceParam?/:mainSkillParam?/:jobOrResumeIdParam?',
+      //   element: <Discover />,
+      // },
+      {
+        path: 'matches',
+        element: <Matches />,
+      },
+      {
+        path: 'profile',
+        element: <EmployeeProfileScreen />,
+      },
+    ],
   },
   {
     path: '/employeeHome',
@@ -74,35 +97,6 @@ const router = createBrowserRouter([
       {
         path: 'matches',
         element: <Matches />,
-      },
-    ],
-  },
-  {
-    path: '/browse',
-    element: <Layout />,
-    errorElement: <ErrorScreen />,
-    children: [
-      {
-        index: true,
-        path: 'exploreJobs',
-        element: (
-          <OnlyPublicRoute>
-            <FindJobs />
-          </OnlyPublicRoute>
-        ),
-      },
-      // {
-      //   index: true,
-      //   path: 'discover/:accountTypeParam?/:yearsOfExperienceParam?/:mainSkillParam?/:jobOrResumeIdParam?',
-      //   element: <Discover />,
-      // },
-      {
-        path: 'matches',
-        element: <Matches />,
-      },
-      {
-        path: 'profile',
-        element: <EmployeeProfileScreen />,
       },
     ],
   },

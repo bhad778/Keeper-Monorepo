@@ -32,11 +32,11 @@ const Swiper = ({ slides }: SwiperProps) => {
   const maxSteps = slides.length;
 
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setActiveStep(prevActiveStep => prevActiveStep + 1);
   };
 
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    setActiveStep(prevActiveStep => prevActiveStep - 1);
   };
 
   const handleStepChange = (step: number) => {
@@ -48,26 +48,26 @@ const Swiper = ({ slides }: SwiperProps) => {
   };
 
   const onBrowseClick = () => {
-    navigate('/browse/discover');
+    navigate('/discover');
   };
 
   return (
     <Box sx={styles.swiperContainer}>
-      <SwipeableViews axis="x" index={activeStep} onChangeIndex={handleStepChange} enableMouseEvents>
+      <SwipeableViews axis='x' index={activeStep} onChangeIndex={handleStepChange} enableMouseEvents>
         {slides.map((slide, index) => (
           <div key={slide.text}>
             {Math.abs(activeStep - index) <= 2 ? (
               <>
                 {slide.svg ? (
                   <div style={styles.imgContainer}>
-                    <Box component="img" sx={styles.img} src={slide.svg} />
+                    <Box component='img' sx={styles.img} src={slide.svg} />
                     <AppHeaderText style={styles.slideText}>{slide.text}</AppHeaderText>
                   </div>
                 ) : (
                   <div style={styles.finalButtonsContainer}>
                     <AppHeaderText style={styles.slideText}>{slide.text}</AppHeaderText>
                     <Button
-                      text="Create Your Profile"
+                      text='Create Your Profile'
                       buttonStyles={styles.finishButtons}
                       onClick={onCreateProfileClick}
                     />
@@ -87,7 +87,7 @@ const Swiper = ({ slides }: SwiperProps) => {
       <MobileStepper
         style={styles.mobileStepper}
         steps={maxSteps}
-        position="static"
+        position='static'
         activeStep={activeStep}
         nextButton={
           <Button
@@ -96,8 +96,7 @@ const Swiper = ({ slides }: SwiperProps) => {
               visibility: activeStep === maxSteps - 1 ? 'hidden' : '',
               backgroundColor: 'white',
             }}
-            text="Next"
-          >
+            text='Next'>
             <KeyboardArrowRight />
           </Button>
         }
@@ -108,8 +107,7 @@ const Swiper = ({ slides }: SwiperProps) => {
               visibility: activeStep === 0 ? 'hidden' : '',
               backgroundColor: 'white',
             }}
-            text="Back"
-          >
+            text='Back'>
             <KeyboardArrowLeft />
           </Button>
         }
