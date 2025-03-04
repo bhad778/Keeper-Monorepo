@@ -154,8 +154,8 @@ const Layout = () => {
           <Link style={styles.navItem} to={'applications'}>
             <AppHeaderText style={{ ...styles.navText, ...styles.applicationsNavText }}>Applications</AppHeaderText>
           </Link>
-          <Link style={styles.navItem} to={'logIn'}>
-            <AppHeaderText style={{ ...styles.navText, ...styles.logInNavText }}>Log In</AppHeaderText>
+          <Link style={styles.navItem} to={'signUp'}>
+            <AppHeaderText style={{ ...styles.navText, ...styles.logInNavText }}>Sign Up</AppHeaderText>
           </Link>
 
           {/* <Link style={{ ...styles.navItem, ...styles.matchesNav }} to={`matches`}>
