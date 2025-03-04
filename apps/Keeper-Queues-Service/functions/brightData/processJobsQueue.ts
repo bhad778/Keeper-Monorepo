@@ -56,10 +56,15 @@ export const handler = async (event: SQSEvent) => {
 
           isSoftwareDevelopmentJob = parsedDetails.isSoftwareDevelopmentJob;
 
+          // only if the job doesnt already have a locationFlexibility from the transform,
+          // do we add the extracted locationFlexibility we never override data with chatgpt data
+          if (!job.locationFlexibility) {
+            job.locationFlexibility = parsedDetails.locationFlexibility;
+          }
+
           // Add the extracted details to the job object
           job.compensation = parsedDetails.compensation;
           job.formattedCompensation = parsedDetails.formattedCompensation;
-          job.locationFlexibility = parsedDetails.locationFlexibility;
           job.jobSummary = parsedDetails.jobSummary;
           job.jobTitle = parsedDetails.jobTitle;
           job.projectDescription = parsedDetails.projectDescription;

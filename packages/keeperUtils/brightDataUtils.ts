@@ -397,6 +397,29 @@ export const brightDataLinkedInCompanyTransformer = (company: TBrightDataLinkedI
   return transformedJob;
 };
 
+/**
+ * Extracts location flexibility from Indeed job location strings
+ * @param jobLocation The job location string from Indeed
+ * @returns The standardized location flexibility value
+ */
+export const extractLocationFlexibilityFromIndeedJobLocation = (jobLocation: string): TLocationFlexibility => {
+  // Convert to lowercase for case-insensitive matching
+  const lowercaseLocation = jobLocation.toLowerCase();
+
+  // Check for remote first (higher priority)
+  if (lowercaseLocation.includes('remote')) {
+    return 'remote';
+  }
+
+  // Check for hybrid
+  if (lowercaseLocation.includes('hybrid')) {
+    return 'hybrid';
+  }
+
+  // Default case - neither remote nor hybrid explicitly mentioned
+  return 'hybrid';
+};
+
 // everything that we dont set here is because were gonna get it later in processJobsQueue through chatGPT
 export const indeedJobTransformer = (brightDataIndeedJob: TBrightDataIndeedJob): TJob => {
   const transformedJob: TJob = {
@@ -416,7 +439,7 @@ export const indeedJobTransformer = (brightDataIndeedJob: TBrightDataIndeedJob):
     // we replace this with chatGPT if chatGPT finds an answer for it
     formattedCompensation: linkedInSalaryTransformer(brightDataIndeedJob.salary_formatted) || null,
     sourceWebsite: JobSourceWebsiteEnum.Indeed,
-    locationFlexibility: null,
+    locationFlexibility: extractLocationFlexibilityFromIndeedJobLocation(brightDataIndeedJob.job_location),
     projectDescription: null,
     benefits: null,
     responsibilities: null,

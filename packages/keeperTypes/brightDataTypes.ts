@@ -10,6 +10,8 @@ export type TBrightDataIndeedJob = {
   qualifications: string[];
   // full-time, part-time, etc.
   job_type: IndeedJobTypeEnum;
+  // Whether the job is Remote, on-site, hybrid, etc...
+  job_location: string;
   location: string;
   // null, $30.52 - $40.69 an hour, $33,540 - $54,455 a year, From $55,000 a year, $26.13 an hour
   salary_formatted: string;
