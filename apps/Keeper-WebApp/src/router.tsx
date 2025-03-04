@@ -84,7 +84,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        path: 'findJobs',
+        path: 'exploreJobs',
         element: (
           <OnlyPublicRoute>
             <FindJobs />

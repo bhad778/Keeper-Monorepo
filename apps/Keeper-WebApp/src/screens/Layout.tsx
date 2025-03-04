@@ -148,7 +148,7 @@ const Layout = () => {
           </Link>
         </div>
         <div style={styles.navLinksContainer}>
-          <Link style={styles.navItem} to={'discover'}>
+          <Link style={styles.navItem} to={'exploreJobs'}>
             <AppHeaderText style={{ ...styles.navText, ...styles.jobsNavText }}>Explore Jobs</AppHeaderText>
           </Link>
           <Link style={styles.navItem} to={'applications'}>
