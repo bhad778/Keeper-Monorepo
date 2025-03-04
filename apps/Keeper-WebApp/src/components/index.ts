@@ -52,10 +52,12 @@ import KeeperSelectDropdown from './keeperSelectDropdown/KeeperSelectDropdown';
 import UsersThatLikedYouList from './usersThatLikedYouList/UsersThatLikedYouList';
 import WithBadge from './withBadge/WIthBadge';
 import ModalFilterContent from './modalFilterContent/ModalFilterContent';
+import FindJobsJobItem from './findJobsJobItem/FindJobsJobItem';
 
 export {
   AppBoldText,
   AppHeaderText,
+  FindJobsJobItem,
   AppText,
   ChannelList,
   ChannelListItem,

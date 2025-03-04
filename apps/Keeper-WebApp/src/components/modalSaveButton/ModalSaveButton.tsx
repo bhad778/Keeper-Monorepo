@@ -4,12 +4,12 @@ import useStyles from './ModalSaveButtonStyles';
 
 type ModalSaveButtonProps = {
   onSaveClick: () => void;
-  disabled: boolean;
+  disabled?: boolean;
   title?: string;
 };
 
 const ModalSaveButton = ({ onSaveClick, disabled, title }: ModalSaveButtonProps) => {
-  const styles = useStyles(disabled);
+  const styles = useStyles(!!disabled);
 
   return (
     <KeeperSelectButton
