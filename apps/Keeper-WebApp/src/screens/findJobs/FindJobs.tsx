@@ -28,7 +28,7 @@ const FindJob = () => {
   const [jobs, setJobs] = useState<TJob[]>([]);
   const [displayedJobs, setDisplayedJobs] = useState<TJob[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isNotLoggedInAlertOpen, setIsNotLoggedInAlertOpen] = useState(true);
+  const [isNotLoggedInAlertOpen, setIsNotLoggedInAlertOpen] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [filters, setFilters] = useState<TGetJobsForSwipingPayload>(defaultPayload);
 
