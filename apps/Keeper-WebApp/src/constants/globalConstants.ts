@@ -36,7 +36,7 @@ export const filterList: TEmployerFilterListOptions[] = [
 
 export const getItemsForSwipingLimit = 30;
 
-export const navBarHeight = 100;
+export const navBarHeight = 50;
 export const employerDiscoverHeaderHeight = 145;
 
 export const genericErrorMessage = 'There was an error, please try again.';

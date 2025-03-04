@@ -1,7 +1,7 @@
 import { navBarHeight } from 'constants/globalConstants';
 import { useTheme } from 'theme/theme.context';
 
-export const useStyles = (currentPath: string, isAJobSelected: boolean) => {
+export const useStyles = (currentPath: string) => {
   const { theme } = useTheme();
 
   const styles: { [k: string]: React.CSSProperties } = {
@@ -14,7 +14,6 @@ export const useStyles = (currentPath: string, isAJobSelected: boolean) => {
       height: navBarHeight,
       width: '100%',
       flexDirection: 'row',
-      // borderBottom: isAJobSelected && currentPath.includes('discover') ? '' : '2px solid white',
       borderBottom: '2px solid white',
       zIndex: 1,
       display: 'flex',
@@ -23,72 +22,44 @@ export const useStyles = (currentPath: string, isAJobSelected: boolean) => {
       paddingLeft: 50,
       paddingRight: 50,
     },
-    navLinksContainer: {
+    logoTextContainer: {
       display: 'flex',
-      justifyContent: 'space-between',
-      width: 500,
-      position: 'relative',
-      right: 12,
-    },
-    logoContainer: {
-      display: 'flex',
+      flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
     },
-    logo: {
-      width: 50,
+    navLinksContainer: {
+      display: 'flex',
+      position: 'relative',
+      alignItems: 'center',
+      gap: 20,
+    },
+    logoText: {
+      color: 'white',
+      fontSize: 24,
+    },
+    subLogoText: {
+      color: theme.color.secondary,
+      fontSize: 14,
+      paddingTop: 5,
+      marginLeft: 4,
     },
     navItem: {
-      height: 40,
       textDecoration: 'none',
       color: 'white',
     },
-    jobBoardNav: {},
-    discoverNav: {},
-    matchesNav: {},
-    profileNav: {},
-    jobBoardNavText: {
-      fontSize: 28,
-      color: currentPath.includes('jobBoard') ? theme.color.pink : 'white',
+    navText: {
+      fontSize: 18,
       whiteSpace: 'nowrap',
     },
-    discoverNavText: {
-      fontSize: 28,
-      color: currentPath.includes('discover') ? theme.color.pink : 'white',
-      whiteSpace: 'nowrap',
+    jobsNavText: {
+      color: currentPath.includes('Jobs') ? theme.color.pink : 'white',
     },
-    employeeMatchesNav: {
-      fontSize: 28,
-      color: currentPath.includes('matches') ? theme.color.pink : 'white',
-      whiteSpace: 'nowrap',
+    companiesNavText: {
+      color: currentPath.includes('Companies') ? theme.color.pink : 'white',
     },
-    employeeApplicationsNav: {
-      fontSize: 28,
-      color: currentPath.includes('applications') ? theme.color.pink : 'white',
-      whiteSpace: 'nowrap',
-    },
-    employeeMatchesText: {
-      fontSize: 28,
-      color: currentPath.includes('matches') ? theme.color.pink : 'white',
-      whiteSpace: 'nowrap',
-    },
-    matchesNavText: {
-      fontSize: 28,
-      color: currentPath.includes('matches') ? theme.color.pink : 'white',
-      whiteSpace: 'nowrap',
-    },
-    applicationsNavText: {
-      fontSize: 28,
-      color: currentPath.includes('applications') ? theme.color.pink : 'white',
-      whiteSpace: 'nowrap',
-    },
-    profileNavText: {
-      fontSize: 28,
-      color: currentPath.includes('profile') ? theme.color.pink : 'white',
-      whiteSpace: 'nowrap',
-    },
-    settingsIcon: {
-      width: 40,
+    logInNavText: {
+      color: currentPath.includes('logIn') ? theme.color.pink : 'white',
     },
   } as const;
 

@@ -4,7 +4,7 @@ import PubNub, { StatusEvent, MessageEvent } from 'pubnub';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { addMatches, addReceivedLike, updateMatch, updateMatchNotificationRedux } from 'reduxStore';
-import { AppBoldText, AppHeaderText, InitialsAvatar, WithBadge } from 'components';
+import { AppBoldText, AppHeaderText, AppText, InitialsAvatar, WithBadge } from 'components';
 import KeeperLogo from 'assets/images/keeperLogo.png';
 import { useLocation } from 'react-router-dom';
 import { getMatchesFromEmployersJobs } from 'utils';
@@ -29,7 +29,7 @@ const Layout = () => {
 
   const dispatch = useDispatch();
   const location = useLocation();
-  const styles = useStyles(location.pathname, !!selectedJobId);
+  const styles = useStyles(location.pathname);
 
   const [hasNotification, setHasNotification] = useState(false);
 
@@ -133,27 +133,30 @@ const Layout = () => {
   return (
     <div style={styles.container}>
       <div style={styles.navBar}>
-        <Link to='/' style={{ textDecoration: 'none' }}>
-          <AppBoldText style={styles.logoText}>Keeper</AppBoldText>
-        </Link>
-
-        <div style={styles.navLinksContainer}>
-          <Link style={{ ...styles.navItem, ...styles.discoverNav }} to={'discover'}>
-            <AppHeaderText style={styles.discoverNavText}>Discover</AppHeaderText>
+        <div style={styles.logoTextContainer}>
+          <Link to='/' style={{ textDecoration: 'none' }}>
+            <div style={styles.logoContainer}>
+              <AppBoldText style={styles.logoText}>Zyra</AppBoldText>
+            </div>
           </Link>
-
-          {!isEmployee && isLoggedIn && (
-            <Link style={{ ...styles.navItem, ...styles.jobBoardNav }} to={'jobBoard'}>
-              <AppHeaderText style={styles.jobBoardNavText}>Job Board</AppHeaderText>
-            </Link>
-          )}
-
-          {/* if theyre not logged in they always see this screen */}
-          {(isEmployee || !isLoggedIn) && (
-            <Link style={{ ...styles.navItem, ...styles.profileNav }} to={`profile`}>
-              <AppHeaderText style={styles.profileNavText}>{isNew ? 'Sign Up' : 'Profile'}</AppHeaderText>
-            </Link>
-          )}
+          <Link to='/' style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column' }}>
+            <div style={styles.logoContainer}>
+              <AppBoldText style={styles.subLogoText}>
+                - Explore jobs from every major jobs site in one place
+              </AppBoldText>
+            </div>
+          </Link>
+        </div>
+        <div style={styles.navLinksContainer}>
+          <Link style={styles.navItem} to={'discover'}>
+            <AppHeaderText style={{ ...styles.navText, ...styles.jobsNavText }}>Explore Jobs</AppHeaderText>
+          </Link>
+          <Link style={styles.navItem} to={'applications'}>
+            <AppHeaderText style={{ ...styles.navText, ...styles.applicationsNavText }}>Applications</AppHeaderText>
+          </Link>
+          <Link style={styles.navItem} to={'logIn'}>
+            <AppHeaderText style={{ ...styles.navText, ...styles.logInNavText }}>Log In</AppHeaderText>
+          </Link>
 
           {/* <Link style={{ ...styles.navItem, ...styles.matchesNav }} to={`matches`}>
             <WithBadge hasNotification={hasNotification}>
@@ -161,15 +164,14 @@ const Layout = () => {
             </WithBadge>
           </Link>
           */}
-
-          <Link style={{ ...styles.navItem, ...styles.employeeApplicationsNav }} to={`applications`}>
+          {/* <Link style={{ ...styles.navItem, ...styles.employeeApplicationsNav }} to={`applications`}>
             <AppHeaderText style={styles.applicationsNavText}>Applications</AppHeaderText>
-          </Link>
+          </Link> */}
         </div>
 
         {/* <CogIcon style={styles.settingsIcon} /> */}
 
-        <InitialsAvatar />
+        {/* <InitialsAvatar /> */}
       </div>
       <Outlet />
     </div>
