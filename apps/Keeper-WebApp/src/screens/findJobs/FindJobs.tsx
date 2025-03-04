@@ -27,8 +27,9 @@ const FindJob = () => {
 
   const [jobs, setJobs] = useState<TJob[]>([]);
   const [displayedJobs, setDisplayedJobs] = useState<TJob[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [loadingMore, setLoadingMore] = useState<boolean>(false);
+  const [loading, setLoading] = useState(true);
+  const [isNotLoggedInAlertOpen, setIsNotLoggedInAlertOpen] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [filters, setFilters] = useState<TGetJobsForSwipingPayload>(defaultPayload);
 
   const loadingMoreRef = useRef(false);
@@ -130,15 +131,23 @@ const FindJob = () => {
     });
   };
 
+  const handleApplyClick = (job: TJob) => {
+    if (isLoggedIn) {
+      window.open(job.applyLink, '_blank', 'noopener,noreferrer');
+    } else {
+      setIsNotLoggedInAlertOpen(true);
+    }
+  };
+
   return (
     <div style={styles.container}>
       <AlertModal
-        isOpen={true}
+        isOpen={isNotLoggedInAlertOpen}
         title={'You have to be signed up to apply'}
         subTitle={
           'Sign up by just inputting email and confirming phone to make sure your not AI to get back to applying!'
         }
-        closeModal={() => {}}
+        closeModal={() => setIsNotLoggedInAlertOpen(false)}
         onConfirmPress={() => {}}
         confirmText={'Sign Up'}
       />
@@ -221,7 +230,7 @@ const FindJob = () => {
           ) : (
             <div style={styles.jobGrid} ref={jobGridRef}>
               {displayedJobs.map((job, index) => (
-                <FindJobsJobItem job={job} index={index} />
+                <FindJobsJobItem job={job} index={index} handleApplyClick={handleApplyClick} />
               ))}
             </div>
           )}

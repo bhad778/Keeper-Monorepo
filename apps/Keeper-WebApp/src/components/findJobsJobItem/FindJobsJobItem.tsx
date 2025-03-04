@@ -5,9 +5,10 @@ import useStyles from './FindJobsJobItemStyles';
 type FindJobsJobItemProps = {
   job: TJob;
   index: number;
+  handleApplyClick: (job: TJob) => void;
 };
 
-const FindJobsJobItem = ({ job, index }: FindJobsJobItemProps) => {
+const FindJobsJobItem = ({ job, index, handleApplyClick }: FindJobsJobItemProps) => {
   const styles = useStyles();
 
   return (
@@ -22,9 +23,9 @@ const FindJobsJobItem = ({ job, index }: FindJobsJobItemProps) => {
       <p style={styles.jobDescription}>{job.jobLocation}</p>
       <p style={styles.jobDescription}>{job.locationFlexibility}</p>
       <p style={styles.jobDescription}>{job.jobLevel}</p>
-      <a href={job.applyLink} target='_blank' rel='noopener noreferrer' style={styles.applyButton}>
+      <span onClick={() => handleApplyClick(job)} style={styles.applyButton}>
         <span style={styles.buttonText}>Apply</span>
-      </a>
+      </span>
     </div>
   );
 };
