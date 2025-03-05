@@ -1,12 +1,12 @@
 import { APIGatewayEvent, APIGatewayProxyCallback, Context } from 'aws-lambda';
 import * as Joi from 'joi';
-import { TSwipe } from 'keeperTypes';
+import { SeniorityLevelToExperienceEnum, TSwipe } from 'keeperTypes';
 
 import connectToDatabase from '../../db';
 import { EmployeePreferencesSchema } from '../../schemas/globalSchemas';
 import ValidateBody from '../validateBody';
 import Job from '../../models/Job';
-import { getItemsForSwipingLimit, headers, seniorDevYearsOfEpxerience } from '../../constants';
+import { getItemsForSwipingLimit, headers } from '../../constants';
 import Swipe from '../../models/Swipe';
 import { escapeRegex, extractErrorMessage } from '../../keeperApiUtils';
 
@@ -41,13 +41,12 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
       userId: Joi.string(),
       isCount: Joi.boolean(),
       isPing: Joi.boolean(),
-      textSearch: Joi.string().allow(''),
     });
 
     const isError = ValidateBody(event, getJobsForSwipingSchema, callback);
     if (isError) return;
 
-    const { preferences, userId, isCount, isPing, textSearch } = JSON.parse(event.body);
+    const { preferences, userId, isCount, isPing } = JSON.parse(event.body);
 
     // Handle ping request
     if (isPing) {
@@ -63,7 +62,7 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
     let findObject: any = {};
 
     if (preferences) {
-      const { textSearch, relevantSkills, seniorityLevel, locationFlexibility } = preferences;
+      const { textSearch, seniorityLevel, locationFlexibility, minimumSalary, city, relevantSkills } = preferences;
 
       // Fetch swipes to exclude already swiped jobs
       // TODO: make sure this is scalable
@@ -73,8 +72,7 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
       // Create case-insensitive regex for relevant skills
       const caseInsensitiveSkillsRegExArray = relevantSkills?.map((text: string) => new RegExp(escapeRegex(text), 'i'));
 
-      const isSeniorDev = requiredYearsOfExperience >= seniorDevYearsOfEpxerience;
-
+      const requiredYearsOfExperience = SeniorityLevelToExperienceEnum[seniorityLevel];
       const searchFilters: any = [];
 
       // filter out any jobs that the user has already swiped on
@@ -87,7 +85,7 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
         searchFilters.push(
           {
             requiredYearsOfExperience: {
-              $lte: isSeniorDev ? 40 : requiredYearsOfExperience + 3,
+              $lte: requiredYearsOfExperience + 3,
             },
           },
           {
@@ -121,63 +119,68 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
       findObject = {
         $or: searchFilters,
       };
-    }
 
-    // Handle count request
-    if (isCount) {
-      const count = await Job.countDocuments(findObject).exec();
+      // by default mongo text search splits the words then searches them individually and if any of them match
+      // then it returns the document. This switches it to be like an and operator where all of them have to match.
+      // because otherwise remote react developer would return all remote jobs
+      const buildTextSearchQuery = (searchTerm: string) => {
+        // Split the search term into individual words and wrap each in quotes
+        const terms = searchTerm.split(/\s+/).map(term => `"${term}"`);
+
+        // Join the terms back into a single string for the $text query
+        return terms.join(' ');
+      };
+
+      if (textSearch) {
+        const formattedSearchTerm = buildTextSearchQuery(textSearch);
+
+        const textSearchFilter = { $text: { $search: formattedSearchTerm } };
+
+        if (!findObject.$and) {
+          findObject.$and = [];
+        }
+        findObject.$and.push(textSearchFilter);
+      }
+      // Handle count request
+      if (isCount) {
+        const count = await Job.countDocuments(findObject).exec();
+        return callback(null, {
+          statusCode: 200,
+          headers,
+          body: JSON.stringify(count),
+        });
+      }
+
+      // Fetch jobs for swiping
+      const jobs = await Job.find(findObject, {
+        _id: 1,
+        relevantSkills: 1,
+        jobTitle: 1,
+        seniorityLevel: 1,
+        locationFlexibility: 1,
+        formattedCompensation: 1,
+        applyLink: 1,
+      })
+        .populate('companyId')
+        .sort(textSearch ? { score: { $meta: 'textScore' } } : {})
+        .limit(getItemsForSwipingLimit)
+        .exec();
+
       return callback(null, {
         statusCode: 200,
         headers,
-        body: JSON.stringify(count),
+        body: JSON.stringify({
+          success: true,
+          data: jobs,
+        }),
+      });
+    } else {
+      return callback(null, {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({ message: 'Missing preferences in the request body.' }),
       });
     }
-
-    // by default mongo text search splits the words then searches them individually and if any of them match
-    // then it returns the document. This switches it to be like an and operator where all of them have to match.
-    // because otherwise remote react developer would return all remote jobs
-    const buildTextSearchQuery = (searchTerm: string) => {
-      // Split the search term into individual words and wrap each in quotes
-      const terms = searchTerm.split(/\s+/).map(term => `"${term}"`);
-
-      // Join the terms back into a single string for the $text query
-      return terms.join(' ');
-    };
-
-    if (textSearch) {
-      const formattedSearchTerm = buildTextSearchQuery(textSearch);
-
-      const textSearchFilter = { $text: { $search: formattedSearchTerm } };
-
-      if (!findObject.$and) {
-        findObject.$and = [];
-      }
-      findObject.$and.push(textSearchFilter);
-    }
-
-    // Fetch jobs for swiping
-    const jobs = await Job.find(findObject, {
-      _id: 1,
-      relevantSkills: 1,
-      jobTitle: 1,
-      seniorityLevel: 1,
-      locationFlexibility: 1,
-      formattedCompensation: 1,
-      applyLink: 1,
-    })
-      .populate('companyId')
-      .sort(textSearch ? { score: { $meta: 'textScore' } } : {})
-      .limit(getItemsForSwipingLimit)
-      .exec();
-
-    return callback(null, {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify({
-        success: true,
-        data: jobs,
-      }),
-    });
   } catch (error) {
     const errorMessage = extractErrorMessage(error);
     console.error('Error in getJobsForSwiping:', errorMessage || error);

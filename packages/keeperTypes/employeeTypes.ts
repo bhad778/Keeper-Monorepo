@@ -70,14 +70,12 @@ export type TEmployeeEducation =
   | EmptyObject;
 
 export type TEmployeePreferences = {
-  searchRadius?: number;
+  textSearch?: string;
   seniorityLevel?: SeniorityLevelEnum[];
-  requiredYearsOfExperience?: number;
   locationFlexibility?: TLocationFlexibility[];
-  geoLocation?: TGeoLocation | null;
+  minimumSalary?: number;
+  city?: string;
   relevantSkills?: Array<string>;
-  isRemote?: boolean;
-  isNew?: boolean;
 };
 
 export type TDateRange = {

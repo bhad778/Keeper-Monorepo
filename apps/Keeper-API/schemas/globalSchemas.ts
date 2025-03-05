@@ -101,14 +101,12 @@ export const JobPreferencesSchema = Joi.object({
 });
 
 export const EmployeePreferencesSchema = Joi.object({
-  searchRadius: Joi.number(),
-  requiredYearsOfExperience: Joi.number(),
-  locationFlexibility: Joi.array().items(Joi.string()),
+  textSearch: Joi.string().allow(''),
   seniorityLevel: Joi.array().items(Joi.string()),
-  geoLocation: GeoLocationSchema,
+  locationFlexibility: Joi.array().items(Joi.string()),
+  minimumSalary: Joi.number(),
+  city: Joi.string(),
   relevantSkills: Joi.array().items(Joi.string()),
-  isRemote: Joi.boolean(),
-  isNew: Joi.boolean(),
 });
 
 export const JobSettingsSchema = Joi.object({
