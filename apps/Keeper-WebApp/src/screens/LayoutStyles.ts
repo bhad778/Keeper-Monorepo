@@ -53,13 +53,16 @@ export const useStyles = (currentPath: string) => {
       whiteSpace: 'nowrap',
     },
     jobsNavText: {
-      color: currentPath.includes('Jobs') ? theme.color.pink : 'white',
+      color: currentPath.includes('exploreJobs') ? theme.color.pink : 'white',
     },
-    companiesNavText: {
-      color: currentPath.includes('Companies') ? theme.color.pink : 'white',
+    applicationsNavText: {
+      color: currentPath.includes('applications') ? theme.color.pink : 'white',
+    },
+    profileNavText: {
+      color: currentPath.includes('profile') ? theme.color.pink : 'white',
     },
     logInNavText: {
-      color: currentPath.includes('logIn') ? theme.color.pink : 'white',
+      color: currentPath.includes('signUp') ? theme.color.pink : 'white',
     },
   } as const;
 

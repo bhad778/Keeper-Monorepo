@@ -145,11 +145,13 @@ const PhoneNumber = () => {
             // this just makes the api call warm
             MiscService.searchAndCollectCoreSignal({ fullName: '', companyName: '', isPing: true });
 
-            if (isNew) {
-              navigate('/employeeHome/profile');
-            } else {
-              navigate('/employeeHome/discover');
-            }
+            navigate('/exploreJobs');
+
+            // if (isNew) {
+            //   navigate('/employeeHome/profile');
+            // } else {
+            //   navigate('/employeeHome/discover');
+            // }
           })
           .catch(error => {
             console.error('error signing in', error);
@@ -175,7 +177,8 @@ const PhoneNumber = () => {
       'custom:lastName': lastName,
       'custom:email': email,
       'custom:cityState': 'empty',
-      'custom:accountType': accountType,
+      // 'custom:accountType': accountType,
+      'custom:accountType': 'employee',
       'custom:relevantSkills': 'empty',
       'custom:yearsOfExp': '0',
       'custom:reqYearsOfExp': '0',
@@ -254,9 +257,9 @@ const PhoneNumber = () => {
               />
             </>
           )} */}
-          {!isEmployee && !isLogIn && (
+          {/* {!isEmployee && !isLogIn && (
             <AppHeaderText style={styles.titleText}>Sign Up and Create Your First Job</AppHeaderText>
-          )}
+          )} */}
 
           {!isLogIn && (
             <KeeperTextInput
@@ -273,9 +276,7 @@ const PhoneNumber = () => {
             label='Phone Number'
             labelStyles={styles.label}
             containerStyles={styles.textInputContainer}
-            subLabel={
-              'We use this only to send you a one time password and make sure all users have verified US phone numbers'
-            }
+            subLabel={'We use this only to send you a one time password and make sure you are not AI'}
             onChange={onChangePhoneNumber}
             onKeyDown={(event: any) => {
               if (event.key === 'Enter' && isPhoneNumberValid) {

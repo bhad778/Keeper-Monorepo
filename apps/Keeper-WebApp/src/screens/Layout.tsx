@@ -154,9 +154,15 @@ const Layout = () => {
           <Link style={styles.navItem} to={'applications'}>
             <AppHeaderText style={{ ...styles.navText, ...styles.applicationsNavText }}>Applications</AppHeaderText>
           </Link>
-          <Link style={styles.navItem} to={'signUp'}>
-            <AppHeaderText style={{ ...styles.navText, ...styles.logInNavText }}>Sign Up</AppHeaderText>
-          </Link>
+          {isLoggedIn ? (
+            <Link style={styles.navItem} to={'profile'}>
+              <AppHeaderText style={{ ...styles.navText, ...styles.profileNavText }}>Profile</AppHeaderText>
+            </Link>
+          ) : (
+            <Link style={styles.navItem} to={'signUp'}>
+              <AppHeaderText style={{ ...styles.navText, ...styles.logInNavText }}>Sign Up</AppHeaderText>
+            </Link>
+          )}
 
           {/* <Link style={{ ...styles.navItem, ...styles.matchesNav }} to={`matches`}>
             <WithBadge hasNotification={hasNotification}>

@@ -12,7 +12,7 @@ const initialState: TLoggedInUserData = {
   _id: '',
   isAdmin: false,
   phoneNumber: '',
-  accountType: '',
+  accountType: 'employee',
   matches: [],
   employersJobs: [],
   firstName: '',

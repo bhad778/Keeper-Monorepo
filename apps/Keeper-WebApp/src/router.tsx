@@ -1,20 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
-import {
-  JobBoard,
-  ViewResume,
-  Matches,
-  AccountType,
-  Layout,
-  ErrorScreen,
-  Discover,
-  ViewJobPosting,
-  GrowthEngine,
-  PhoneNumber,
-  EmployeeProfileScreen,
-  Applications,
-  FindJobs,
-} from 'screens';
-import { PrivateRoute, OnlyPublicRoute, OnlyAdminRoute } from 'routes';
+import { Layout, ErrorScreen, PhoneNumber, EmployeeProfileScreen, Applications, FindJobs } from 'screens';
+// import { PrivateRoute, OnlyPublicRoute, OnlyAdminRoute } from 'routes';
 
 const router = createBrowserRouter([
   {
@@ -25,118 +11,21 @@ const router = createBrowserRouter([
       {
         index: true,
         path: 'exploreJobs',
-        element: (
-          <OnlyPublicRoute>
-            <FindJobs />
-          </OnlyPublicRoute>
-        ),
+        element: <FindJobs />,
       },
-      // {
-      //   index: true,
-      //   path: 'discover/:accountTypeParam?/:yearsOfExperienceParam?/:mainSkillParam?/:jobOrResumeIdParam?',
-      //   element: <Discover />,
-      // },
-      {
-        path: 'matches',
-        element: <Matches />,
-      },
-      {
-        path: 'profile',
-        element: <EmployeeProfileScreen />,
-      },
-    ],
-  },
-  {
-    path: '/employeeHome',
-    element: (
-      <PrivateRoute>
-        <Layout />
-      </PrivateRoute>
-    ),
-    errorElement: <ErrorScreen />,
-    children: [
-      {
-        index: true,
-        path: 'discover',
-        element: <Discover />,
-      },
-      {
-        path: 'matches',
-        element: <Matches />,
-      },
-
       {
         path: 'applications',
         element: <Applications />,
       },
       {
+        path: 'signUp',
+        element: <PhoneNumber />,
+      },
+      {
         path: 'profile',
         element: <EmployeeProfileScreen />,
       },
     ],
-  },
-  {
-    path: '/employerHome',
-    element: (
-      <PrivateRoute>
-        <Layout />
-      </PrivateRoute>
-    ),
-    errorElement: <ErrorScreen />,
-    children: [
-      {
-        index: true,
-        path: 'discover',
-        element: <Discover />,
-      },
-
-      {
-        path: 'jobBoard',
-        element: <JobBoard />,
-      },
-      {
-        path: 'matches',
-        element: <Matches />,
-      },
-    ],
-  },
-
-  {
-    path: '/accountType',
-    element: (
-      <OnlyPublicRoute>
-        <AccountType />
-      </OnlyPublicRoute>
-    ),
-    errorElement: <ErrorScreen />,
-  },
-  {
-    path: '/phoneNumber',
-    element: (
-      <OnlyPublicRoute>
-        <PhoneNumber />
-      </OnlyPublicRoute>
-    ),
-    errorElement: <ErrorScreen />,
-  },
-  {
-    path: '/viewJobPosting/:id',
-    element: <ViewJobPosting />,
-    errorElement: <ErrorScreen />,
-  },
-  {
-    path: '/viewResume/:id',
-    element: <ViewResume />,
-    errorElement: <ErrorScreen />,
-  },
-  {
-    path: '/growthEngine',
-    element: (
-      <OnlyAdminRoute>
-        <GrowthEngine />
-      </OnlyAdminRoute>
-    ),
-    errorElement: <ErrorScreen />,
   },
 ]);
 
