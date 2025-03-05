@@ -6,6 +6,8 @@ export const useStyles = () => {
   const styles: { [k: string]: React.CSSProperties } = {
     container: {
       display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     matchesContainer: {
       display: 'flex',
@@ -13,6 +15,10 @@ export const useStyles = () => {
       paddingLeft: 100,
       columnGap: 35,
       rowGap: 35,
+    },
+    noApplicationsText: {
+      fontSize: 25,
+      marginTop: 100,
     },
   } as const;
 

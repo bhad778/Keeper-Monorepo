@@ -4,7 +4,7 @@ import { Grid, Box } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { ApplicationsService, TApplicationWithJob } from 'keeperServices';
 import { TJob } from 'keeperTypes';
-import { Match } from 'components';
+import { AppBoldText, AppHeaderText, Match } from 'components';
 
 import useStyles from './ApplicationsStyles';
 import { useTheme } from 'theme/theme.context';
@@ -31,21 +31,27 @@ const Applications = () => {
   const onMatchPress = () => {};
 
   return (
-    <Grid container>
-      {applications?.map((application, index) => {
-        return (
-          <Match
-            key={index}
-            title={application.jobId.jobTitle}
-            text={application.jobId.jobSummary}
-            img={application.jobId.companyLogo || ''}
-            color={theme.color.pink}
-            isEmployee={false}
-            isCandidateSort={true}
-            onPress={onMatchPress}
-          />
-        );
-      })}
+    <Grid container style={styles.container}>
+      {applications && applications.length > 0 ? (
+        applications?.map((application, index) => {
+          return (
+            <Match
+              key={index}
+              title={application.jobId.jobTitle}
+              text={application.jobId.jobSummary}
+              img={application.jobId.companyLogo || ''}
+              color={theme.color.pink}
+              isEmployee={false}
+              isCandidateSort={true}
+              onPress={onMatchPress}
+            />
+          );
+        })
+      ) : (
+        <AppBoldText style={styles.noApplicationsText}>
+          Once you apply to jobs you can keep track of them here.
+        </AppBoldText>
+      )}
     </Grid>
   );
 };
