@@ -1,28 +1,11 @@
 import { useTheme } from 'theme/theme.context';
 
-export const useStyles = () => {
+export const useStyles = (currentPath: string) => {
   const { theme } = useTheme();
 
-  const size = 80;
-
   const styles: { [k: string]: React.CSSProperties } = {
-    container: {},
-    signUpContainer: {},
     keeperModal: {
       backgroundColor: theme.color.white,
-    },
-    initialsAvatar: {
-      height: size,
-      width: size,
-      borderRadius: 99,
-      backgroundColor: theme.color.secondary,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    initialsText: {
-      fontSize: 30,
-      color: theme.color.primary,
     },
     modalItem: {
       backgroundColor: theme.color.white,
@@ -34,22 +17,17 @@ export const useStyles = () => {
       color: theme.color.black,
       textAlign: 'center',
     },
-    signUpText: {
-      fontSize: 24,
-      color: theme.color.white,
-    },
-    finishProfileText: {
-      fontSize: 24,
+    navItem: {
+      textDecoration: 'none',
       color: 'white',
-      textAlign: 'center',
+      cursor: 'pointer',
     },
-    finishProfileClickable: {
-      display: 'flex',
+    navText: {
+      fontSize: 18,
+      whiteSpace: 'nowrap',
     },
-    signInLinksContainer: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      width: 200,
+    logInNavText: {
+      color: currentPath.includes('signUp') ? theme.color.pink : 'white',
     },
   } as const;
 
