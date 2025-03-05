@@ -1,10 +1,12 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { TGetJobsForSwipingPayload, JobsService, ApplicationsService } from 'keeperServices';
-import { AlertModal, FindJobsJobItem, KeeperModal, LoadingSpinner, ModalSaveButton } from 'components';
-import { JobLevel, TJob } from 'keeperTypes';
-import { TechnologiesList } from 'keeperConstants';
+import { AlertModal, FindJobsJobItem, KeeperSlider, LoadingSpinner } from 'components';
+import { JobLevel, TJob, TLocationFlexibility } from 'keeperTypes';
+import { cities, TechnologiesList } from 'keeperConstants';
 import { useSelector } from 'react-redux';
 import { RootState } from 'reduxStore';
+import { useTheme } from 'theme/theme.context';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
 import useStyles from './FindJobsStyles';
 
@@ -33,11 +35,16 @@ const FindJob = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [filters, setFilters] = useState<TGetJobsForSwipingPayload>(defaultPayload);
 
+  const { theme } = useTheme();
   const loadingMoreRef = useRef(false);
   const jobGridRef = useRef<HTMLDivElement | null>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const styles = useStyles();
+
+  const isLocationVisible =
+    filters.preferences?.locationFlexibility?.includes('Hybrid') ||
+    filters.preferences?.locationFlexibility?.includes('On-site');
 
   const fetchJobs = async (updatedFilters: TGetJobsForSwipingPayload) => {
     try {
@@ -141,6 +148,8 @@ const FindJob = () => {
     }
   };
 
+  const handleCityChange = () => {};
+
   return (
     <div style={styles.container}>
       <AlertModal
@@ -156,6 +165,7 @@ const FindJob = () => {
       <>
         {/* Sidebar with Search and Filters */}
         <div style={styles.sidebar}>
+          <h3 style={styles.filterTitle}>Title</h3>
           <input
             type='text'
             placeholder='Senior react developer...'
@@ -200,6 +210,69 @@ const FindJob = () => {
                   <span style={styles.buttonText}>{option}</span>
                 </button>
               ))}
+            </div>
+          </div>
+
+          {/* City Location Dropdown */}
+          {isLocationVisible && (
+            <div style={styles.filterGroup}>
+              <h3 style={styles.filterTitle}>City</h3>
+              <FormControl
+                fullWidth
+                sx={{
+                  mt: 1,
+                  '& .MuiInputBase-root': {
+                    color: 'white',
+                    backgroundColor: () => (isLocationVisible ? 'rgba(255, 255, 255, 0.1)' : theme.color.keeperGrey),
+                  },
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: () => (isLocationVisible ? 'rgba(255, 255, 255, 0.3)' : 'white'),
+                  },
+                  '& .MuiSvgIcon-root': {
+                    color: 'white',
+                  },
+                  '&.Mui-disabled': {
+                    opacity: 0.6,
+                  },
+                }}>
+                <InputLabel id='city-select-label' sx={{ color: 'white' }}>
+                  City
+                </InputLabel>
+                <Select
+                  labelId='city-select-label'
+                  id='city-select'
+                  value={filters.preferences?.city || ''}
+                  label='City'
+                  onChange={handleCityChange}
+                  sx={{
+                    color: 'white',
+                    '& .MuiSelect-icon': { color: 'white' },
+                  }}>
+                  <MenuItem value=''>
+                    <em>Select a city</em>
+                  </MenuItem>
+                  {cities.map(city => (
+                    <MenuItem key={city} value={city}>
+                      {city}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </div>
+          )}
+
+          {/* Salary Filter */}
+          <div style={styles.filterGroup}>
+            <h3 style={styles.filterTitle}>Minimum Salary</h3>
+            <div style={styles.filterOptions}>
+              <KeeperSlider
+                minimumValue={30000}
+                maximumValue={300000}
+                step={5000}
+                defaultValue={140000}
+                formatDisplayValue={value => `$${value.toLocaleString()}`}
+                onSliderComplete={(onYearsOfExprienceSliderComplete: number) => {}}
+              />
             </div>
           </div>
 

@@ -24,7 +24,7 @@ export const getIndeedJobSnapshotUrl =
 // export const getCrunchbaseCompanyInfoSnapshotUrl =
 //   'https://api.brightdata.com/datasets/v3/trigger?dataset_id=gd_l1vijqt9jfj7olije&include_errors=true';
 
-const cities = [
+export const cities = [
   'Atlanta, GA',
   'Los Angeles, CA',
   'New York, NY',

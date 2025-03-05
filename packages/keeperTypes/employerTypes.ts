@@ -29,6 +29,12 @@ export type TEmployerFilterListOptions =
   | 'Work Auth'
   | 'Salary/Contract';
 
+export enum locationFlexibilityEnum {
+  remote = 'Remote',
+  hybrid = 'Hybrid',
+  onsite = 'On-site',
+}
+
 export type TLocationFlexibility =
   | 'onsite' // For 100% onsite jobs
   | 'remote' // For 100% remote jobs

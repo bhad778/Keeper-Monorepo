@@ -11,7 +11,7 @@ type KeeperSliderProps = {
   maximumValue: number;
   step: number;
   defaultValue?: number;
-  transformValueFunction?: (value: number) => string;
+  formatDisplayValue?: (value: number) => string;
   onSliderComplete: (value: number) => void;
 };
 
@@ -21,6 +21,7 @@ const KeeperSlider = ({
   maximumValue,
   step,
   defaultValue,
+  formatDisplayValue,
   onSliderComplete,
 }: KeeperSliderProps) => {
   const [localValue, setLocalValue] = useState(defaultValue || 0);
@@ -34,17 +35,19 @@ const KeeperSlider = ({
     }
   }, [defaultValue]);
 
+  const displayValue = formatDisplayValue ? formatDisplayValue(localValue) : localValue;
+
   return (
     <>
       <>
         <Header text={title || ''} />
-        <AppHeaderText style={styles.yearsOfExperienceText}>{localValue}</AppHeaderText>
+        <AppHeaderText style={styles.yearsOfExperienceText}>{displayValue}</AppHeaderText>
       </>
       <Slider
         value={localValue}
-        onChange={(event, newValue) => setLocalValue(newValue)}
+        onChange={(event, newValue) => setLocalValue(newValue as number)}
         onChangeCommitted={(event, newValue) => {
-          onSliderComplete(newValue);
+          onSliderComplete(newValue as number);
         }}
         style={styles.slider}
         sx={{
