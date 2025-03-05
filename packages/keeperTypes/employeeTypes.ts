@@ -28,23 +28,23 @@ export type TEmployee = {
 };
 
 export type TEmployeeSettings = {
-  firstName: string | undefined;
-  lastName: string | undefined;
-  img: string | undefined;
-  address: string | undefined;
-  aboutMeText: string | undefined;
-  relevantSkills: string[] | undefined;
-  jobTitle: string | undefined;
-  searchRadius: number | undefined;
-  isUsCitizen: boolean | undefined;
-  onSiteOptionsOpenTo: TOnsiteSchedule[] | undefined;
-  isSeekingFirstJob: boolean | undefined;
-  jobHistory: TEmployeePastJob[] | undefined;
-  educationHistory: TEmployeeEducation[] | undefined;
-  yearsOfExperience: number | undefined;
-  employmentTypesOpenTo: EmploymentTypes[] | undefined;
-  frontendBackendOptionsOpenTo: TFrontendBackendOptions[] | undefined;
-  companySizeOptionsOpenTo: TCompanySize[] | undefined;
+  firstName: string | null;
+  lastName: string | null;
+  img: string | null;
+  address: string | null;
+  aboutMeText: string | null;
+  relevantSkills: string[] | null;
+  jobTitle: string | null;
+  searchRadius: number | null;
+  isUsCitizen: boolean | null;
+  onSiteOptionsOpenTo: TOnsiteSchedule[] | null;
+  isSeekingFirstJob: boolean | null;
+  jobHistory: TEmployeePastJob[] | null;
+  educationHistory: TEmployeeEducation[] | null;
+  yearsOfExperience: number | null;
+  employmentTypesOpenTo: EmploymentTypes[] | null;
+  frontendBackendOptionsOpenTo: TFrontendBackendOptions[] | null;
+  companySizeOptionsOpenTo: TCompanySize[] | null;
   linkedInUrl?: string;
 };
 
@@ -73,7 +73,7 @@ export type TEmployeePreferences = {
   textSearch?: string;
   seniorityLevel?: SeniorityLevelEnum[];
   locationFlexibility?: TLocationFlexibility[];
-  minimumSalary?: number;
+  minimumSalary?: number | null;
   city?: string;
   relevantSkills?: Array<string>;
 };
