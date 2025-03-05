@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { TGetJobsForSwipingPayload, JobsService } from 'keeperServices';
+import { TGetJobsForSwipingPayload, JobsService, ApplicationsService } from 'keeperServices';
 import { AlertModal, FindJobsJobItem, KeeperModal, LoadingSpinner, ModalSaveButton } from 'components';
 import { JobLevel, TJob } from 'keeperTypes';
 import { TechnologiesList } from 'keeperConstants';
@@ -24,6 +24,7 @@ const SEARCH_DEBOUNCE_DELAY = 1000;
 
 const FindJob = () => {
   const isLoggedIn = useSelector((state: RootState) => state.loggedInUser.isLoggedIn);
+  const employeeId = useSelector((state: RootState) => state.loggedInUser._id);
 
   const [jobs, setJobs] = useState<TJob[]>([]);
   const [displayedJobs, setDisplayedJobs] = useState<TJob[]>([]);
@@ -133,6 +134,7 @@ const FindJob = () => {
 
   const handleApplyClick = (job: TJob) => {
     if (isLoggedIn) {
+      ApplicationsService.addApplication({ jobId: job._id || '', employeeId: employeeId || '' });
       window.open(job.applyLink, '_blank', 'noopener,noreferrer');
     } else {
       setIsNotLoggedInAlertOpen(true);

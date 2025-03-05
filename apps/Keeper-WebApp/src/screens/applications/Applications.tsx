@@ -1,13 +1,12 @@
 import { RootState } from 'reduxStore/store';
 import { useSelector } from 'react-redux';
-import { Grid, Box } from '@mui/material';
+import { Grid } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { ApplicationsService, TApplicationWithJob } from 'keeperServices';
-import { TJob } from 'keeperTypes';
-import { AppBoldText, AppHeaderText, Match } from 'components';
+import { AppBoldText, Match } from 'components';
+import { useTheme } from 'theme/theme.context';
 
 import useStyles from './ApplicationsStyles';
-import { useTheme } from 'theme/theme.context';
 
 const Applications = () => {
   const employeeId = useSelector((state: RootState) => state.loggedInUser._id);
