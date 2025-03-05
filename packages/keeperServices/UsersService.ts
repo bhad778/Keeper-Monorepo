@@ -1,4 +1,4 @@
-import { TAccountType, TMatch, TSwipe, TEmployeeSettings } from 'keeperTypes';
+import { TAccountType, TMatch, TSwipe, TEmployeeSettings, TLoggedInEmployee } from 'keeperTypes';
 
 import { postRequest } from './serviceUtils';
 
@@ -49,7 +49,8 @@ const UsersService = {
 
   getMatches: (payload: any) => postRequest('getMatches', payload),
 
-  getEmployeeData: (payload: any) => postRequest('getEmployeeData', payload),
+  getEmployeeData: (payload: { phoneNumber: string }) =>
+    postRequest<{ loggedInUserData: TLoggedInEmployee }>('getEmployeeData', payload),
 
   getEmployerData: (payload: any) => postRequest('getEmployerData', payload),
 

@@ -1,6 +1,5 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { addLoggedInUser, setSwipingDataRedux } from 'reduxStore';
-import { RootState } from 'reduxStore/store';
 import toast from 'react-hot-toast';
 import { formatPhoneNumberInput } from 'utils/globalUtils';
 import { Auth } from 'aws-amplify';
@@ -9,7 +8,7 @@ import { MiscService, UsersService } from 'services';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { TEmployee, TLoggedInUserData } from 'keeperTypes';
 import { LoadingScreen } from 'screens';
-import { AppHeaderText, BackButton, KeeperSelectButton, KeeperTextInput } from 'components';
+import { BackButton, KeeperSelectButton, KeeperTextInput } from 'components';
 
 import useStyles from './PhoneNumberStyles';
 
@@ -19,10 +18,6 @@ type TGetEmployeeData = {
 };
 
 const PhoneNumber = () => {
-  const accountType = useSelector((state: RootState) => state.loggedInUser.accountType);
-  const isEmployeeNew = useSelector((state: RootState) => state.loggedInUser.preferences.isNew);
-  const isEmployerNew = useSelector((state: RootState) => state.loggedInUser.isNew);
-
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
@@ -38,8 +33,6 @@ const PhoneNumber = () => {
   const navigate = useNavigate();
   const styles = useStyles(isPhoneNumberValid, isVerificationCodeValid);
 
-  const isEmployee = accountType === 'employee';
-  const isNew = isEmployee ? isEmployeeNew : isEmployerNew;
   const isLogIn = location?.state?.isLogIn;
 
   useEffect(() => {
@@ -132,26 +125,14 @@ const PhoneNumber = () => {
         UsersService.getEmployeeData({
           phoneNumber: numericPhoneNumber,
         })
-          .then(({ loggedInUserData, jobsForSwiping }) => {
+          .then(({ loggedInUserData }) => {
             dispatch(addLoggedInUser(loggedInUserData));
             // only update swiping data if they are not new, which means they have a tailored feed. If they are new they
             // are still only browsing and updating swiping data would just reset all their swipes they already did
-            if (!loggedInUserData.preferences.isNew) {
-              dispatch(setSwipingDataRedux(jobsForSwiping));
-            }
             setIsLoading(false);
             dispatch(addLoggedInUser({ isLoggedIn: true }));
 
-            // this just makes the api call warm
-            MiscService.searchAndCollectCoreSignal({ fullName: '', companyName: '', isPing: true });
-
             navigate('/exploreJobs');
-
-            // if (isNew) {
-            //   navigate('/employeeHome/profile');
-            // } else {
-            //   navigate('/employeeHome/discover');
-            // }
           })
           .catch(error => {
             console.error('error signing in', error);

@@ -5,8 +5,6 @@ import { resetLocalSlice } from 'reduxStore/LocalSlice/localSlice';
 import { useNavigate } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 import { useCallback, useState } from 'react';
-import { RootState } from 'reduxStore/store';
-import { useSelector } from 'react-redux';
 import { useEmployer } from 'hooks';
 
 import UsersService from './UsersService';
@@ -15,14 +13,7 @@ import UsersService from './UsersService';
 // and then, gets the proper data from the DB if necessary and
 // redirects to the correct screen.
 const useAuth = () => {
-  const isEmployeeNew = useSelector((state: RootState) => state.loggedInUser.preferences.isNew);
-  const isEmployerNew = useSelector((state: RootState) => state.loggedInUser.isNew);
-  const accountType = useSelector((state: RootState) => state.loggedInUser.accountType);
-
   const [isAuthLoading, setIsAuthLoading] = useState(false);
-
-  const isEmployee = accountType === 'employee';
-  const isNew = isEmployee ? isEmployeeNew : isEmployerNew;
 
   const { setSelectedJob } = useEmployer();
   const dispatch = useDispatch();
@@ -73,11 +64,7 @@ const useAuth = () => {
         setSelectedJob();
         navigate('/employerHome/discover');
       } else if (response[0]?.attributes['custom:accountType'] === 'employee') {
-        if (isNew) {
-          navigate('/employeeHome/profile');
-        } else {
-          navigate('/employeeHome/discover');
-        }
+        navigate('/findJob');
       }
     } catch (error) {
       if (error === 'The user is not authenticated') {

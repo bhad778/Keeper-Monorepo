@@ -5,9 +5,9 @@ import useStyles from 'AppStyles';
 import { useMediaQuery, useTheme } from '@mui/material';
 import { Header, KeeperSelectButton } from 'components';
 import { useEffect } from 'react';
-import { UsersService } from 'services';
+import { useAuth, UsersService } from 'services';
 import { Auth } from 'aws-amplify';
-import { addLoggedInUser, setSwipingDataRedux } from 'reduxStore';
+import { addLoggedInUser } from 'reduxStore';
 import { useDispatch } from 'react-redux';
 
 // App component
@@ -23,7 +23,6 @@ function App() {
         const response = await UsersService.getEmployerData({
           phoneNumber,
         });
-
         dispatch(addLoggedInUser(response.loggedInUserData));
       } catch (error) {
         console.error(error);
@@ -33,9 +32,7 @@ function App() {
         const response = await UsersService.getEmployeeData({
           phoneNumber,
         });
-
         dispatch(addLoggedInUser(response.loggedInUserData));
-        dispatch(setSwipingDataRedux(response.jobsForSwiping));
       } catch (error) {
         console.error(error);
       }
@@ -73,19 +70,18 @@ function App() {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-          }}
-        >
+          }}>
           <img src={KeeperLogo} style={{ width: '20%', marginBottom: 20 }} />
 
-          <Header textInputLabelStyle={{ textAlign: 'center' }} text="Download The App To View On Mobile" />
+          <Header textInputLabelStyle={{ textAlign: 'center' }} text='Download The App To View On Mobile' />
           <KeeperSelectButton
             onClick={redirectToAppleStore}
-            title="Get IOS"
+            title='Get IOS'
             buttonStyles={{ padding: 10, width: '40%' }}
           />
           <KeeperSelectButton
             onClick={redirectToGoogleStore}
-            title="Get ANDROID"
+            title='Get ANDROID'
             buttonStyles={{ padding: 10, width: '40%' }}
           />
         </div>

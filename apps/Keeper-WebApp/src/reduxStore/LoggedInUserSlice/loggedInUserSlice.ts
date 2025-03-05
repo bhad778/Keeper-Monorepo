@@ -48,16 +48,11 @@ const initialState: TLoggedInUserData = {
     educationHistory: [],
   },
   preferences: {
-    address: '',
-    searchRadius: 0,
-    requiredYearsOfExperience: 0,
-    requiredEducation: 0,
-    geoLocation: {
-      type: '',
-      coordinates: [0, 0],
-    },
-    isRemote: true,
-    isNew: true,
+    textSearch: '',
+    seniorityLevel: [],
+    locationFlexibility: [],
+    minimumSalary: 0,
+    city: '',
     relevantSkills: [''],
   },
 };

@@ -62,14 +62,6 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     const user = employee.toObject();
     console.info('Employee object:', user);
 
-    // Fetch jobs for swiping
-    console.info('Fetching jobs for swiping');
-    const jobsForSwipingResponse = await axios.post(`${process.env.VITE_API_URL}/getJobsForSwiping`, {
-      userId: user._id.toString(),
-      preferences: user.preferences,
-    });
-    console.info('Jobs for swiping response:', jobsForSwipingResponse.data);
-
     // Prepare the response data
     const loggedInEmployeeData: TLoggedInEmployee = {
       _id: user._id.toString(),
@@ -87,7 +79,6 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
 
     const returnData = {
       loggedInUserData: loggedInEmployeeData,
-      jobsForSwiping: jobsForSwipingResponse.data,
     };
 
     console.info('Return data prepared:', returnData);

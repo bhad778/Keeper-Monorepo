@@ -10,6 +10,7 @@ import useStyles from './ApplicationsStyles';
 
 const Applications = () => {
   const employeeId = useSelector((state: RootState) => state.loggedInUser._id);
+  const isLoggedIn = useSelector((state: RootState) => state.loggedInUser.isLoggedIn);
 
   const [applications, setApplications] = useState<TApplicationWithJob[]>();
 
@@ -17,13 +18,15 @@ const Applications = () => {
   const { theme } = useTheme();
 
   useEffect(() => {
-    ApplicationsService.findApplicationsByUserId({ employeeId: employeeId || '' })
-      .then(res => {
-        res.data && setApplications(res.data);
-      })
-      .catch(error => {
-        console.error('Error finding applications:', error);
-      });
+    if (isLoggedIn) {
+      ApplicationsService.findApplicationsByUserId({ employeeId: employeeId || '' })
+        .then(res => {
+          res.data && setApplications(res.data);
+        })
+        .catch(error => {
+          console.error('Error finding applications:', error);
+        });
+    }
   }, []);
 
   const onMatchPress = () => {};
