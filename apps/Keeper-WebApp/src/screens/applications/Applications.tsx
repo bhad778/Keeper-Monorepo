@@ -19,7 +19,6 @@ const Applications = () => {
   useEffect(() => {
     ApplicationsService.findApplicationsByUserId({ employeeId: employeeId || '' })
       .then(res => {
-        console.log('Applications:', res.data);
         res.data && setApplications(res.data);
       })
       .catch(error => {
