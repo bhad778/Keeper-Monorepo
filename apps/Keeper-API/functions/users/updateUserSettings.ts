@@ -86,15 +86,12 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       ? {
           searchRadius: searchRadius || 50,
           requiredYearsOfExperience: newSettings.yearsOfExperience || 0,
-          geoLocation: geoLocation || userObject.preferences.geoLocation,
-          isNew: !!isIncomplete,
           relevantSkills: userObject.settings.relevantSkills || [],
           isRemote: !newSettings.onSiteOptionsOpenTo || newSettings.onSiteOptionsOpenTo.includes('Remote'),
         }
       : {
           searchRadius: searchRadius || 50,
           yearsOfExperience: newSettings.requiredYearsOfExperience || 0,
-          geoLocation: geoLocation || userObject.preferences.geoLocation,
           relevantSkills: newSettings.relevantSkills || [],
           isRemote: newSettings.onSiteSchedule === 'Remote',
         };

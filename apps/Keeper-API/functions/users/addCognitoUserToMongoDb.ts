@@ -75,15 +75,12 @@ export const handler = async (
           yearsOfExperience: undefined,
         },
         preferences: {
-          searchRadius: 50,
-          requiredYearsOfExperience: 0,
-          geoLocation: {
-            type: 'Point',
-            coordinates: [1, 2],
-          },
+          textSearch: '',
+          seniorityLevel: [],
+          locationFlexibility: [],
+          minimumSalary: undefined,
+          city: '',
           relevantSkills: [],
-          isRemote: true,
-          isNew: true,
         },
       };
 
