@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { TGetJobsForSwipingPayload, JobsService, ApplicationsService } from 'keeperServices';
 import { AlertModal, FindJobsJobItem, KeeperSlider, LoadingSpinner } from 'components';
-import { JobLevel, TJob, TLocationFlexibility } from 'keeperTypes';
+import { SeniorityLevelEnum, TJob, TLocationFlexibility } from 'keeperTypes';
 import { cities, TechnologiesList } from 'keeperConstants';
 import { useSelector } from 'react-redux';
 import { RootState } from 'reduxStore';
@@ -14,7 +14,7 @@ const defaultPayload: TGetJobsForSwipingPayload = {
   userId: '6789b086457faa1335ce57d8',
   textSearch: '',
   preferences: {
-    jobLevel: [],
+    seniorityLevel: [],
     locationFlexibility: [],
     relevantSkills: [],
   },
@@ -121,8 +121,8 @@ const FindJob = () => {
     }, SEARCH_DEBOUNCE_DELAY);
   };
 
-  // Handle toggling filters (jobLevel, locationFlexibility, relevantSkills)
-  const toggleFilter = (key: 'jobLevel' | 'locationFlexibility' | 'relevantSkills', value: string) => {
+  // Handle toggling filters (seniorityLevel, locationFlexibility, relevantSkills)
+  const toggleFilter = (key: 'seniorityLevel' | 'locationFlexibility' | 'relevantSkills', value: string) => {
     setFilters(prevFilters => {
       const currentValues = prevFilters.preferences?.[key] || [];
       const newValues = currentValues.includes(value)
@@ -177,16 +177,16 @@ const FindJob = () => {
           <div style={styles.filterGroup}>
             <h3 style={styles.filterTitle}>Seniority Level</h3>
             <div style={styles.filterOptions}>
-              {Object.values(JobLevel).map(level => (
+              {Object.values(SeniorityLevelEnum).map(level => (
                 <button
                   key={level}
                   style={{
                     ...styles.filterButton,
-                    backgroundColor: filters.preferences?.jobLevel?.includes(level)
+                    backgroundColor: filters.preferences?.seniorityLevel?.includes(level)
                       ? styles.filterButtonSelected.backgroundColor
                       : styles.filterButton.backgroundColor,
                   }}
-                  onClick={() => toggleFilter('jobLevel', level)}>
+                  onClick={() => toggleFilter('seniorityLevel', level)}>
                   <span style={styles.buttonText}>{level}</span>
                 </button>
               ))}

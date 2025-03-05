@@ -41,7 +41,7 @@ export type TLocationFlexibility =
   | `hybrid - ${number} days` // For hybrid jobs with a specific number of days
   | 'hybrid'; // For hybrid jobs without a specific number of days
 
-export enum JobLevel {
+export enum SeniorityLevelEnum {
   Intern = 'Intern',
   Entry = 'Entry',
   Mid = 'Mid',
@@ -52,16 +52,16 @@ export enum JobLevel {
   Director = 'Director',
 }
 
-export enum JobLevelEnum {
-  intern = 0,
-  entry = 0,
-  mid = 3,
-  senior = 6,
-  lead = 8,
-  principal = 11,
-  staff = 11,
-  director = 11,
-}
+// export enum SeniorityLevelEnum {
+//   intern = 0,
+//   entry = 0,
+//   mid = 3,
+//   senior = 6,
+//   lead = 8,
+//   principal = 11,
+//   staff = 11,
+//   director = 11,
+// }
 
 // job in our database
 export type TJob = {
@@ -84,7 +84,7 @@ export type TJob = {
   benefits: string[] | null;
   responsibilities: string[] | null;
   qualifications: string[] | null;
-  jobLevel: JobLevel | null;
+  seniorityLevel: SeniorityLevelEnum | null;
   tags?: string[] | null;
 
   sourceWebsiteApplicationUrl: string;

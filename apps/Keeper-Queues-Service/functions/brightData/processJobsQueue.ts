@@ -72,7 +72,7 @@ export const handler = async (event: SQSEvent) => {
           job.responsibilities = parsedDetails.responsibilities;
           job.qualifications = parsedDetails.qualifications;
           job.requiredYearsOfExperience = parsedDetails.requiredYearsOfExperience;
-          job.jobLevel = parsedDetails.jobLevel;
+          job.seniorityLevel = parsedDetails.seniorityLevel;
           job.tags = [
             ...new Set([
               ...(job.tags ?? []),
@@ -80,7 +80,7 @@ export const handler = async (event: SQSEvent) => {
                 parsedDetails.jobTitle,
                 parsedDetails.locationFlexibility,
                 job.relevantSkills,
-                parsedDetails.jobLevel,
+                parsedDetails.seniorityLevel,
               ) ?? []),
             ]),
           ];

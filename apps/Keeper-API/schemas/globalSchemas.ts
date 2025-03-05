@@ -104,7 +104,7 @@ export const EmployeePreferencesSchema = Joi.object({
   searchRadius: Joi.number(),
   requiredYearsOfExperience: Joi.number(),
   locationFlexibility: Joi.array().items(Joi.string()),
-  jobLevel: Joi.array().items(Joi.string()),
+  seniorityLevel: Joi.array().items(Joi.string()),
   geoLocation: GeoLocationSchema,
   relevantSkills: Joi.array().items(Joi.string()),
   isRemote: Joi.boolean(),

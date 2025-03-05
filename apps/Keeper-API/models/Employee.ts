@@ -39,12 +39,12 @@ const EmployeeSchema = new mongoose.Schema({
     linkedInUrl: { type: String, required: false },
   },
   preferences: {
-    searchRadius: { type: Number, required: false },
-    requiredYearsOfExperience: { type: Number, required: false },
-    geoLocation: { type: Object, required: false },
+    textSearch: { type: String, required: false },
+    seniorityLevel: { type: Array, required: false },
+    minimumSalary: { type: Number, required: false },
+    city: { type: String, required: false },
     relevantSkills: { type: Array, required: false },
-    isRemote: { type: Boolean, required: false },
-    isNew: { type: Boolean, required: false },
+    locationFlexibility: { type: Array, required: false },
   },
 });
 

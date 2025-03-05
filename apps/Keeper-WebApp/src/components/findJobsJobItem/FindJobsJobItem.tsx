@@ -22,7 +22,7 @@ const FindJobsJobItem = ({ job, index, handleApplyClick }: FindJobsJobItemProps)
       </p>
       <p style={styles.jobDescription}>{job.jobLocation}</p>
       <p style={styles.jobDescription}>{job.locationFlexibility}</p>
-      <p style={styles.jobDescription}>{job.jobLevel}</p>
+      <p style={styles.jobDescription}>{job.seniorityLevel}</p>
       <span onClick={() => handleApplyClick(job)} style={styles.applyButton}>
         <span style={styles.buttonText}>Apply</span>
       </span>

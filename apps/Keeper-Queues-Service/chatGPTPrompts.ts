@@ -61,9 +61,9 @@ export const massageJobDataPrompt = (jobSummary: string, jobTitle: string) => {
 
         10. Is software development job: Return true if you think the job is a software development job where the potential employee would actually be writing code or leading software developers because software development expertise is needed to do so, return false otherwise.
 
-        11. Job Level: jobLevel can be one of the following: "Intern", "Entry", "Mid", "Senior", "Lead", "Principal", "Staff", "Director".
+        11. Seniority Level: seniorityLevel can be one of the following: "Intern", "Entry", "Mid", "Senior", "Lead", "Principal", "Staff", "Director".
 
-        12. Required years of experience: Extract the required years of experience, this will be based on the jobLevel you get. intern: 0, entry: 0-1, mid: 2-5, senior: 5-8, lead: 8-10, principal: 10-15, staff: 15-20, director: 20+.
+        12. Required years of experience: Extract the required years of experience, this will be based on the seniorityLevel you get. intern: 0, entry: 0-1, mid: 2-5, senior: 5-8, lead: 8-10, principal: 10-15, staff: 15-20, director: 20+.
 
           Respond in JSON format with the following structure:
           {
@@ -77,7 +77,7 @@ export const massageJobDataPrompt = (jobSummary: string, jobTitle: string) => {
             "responsibilities": string[] | null,
             "qualifications": string[] | null,
             "isSoftwareDevelopmentJob": boolean,
-            "jobLevel": 'Intern' | 'Entry' | 'Mid' | 'Senior' | 'Lead' | 'Principal' | 'Staff' | 'Director',
+            "seniorityLevel": 'Intern' | 'Entry' | 'Mid' | 'Senior' | 'Lead' | 'Principal' | 'Staff' | 'Director',
             "requiredYearsOfExperience": number,
           }
   

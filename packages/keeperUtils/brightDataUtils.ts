@@ -15,7 +15,7 @@ import {
   TGeoLocation,
   TBrightDataCrunchbaseCompany,
   TLocationFlexibility,
-  JobLevel,
+  SeniorityLevelEnum,
 } from 'keeperTypes';
 import {
   extractDollarNumbers,
@@ -59,7 +59,7 @@ export const generateTags = (
   jobTitle: string,
   locationFlexibility: TLocationFlexibility | null,
   relevantSkills: string[] | null,
-  jobLevel: JobLevel | null,
+  seniorityLevel: SeniorityLevelEnum | null,
 ): string[] => {
   // Define keyword groups and their synonyms
   const keywordGroups: { [key: string]: string[] } = {
@@ -99,8 +99,8 @@ export const generateTags = (
   if (relevantSkills) {
     relevantSkills.forEach(skill => addMatchingTags(skill));
   }
-  if (jobLevel) {
-    addMatchingTags(jobLevel);
+  if (seniorityLevel) {
+    addMatchingTags(seniorityLevel);
   }
 
   return Array.from(tags);
@@ -295,7 +295,7 @@ export const linkedInJobTransformer = (brightDataJob: TBrightDataLinkedInJob): T
     benefits: null,
     responsibilities: null,
     qualifications: null,
-    jobLevel: null,
+    seniorityLevel: null,
     tags: defaultTags,
 
     sourceWebsiteApplicationUrl: brightDataJob.url,
@@ -444,7 +444,7 @@ export const indeedJobTransformer = (brightDataIndeedJob: TBrightDataIndeedJob):
     benefits: null,
     responsibilities: null,
     qualifications: null,
-    jobLevel: null,
+    seniorityLevel: null,
     tags: defaultTags,
 
     sourceWebsiteApplicationUrl: brightDataIndeedJob.url,

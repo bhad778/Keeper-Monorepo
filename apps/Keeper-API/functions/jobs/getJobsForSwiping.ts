@@ -63,7 +63,7 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
     let findObject: any = {};
 
     if (preferences) {
-      const { requiredYearsOfExperience, relevantSkills, jobLevel, locationFlexibility } = preferences;
+      const { textSearch, relevantSkills, seniorityLevel, locationFlexibility } = preferences;
 
       // Fetch swipes to exclude already swiped jobs
       // TODO: make sure this is scalable
@@ -112,10 +112,10 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
         searchFilters.push({ locationFlexibility: { $in: caseInsensitiveLocationFlexibility } });
       }
 
-      // filter by jobLevel (case-insensitive)
-      if (jobLevel?.length > 0) {
-        const caseInsensitiveJobLevel = jobLevel.map(text => new RegExp(`^${escapeRegex(text)}$`, 'i'));
-        searchFilters.push({ jobLevel: { $in: caseInsensitiveJobLevel } });
+      // filter by seniorityLevel (case-insensitive)
+      if (seniorityLevel?.length > 0) {
+        const caseInsensitiveSeniorityLevel = seniorityLevel.map(text => new RegExp(`^${escapeRegex(text)}$`, 'i'));
+        searchFilters.push({ seniorityLevel: { $in: caseInsensitiveSeniorityLevel } });
       }
 
       findObject = {
@@ -160,7 +160,7 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
       _id: 1,
       relevantSkills: 1,
       jobTitle: 1,
-      jobLevel: 1,
+      seniorityLevel: 1,
       locationFlexibility: 1,
       formattedCompensation: 1,
       applyLink: 1,

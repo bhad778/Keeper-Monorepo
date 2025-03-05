@@ -24,7 +24,7 @@ const JobSchema = new mongoose.Schema({
   benefits: { type: Array, default: [], required: false },
   responsibilities: { type: Array, default: [], required: false },
   qualifications: { type: Array, default: [], required: false },
-  jobLevel: { type: String, default: null, required: false },
+  seniorityLevel: { type: String, default: null, required: false },
   tags: { type: Array, default: [], required: false },
 
   // brightData fields
@@ -58,7 +58,7 @@ JobSchema.index({
   jobTitle: 'text',
   locationFlexibility: 'text',
   relevantSkills: 'text',
-  jobLevel: 'text',
+  seniorityLevel: 'text',
   tags: 'text',
 });
 
