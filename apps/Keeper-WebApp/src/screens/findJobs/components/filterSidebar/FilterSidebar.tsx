@@ -1,7 +1,7 @@
 import React from 'react';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { KeeperSlider } from 'components';
-import { SeniorityLevelEnum } from 'keeperTypes';
+import { LocationFlexibilityEnum, SeniorityLevelEnum } from 'keeperTypes';
 import { cities, TechnologiesList } from 'keeperConstants';
 import { TGetJobsForSwipingPayload } from 'keeperServices';
 import { useTheme } from 'theme/theme.context';
@@ -64,7 +64,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
       <div style={styles.filterGroup}>
         <h3 style={styles.filterTitle}>Location Flexibility</h3>
         <div style={styles.filterOptions}>
-          {['Remote', 'On-site', 'Hybrid'].map(option => (
+          {Object.values(LocationFlexibilityEnum).map(option => (
             <button
               key={option}
               style={{

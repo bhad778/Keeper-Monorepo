@@ -5,8 +5,6 @@ import { TGetJobsForSwipingPayload, UsersService } from 'keeperServices';
 import { LocationFlexibilityEnum } from 'keeperTypes';
 import useDebounce from 'keeperUtils/useDebounce';
 
-const SEARCH_DEBOUNCE_DELAY = 1000;
-
 export const useJobFilters = () => {
   const dispatch = useDispatch();
 
