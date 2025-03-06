@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from 'reduxStore';
 import { TJob } from 'keeperTypes';
 import { JobsService, ApplicationsService, TGetJobsForSwipingPayload } from 'keeperServices';
+import { useDebounce } from 'hooks';
 
 const ITEMS_PER_PAGE = 30;
 
@@ -19,9 +20,17 @@ export const useJobData = (filters: TGetJobsForSwipingPayload) => {
 
   const loadingMoreRef = useRef(false);
 
-  // Fetch jobs from API when filters change
-  useEffect(() => {
+  // Create a callback for fetching jobs
+  const handleFetchJobs = useCallback(() => {
     fetchJobs(filters);
+  }, [filters]);
+
+  // Create a debounced version of the fetch function
+  const debouncedFetchJobs = useDebounce(handleFetchJobs, 500);
+
+  // Call the debounced function when filters change
+  useEffect(() => {
+    debouncedFetchJobs();
   }, [filters]);
 
   // Fetch jobs from API

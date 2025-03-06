@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, setEmployeePreferencesRedux } from 'reduxStore';
 import { TGetJobsForSwipingPayload, UsersService } from 'keeperServices';
 import { LocationFlexibilityEnum } from 'keeperTypes';
+import useDebounce from 'keeperUtils/useDebounce';
 
 const SEARCH_DEBOUNCE_DELAY = 1000;
 
@@ -43,14 +44,6 @@ export const useJobFilters = () => {
     filters.preferences?.locationFlexibility?.includes(LocationFlexibilityEnum.Hybrid) ||
     filters.preferences?.locationFlexibility?.includes(LocationFlexibilityEnum['On-site']);
 
-  // Update Redux when filters change (with debounce)
-  useEffect(() => {
-    if (filtersUpdatedRef.current && isLoggedIn) {
-      updateFiltersReduxAndDb();
-      filtersUpdatedRef.current = false;
-    }
-  }, [filters, dispatch, isLoggedIn]);
-
   const updateFiltersReduxAndDb = () => {
     dispatch(
       setEmployeePreferencesRedux({
@@ -63,6 +56,22 @@ export const useJobFilters = () => {
     }).catch(err => console.error('Error updating employee preferences:', err));
   };
 
+  // Create the update function
+  const updateFilters = useCallback(() => {
+    if (filtersUpdatedRef.current && isLoggedIn) {
+      updateFiltersReduxAndDb();
+      filtersUpdatedRef.current = false;
+    }
+  }, [isLoggedIn, updateFiltersReduxAndDb]);
+
+  // Create a debounced version using your existing hook
+  const debouncedUpdateFilters = useDebounce(updateFilters, 500);
+
+  // Call the debounced function when filters change
+  useEffect(() => {
+    debouncedUpdateFilters();
+  }, [filters]);
+
   // Handle text search with debounce
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -71,13 +80,14 @@ export const useJobFilters = () => {
       clearTimeout(searchTimeoutRef.current);
     }
 
-    searchTimeoutRef.current = setTimeout(() => {
-      setFilters(prevFilters => ({
-        ...prevFilters,
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      preferences: {
+        ...prevFilters.preferences,
         textSearch: value,
-      }));
-      filtersUpdatedRef.current = true;
-    }, SEARCH_DEBOUNCE_DELAY);
+      },
+    }));
+    filtersUpdatedRef.current = true;
   };
 
   // Toggle filter values (for buttons)
