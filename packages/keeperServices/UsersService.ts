@@ -1,5 +1,6 @@
 import { TAccountType, TMatch, TSwipe, TEmployeeSettings, TLoggedInEmployee } from 'keeperTypes';
 
+import { TUpdateEmployeePreferencesPayload } from './serviceTypes';
 import { postRequest } from './serviceUtils';
 
 // make this use user service and make updateUserSettings always have loggedInUser id and account type
@@ -62,7 +63,8 @@ const UsersService = {
 
   getEmployeesForSwiping: (payload?: any) => postRequest('getEmployeesForSwiping', payload),
 
-  updateEmployeePreferences: (payload?: any) => postRequest('updateEmployeePreferences', payload),
+  updateEmployeePreferences: (payload?: TUpdateEmployeePreferencesPayload) =>
+    postRequest('updateEmployeePreferences', payload),
 
   updateExpoPushToken: (payload: { accountType: string; expoPushToken: string; id: string }) =>
     postRequest('updateExpoPushToken', payload),

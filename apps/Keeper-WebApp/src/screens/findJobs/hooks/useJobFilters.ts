@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, setEmployeePreferencesRedux } from 'reduxStore';
-import { TGetJobsForSwipingPayload } from 'keeperServices';
-import { TLocationFlexibility } from 'keeperTypes';
+import { TGetJobsForSwipingPayload, UsersService } from 'keeperServices';
+import { LocationFlexibilityEnum } from 'keeperTypes';
 
 const SEARCH_DEBOUNCE_DELAY = 1000;
 
@@ -40,20 +40,28 @@ export const useJobFilters = () => {
 
   // Determine if location options should be visible
   const isLocationVisible =
-    filters.preferences?.locationFlexibility?.includes('Hybrid' as TLocationFlexibility) ||
-    filters.preferences?.locationFlexibility?.includes('On-site' as TLocationFlexibility);
+    filters.preferences?.locationFlexibility?.includes(LocationFlexibilityEnum.Hybrid) ||
+    filters.preferences?.locationFlexibility?.includes(LocationFlexibilityEnum['On-site']);
 
   // Update Redux when filters change (with debounce)
   useEffect(() => {
     if (filtersUpdatedRef.current && isLoggedIn) {
-      dispatch(
-        setEmployeePreferencesRedux({
-          ...filters.preferences,
-        }),
-      );
+      updateFiltersReduxAndDb();
       filtersUpdatedRef.current = false;
     }
   }, [filters, dispatch, isLoggedIn]);
+
+  const updateFiltersReduxAndDb = () => {
+    dispatch(
+      setEmployeePreferencesRedux({
+        ...filters.preferences,
+      }),
+    );
+    UsersService.updateEmployeePreferences({
+      userId: employeeId || '',
+      preferencesObject: filters.preferences!,
+    }).catch(err => console.error('Error updating employee preferences:', err));
+  };
 
   // Handle text search with debounce
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {

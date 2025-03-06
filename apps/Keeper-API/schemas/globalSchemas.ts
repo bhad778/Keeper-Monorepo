@@ -105,7 +105,7 @@ export const EmployeePreferencesSchema = Joi.object({
   seniorityLevel: Joi.array().items(Joi.string()),
   locationFlexibility: Joi.array().items(Joi.string()),
   minimumSalary: Joi.number(),
-  city: Joi.string(),
+  city: Joi.string().allow(''),
   relevantSkills: Joi.array().items(Joi.string()),
 });
 

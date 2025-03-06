@@ -32,13 +32,8 @@ export type TEmployerFilterListOptions =
 export enum LocationFlexibilityEnum {
   Remote = 'Remote',
   Hybrid = 'Hybrid',
-  Onsite = 'On-site',
+  'On-site' = 'On-site',
 }
-
-export type TLocationFlexibility =
-  | 'onsite' // For 100% onsite jobs
-  | 'remote' // For 100% remote jobs
-  | 'hybrid'; // For hybrid jobs without a specific number of days
 
 export enum SeniorityLevelEnum {
   Intern = 'Intern',
@@ -78,7 +73,7 @@ export type TJob = {
   compensation: string | null;
   formattedCompensation: TJobCompensation | null;
   sourceWebsite: JobSourceWebsiteEnum;
-  locationFlexibility: TLocationFlexibility | null;
+  locationFlexibility: LocationFlexibilityEnum | null;
   projectDescription: string | null;
   benefits: string[] | null;
   responsibilities: string[] | null;

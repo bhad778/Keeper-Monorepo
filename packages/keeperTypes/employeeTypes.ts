@@ -1,4 +1,4 @@
-import { SeniorityLevelEnum, TLocationFlexibility, TOnsiteSchedule } from './employerTypes';
+import { SeniorityLevelEnum, LocationFlexibilityEnum, TOnsiteSchedule } from './employerTypes';
 import {
   TGeoLocation,
   TAccountType,
@@ -72,7 +72,7 @@ export type TEmployeeEducation =
 export type TEmployeePreferences = {
   textSearch?: string;
   seniorityLevel?: SeniorityLevelEnum[];
-  locationFlexibility?: TLocationFlexibility[];
+  locationFlexibility?: LocationFlexibilityEnum[];
   minimumSalary?: number | null;
   city?: string;
   relevantSkills?: Array<string>;

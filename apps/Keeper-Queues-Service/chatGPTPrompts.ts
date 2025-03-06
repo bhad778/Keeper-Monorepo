@@ -22,12 +22,12 @@ export const massageJobDataPrompt = (jobSummary: string, jobTitle: string) => {
             - If no range is mentioned, leave 'payRange' as undefined.
 
         3. Location flexibility:
-            - Return "onsite" for 100% onsite jobs,
-            - "remote" for 100% remote jobs,
-            - "hybrid - x days" for hybrid jobs with a specified number of days,
-            - "hybrid" if hybrid is mentioned but the number of days is not specified.
-            - return "remote" if it mentions that it can be remote at all. So for example if it says remote or hybrid, return remote.
-            - if you cant get a good answer for this, return "remote"
+            - Return "On-site" for 100% onsite jobs,
+            - "Remote" for 100% remote jobs,
+            - "Hybrid - x days" for hybrid jobs with a specified number of days,
+            - "Hybrid" if hybrid is mentioned but the number of days is not specified.
+            - return "Remote" if it mentions that it can be remote at all. So for example if it says remote or hybrid, return Remote.
+            - if you cant get a good answer for this, return "Remote"
 
         4. Job summary: Provide a general summary of the job description you were passed and try to exclude including stuff from other fields like benefits, qualifications, etc.
 

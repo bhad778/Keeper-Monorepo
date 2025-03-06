@@ -14,7 +14,7 @@ import {
   TCompany,
   TGeoLocation,
   TBrightDataCrunchbaseCompany,
-  TLocationFlexibility,
+  LocationFlexibilityEnum,
   SeniorityLevelEnum,
 } from 'keeperTypes';
 import {
@@ -57,7 +57,7 @@ const linkedInRequiredYearsOfExperienceTransformer = (
 
 export const generateTags = (
   jobTitle: string,
-  locationFlexibility: TLocationFlexibility | null,
+  locationFlexibility: LocationFlexibilityEnum | null,
   relevantSkills: string[] | null,
   seniorityLevel: SeniorityLevelEnum | null,
 ): string[] => {
@@ -402,22 +402,22 @@ export const brightDataLinkedInCompanyTransformer = (company: TBrightDataLinkedI
  * @param jobLocation The job location string from Indeed
  * @returns The standardized location flexibility value
  */
-export const extractLocationFlexibilityFromIndeedJobLocation = (jobLocation: string): TLocationFlexibility => {
+export const extractLocationFlexibilityFromIndeedJobLocation = (jobLocation: string): LocationFlexibilityEnum => {
   // Convert to lowercase for case-insensitive matching
   const lowercaseLocation = jobLocation.toLowerCase();
 
   // Check for remote first (higher priority)
-  if (lowercaseLocation.includes('remote')) {
-    return 'remote';
+  if (lowercaseLocation.includes(LocationFlexibilityEnum.Remote.toLowerCase())) {
+    return LocationFlexibilityEnum.Remote;
   }
 
   // Check for hybrid
-  if (lowercaseLocation.includes('hybrid')) {
-    return 'hybrid';
+  if (lowercaseLocation.includes(LocationFlexibilityEnum.Hybrid.toLowerCase())) {
+    return LocationFlexibilityEnum.Hybrid;
   }
 
   // Default case - neither remote nor hybrid explicitly mentioned
-  return 'hybrid';
+  return LocationFlexibilityEnum.Hybrid;
 };
 
 // everything that we dont set here is because were gonna get it later in processJobsQueue through chatGPT

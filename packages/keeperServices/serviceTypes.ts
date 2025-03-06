@@ -13,6 +13,11 @@ export type TGetJobsForSwipingPayload = {
   isPing?: boolean; // Whether the request is a ping check
 };
 
+export type TUpdateEmployeePreferencesPayload = {
+  userId: string;
+  preferencesObject: TEmployeePreferences;
+};
+
 export type TFindApplicationsByUserId = {
   employeeId: string;
 };
