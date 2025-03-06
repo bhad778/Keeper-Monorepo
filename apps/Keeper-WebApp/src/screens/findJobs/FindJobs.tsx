@@ -1,24 +1,14 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { TGetJobsForSwipingPayload, JobsService, ApplicationsService } from 'keeperServices';
 import { AlertModal, FindJobsJobItem, KeeperSlider, LoadingSpinner } from 'components';
-import { SeniorityLevelEnum, TJob, TLocationFlexibility } from 'keeperTypes';
+import { SeniorityLevelEnum, TJob } from 'keeperTypes';
 import { cities, TechnologiesList } from 'keeperConstants';
-import { useSelector } from 'react-redux';
-import { RootState } from 'reduxStore';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState, setEmployeePreferencesRedux } from 'reduxStore';
 import { useTheme } from 'theme/theme.context';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
 import useStyles from './FindJobsStyles';
-
-const defaultPayload: TGetJobsForSwipingPayload = {
-  userId: '6789b086457faa1335ce57d8',
-  textSearch: '',
-  preferences: {
-    seniorityLevel: [],
-    locationFlexibility: [],
-    relevantSkills: [],
-  },
-};
 
 const ITEMS_PER_PAGE = 30;
 const PRELOAD_OFFSET = 2000;
@@ -27,6 +17,23 @@ const SEARCH_DEBOUNCE_DELAY = 1000;
 const FindJob = () => {
   const isLoggedIn = useSelector((state: RootState) => state.loggedInUser.isLoggedIn);
   const employeeId = useSelector((state: RootState) => state.loggedInUser._id);
+  const textSearch = useSelector((state: RootState) => state.loggedInUser.preferences.textSearch);
+  const seniorityLevel = useSelector((state: RootState) => state.loggedInUser.preferences.seniorityLevel);
+  const minimumSalary = useSelector((state: RootState) => state.loggedInUser.preferences.minimumSalary);
+  const locationFlexibility = useSelector((state: RootState) => state.loggedInUser.preferences.locationFlexibility);
+  const city = useSelector((state: RootState) => state.loggedInUser.preferences.city);
+  const relevantSkills = useSelector((state: RootState) => state.loggedInUser.preferences.relevantSkills);
+
+  const defaultPayload: TGetJobsForSwipingPayload = {
+    userId: employeeId,
+    preferences: {
+      seniorityLevel,
+      minimumSalary,
+      locationFlexibility,
+      city,
+      relevantSkills,
+    },
+  };
 
   const [jobs, setJobs] = useState<TJob[]>([]);
   const [displayedJobs, setDisplayedJobs] = useState<TJob[]>([]);
@@ -39,6 +46,8 @@ const FindJob = () => {
   const loadingMoreRef = useRef(false);
   const jobGridRef = useRef<HTMLDivElement | null>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const filtersUpdatedRef = useRef(false);
+  const dispatch = useDispatch();
 
   const styles = useStyles();
 
@@ -46,42 +55,21 @@ const FindJob = () => {
     filters.preferences?.locationFlexibility?.includes('Hybrid') ||
     filters.preferences?.locationFlexibility?.includes('On-site');
 
-  const fetchJobs = async (updatedFilters: TGetJobsForSwipingPayload) => {
-    try {
-      setLoading(true);
-      const response = await JobsService.getJobsForSwiping(updatedFilters);
-      setJobs(response.data || []);
-      setDisplayedJobs((response.data || []).slice(0, ITEMS_PER_PAGE));
-    } catch (error) {
-      console.error('Error fetching jobs:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // Fetch jobs when filters change
   useEffect(() => {
     if (jobGridRef.current) {
       jobGridRef.current.scrollTo({ top: 0 });
     }
+    if (filtersUpdatedRef.current && isLoggedIn) {
+      dispatch(
+        setEmployeePreferencesRedux({
+          ...filters.preferences,
+        }),
+      );
+      filtersUpdatedRef.current = false;
+    }
     fetchJobs(filters);
   }, [filters]);
-
-  const loadMoreJobs = useCallback(() => {
-    if (loadingMoreRef.current || displayedJobs.length >= jobs.length) return;
-
-    loadingMoreRef.current = true;
-    setLoadingMore(true);
-
-    setTimeout(() => {
-      setDisplayedJobs(prevDisplayedJobs => {
-        const nextPageJobs = jobs.slice(prevDisplayedJobs.length, prevDisplayedJobs.length + ITEMS_PER_PAGE);
-        loadingMoreRef.current = false;
-        setLoadingMore(false);
-        return [...prevDisplayedJobs, ...nextPageJobs];
-      });
-    }, 500);
-  }, [jobs, displayedJobs]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -104,6 +92,35 @@ const FindJob = () => {
       }
     };
   }, [loadMoreJobs]);
+
+  const fetchJobs = async (updatedFilters: TGetJobsForSwipingPayload) => {
+    try {
+      setLoading(true);
+      const response = await JobsService.getJobsForSwiping(updatedFilters);
+      setJobs(response.data || []);
+      setDisplayedJobs((response.data || []).slice(0, ITEMS_PER_PAGE));
+    } catch (error) {
+      console.error('Error fetching jobs:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadMoreJobs = useCallback(() => {
+    if (loadingMoreRef.current || displayedJobs.length >= jobs.length) return;
+
+    loadingMoreRef.current = true;
+    setLoadingMore(true);
+
+    setTimeout(() => {
+      setDisplayedJobs(prevDisplayedJobs => {
+        const nextPageJobs = jobs.slice(prevDisplayedJobs.length, prevDisplayedJobs.length + ITEMS_PER_PAGE);
+        loadingMoreRef.current = false;
+        setLoadingMore(false);
+        return [...prevDisplayedJobs, ...nextPageJobs];
+      });
+    }, 500);
+  }, [jobs, displayedJobs]);
 
   // Debounced search
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -148,7 +165,33 @@ const FindJob = () => {
     }
   };
 
-  const handleCityChange = () => {};
+  // Handle city change
+  const handleCityChange = (event: any) => {
+    const city = event.target.value;
+
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      preferences: {
+        ...prevFilters.preferences,
+        city,
+      },
+    }));
+
+    filtersUpdatedRef.current = true;
+  };
+
+  // Handle minimum salary change
+  const handleSalaryChange = (value: number) => {
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      preferences: {
+        ...prevFilters.preferences,
+        minimumSalary: value,
+      },
+    }));
+
+    filtersUpdatedRef.current = true;
+  };
 
   return (
     <div style={styles.container}>
@@ -170,6 +213,7 @@ const FindJob = () => {
             type='text'
             placeholder='Senior react developer...'
             style={styles.searchBar}
+            value={textSearch}
             onChange={handleSearchChange}
           />
 
@@ -269,9 +313,9 @@ const FindJob = () => {
                 minimumValue={30000}
                 maximumValue={300000}
                 step={5000}
-                defaultValue={140000}
+                defaultValue={filters.preferences?.minimumSalary as number}
                 formatDisplayValue={value => `$${value.toLocaleString()}`}
-                onSliderComplete={(onYearsOfExprienceSliderComplete: number) => {}}
+                onSliderComplete={handleSalaryChange}
               />
             </div>
           </div>

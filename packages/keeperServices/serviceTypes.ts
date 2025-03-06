@@ -11,7 +11,6 @@ export type TGetJobsForSwipingPayload = {
   preferences?: TEmployeePreferences; // User's preferences for job search
   isCount?: boolean; // Whether to return only the count of jobs
   isPing?: boolean; // Whether the request is a ping check
-  textSearch?: string; // Text-based search query (e.g., "remote react developer")
 };
 
 export type TFindApplicationsByUserId = {

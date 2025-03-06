@@ -1,8 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import { TJob, TJobSettings, TMatch, TEmployeeSettings, TLoggedInUserData } from 'keeperTypes';
+import { TJob, TJobSettings, TMatch, TEmployeeSettings, TLoggedInUserData, TEmployeePreferences } from 'keeperTypes';
 import { TJobPreferences } from 'types/employerTypes';
-import { TEmployeePreferences } from 'types/employeeTypes';
 import { filterArrayOfObjectsByKey } from 'utils';
 
 // isNew is in preferences for employees and is on the root for employers, this is because there was

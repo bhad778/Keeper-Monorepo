@@ -69,15 +69,6 @@ export type TEmployeeEducation =
     }
   | EmptyObject;
 
-export type TEmployeePreferences = {
-  searchRadius: number;
-  requiredYearsOfExperience: number;
-  geoLocation: TGeoLocation | null;
-  relevantSkills: Array<string>;
-  isRemote: boolean;
-  isNew: boolean;
-};
-
 export type TDateRange = {
   startYear: string;
   endYear: string;
