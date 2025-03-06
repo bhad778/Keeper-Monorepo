@@ -29,16 +29,15 @@ export type TEmployerFilterListOptions =
   | 'Work Auth'
   | 'Salary/Contract';
 
-export enum locationFlexibilityEnum {
-  remote = 'Remote',
-  hybrid = 'Hybrid',
-  onsite = 'On-site',
+export enum LocationFlexibilityEnum {
+  Remote = 'Remote',
+  Hybrid = 'Hybrid',
+  Onsite = 'On-site',
 }
 
 export type TLocationFlexibility =
   | 'onsite' // For 100% onsite jobs
   | 'remote' // For 100% remote jobs
-  | `hybrid - ${number} days` // For hybrid jobs with a specific number of days
   | 'hybrid'; // For hybrid jobs without a specific number of days
 
 export enum SeniorityLevelEnum {
