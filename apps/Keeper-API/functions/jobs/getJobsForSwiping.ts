@@ -110,6 +110,25 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
         searchFilters.push({ locationFlexibility: { $in: caseInsensitiveLocationFlexibility } });
       }
 
+      // filter by city (case-insensitive)
+      if (city?.length > 0) {
+        const caseInsensitiveCity = city.map(text => new RegExp(`^${escapeRegex(text)}$`, 'i'));
+        searchFilters.push({ jobLocation: { $in: caseInsensitiveCity } });
+      }
+
+      if (minimumSalary) {
+        searchFilters.push({
+          $or: [
+            // Find jobs where the max salary is greater than or equal to our minimum
+            { 'formattedCompensation.payRange.max': { $gte: minimumSalary } },
+
+            // Also include jobs where the min salary is greater than or equal to our minimum
+            // This helps when jobs only specify a minimum salary without a maximum
+            { 'formattedCompensation.payRange.min': { $gte: minimumSalary } },
+          ],
+        });
+      }
+
       // filter by seniorityLevel (case-insensitive)
       if (seniorityLevel?.length > 0) {
         const caseInsensitiveSeniorityLevel = seniorityLevel.map(text => new RegExp(`^${escapeRegex(text)}$`, 'i'));
@@ -117,7 +136,7 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
       }
 
       findObject = {
-        $or: searchFilters,
+        $and: searchFilters,
       };
 
       // by default mongo text search splits the words then searches them individually and if any of them match
@@ -141,6 +160,7 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
         }
         findObject.$and.push(textSearchFilter);
       }
+
       // Handle count request
       if (isCount) {
         const count = await Job.countDocuments(findObject).exec();
