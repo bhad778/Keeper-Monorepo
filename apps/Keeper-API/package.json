@@ -8,6 +8,7 @@
     "start": "sls offline",
     "clean": "yarn clean-webpack ; rm -rf node_modules && rm -rf yarn.lock && rm -rf package-lock.json && npm install",
     "clean-webpack": "rm -rf .webpack .serverless",
+    "deploy-function": "sls deploy function -f",
     "deploy-dev": "WEBPACK_PARALLEL=TRUE NODE_OPTIONS='--max-old-space-size=16384' npx serverless deploy",
     "deploy-prod": "sls deploy --stage production",
     "test": "echo \"Error: no test specified\" && exit 1",
