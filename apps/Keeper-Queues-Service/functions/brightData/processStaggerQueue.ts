@@ -16,8 +16,8 @@ const staggerQueueUrl = process.env.VITE_STAGGER_QUEUE_URL as string;
 // this snapshot will yield an array of many jobs
 // example message-
 // {
-//     "snapshotId": "s_m6zska6c2g1nnmkjmx",
-//     "sourceWebsite": "Indeed"
+//     "snapshotId": "s_m7xrep302n55nkj559",
+//     "sourceWebsite": "LinkedIn"
 // }
 
 export const handler = async (event: SQSEvent) => {

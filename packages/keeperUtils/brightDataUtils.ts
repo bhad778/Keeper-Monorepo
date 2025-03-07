@@ -403,8 +403,12 @@ export const brightDataLinkedInCompanyTransformer = (company: TBrightDataLinkedI
  * @returns The standardized location flexibility value
  */
 export const extractLocationFlexibilityFromIndeedJobLocation = (jobLocation: string): LocationFlexibilityEnum => {
+  if (!jobLocation) {
+    return LocationFlexibilityEnum.Hybrid;
+  }
+
   // Convert to lowercase for case-insensitive matching
-  const lowercaseLocation = jobLocation.toLowerCase();
+  const lowercaseLocation = jobLocation?.toLowerCase();
 
   // Check for remote first (higher priority)
   if (lowercaseLocation.includes(LocationFlexibilityEnum.Remote.toLowerCase())) {
