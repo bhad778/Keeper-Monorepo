@@ -92,6 +92,12 @@ export const useJobFilters = () => {
   const toggleFilter = (key: 'seniorityLevel' | 'locationFlexibility' | 'relevantSkills', value: string) => {
     setFilters(prevFilters => {
       const currentValues = prevFilters.preferences?.[key] || [];
+
+      if (key === 'locationFlexibility' && currentValues.includes(value) && currentValues.length === 1) {
+        // Return the previous filters unchanged if trying to remove the last option
+        return prevFilters;
+      }
+
       const newValues = currentValues.includes(value)
         ? currentValues.filter(v => v !== value)
         : [...currentValues, value];
