@@ -2,7 +2,6 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, setEmployeePreferencesRedux } from 'reduxStore';
 import { TGetJobsForSwipingPayload, UsersService } from 'keeperServices';
-import { LocationFlexibilityEnum } from 'keeperTypes';
 import useDebounce from 'keeperUtils/useDebounce';
 
 export const useJobFilters = () => {
