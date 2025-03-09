@@ -11,7 +11,7 @@ import { getIndeedCompanySnapshotUrl, getLinkedInCompanySnapshotUrl } from 'keep
 
 import { massageJobDataPrompt } from '../../chatGPTPrompts';
 
-const geoLocationQueueUrl = process.env.VITE_GEOLOCATION_QUEUE_URL as string;
+// const geoLocationQueueUrl = process.env.VITE_GEOLOCATION_QUEUE_URL as string;
 const jobsQueueUrl = process.env.VITE_JOBS_QUEUE_URL as string;
 const sourceWebsiteCompaniesQueueUrl = process.env.VITE_SOURCE_WEBSITE_COMPANIES_QUEUE_URL as string;
 
@@ -189,14 +189,14 @@ export const handler = async (event: SQSEvent) => {
         }
       }
 
-      // Step 7: Enqueue job to GeoLocation Queue if it has a jobLocation
-      if (job.jobLocation) {
-        await sendMessageToQueue(geoLocationQueueUrl, {
-          applyLink: job.applyLink,
-          jobLocation: job.jobLocation,
-        });
-        console.info(`Enqueued job to GeoLocation Queue: ${job.applyLink}`);
-      }
+      // // Step 7: Enqueue job to GeoLocation Queue if it has a jobLocation
+      // if (job.jobLocation) {
+      //   await sendMessageToQueue(geoLocationQueueUrl, {
+      //     applyLink: job.applyLink,
+      //     jobLocation: job.jobLocation,
+      //   });
+      //   console.info(`Enqueued job to GeoLocation Queue: ${job.applyLink}`);
+      // }
     } catch (error) {
       console.error(`Error processing job: ${job.applyLink}`, error);
       throw error; // Let AWS handle retries
