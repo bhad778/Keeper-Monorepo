@@ -1,7 +1,6 @@
 import { TJob } from 'keeperTypes';
 
 import useStyles from './FindJobsJobItemStyles';
-import span from 'components/span';
 
 type FindJobsJobItemProps = {
   job: TJob;

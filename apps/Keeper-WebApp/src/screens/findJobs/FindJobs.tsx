@@ -9,8 +9,7 @@ import FilterSidebar from './components/filterSidebar/FilterSidebar';
 const PRELOAD_OFFSET = 2000;
 
 const FindJob = () => {
-  const { filters, isLocationVisible, handleSearchChange, toggleFilter, handleCityChange, handleSalaryChange } =
-    useJobFilters();
+  const { filters, handleSearchChange, toggleFilter, handleCityChange, handleSalaryChange } = useJobFilters();
 
   const {
     jobs,
@@ -66,7 +65,6 @@ const FindJob = () => {
       {/* Sidebar with filters */}
       <FilterSidebar
         filters={filters}
-        isLocationVisible={!!isLocationVisible}
         handleSearchChange={handleSearchChange}
         toggleFilter={toggleFilter}
         handleCityChange={handleCityChange}

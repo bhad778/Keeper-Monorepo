@@ -37,11 +37,6 @@ export const useJobFilters = () => {
   const filtersUpdatedRef = useRef(false);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Determine if location options should be visible
-  const isLocationVisible =
-    filters.preferences?.locationFlexibility?.includes(LocationFlexibilityEnum.Hybrid) ||
-    filters.preferences?.locationFlexibility?.includes(LocationFlexibilityEnum['On-site']);
-
   const updateFiltersReduxAndDb = () => {
     dispatch(
       setEmployeePreferencesRedux({
@@ -144,7 +139,6 @@ export const useJobFilters = () => {
 
   return {
     filters,
-    isLocationVisible,
     handleSearchChange,
     toggleFilter,
     handleCityChange,

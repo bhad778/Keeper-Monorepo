@@ -4,13 +4,11 @@ import { KeeperSlider } from 'components';
 import { LocationFlexibilityEnum, SeniorityLevelEnum } from 'keeperTypes';
 import { cities, TechnologiesList } from 'keeperConstants';
 import { TGetJobsForSwipingPayload } from 'keeperServices';
-import { useTheme } from 'theme/theme.context';
 
 import useStyles from './FilterSidebarStyles';
 
 interface FilterSidebarProps {
   filters: TGetJobsForSwipingPayload;
-  isLocationVisible: boolean;
   handleSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   toggleFilter: (key: 'seniorityLevel' | 'locationFlexibility' | 'relevantSkills', value: string) => void;
   handleCityChange: (event: any) => void;
@@ -19,14 +17,12 @@ interface FilterSidebarProps {
 
 const FilterSidebar: React.FC<FilterSidebarProps> = ({
   filters,
-  isLocationVisible,
   handleSearchChange,
   toggleFilter,
   handleCityChange,
   handleSalaryChange,
 }) => {
   const styles = useStyles();
-  const { theme } = useTheme();
 
   return (
     <div style={styles.sidebar}>
@@ -40,7 +36,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
         onChange={handleSearchChange}
       />
 
-      {/* Job Level Filter */}
+      {/* Seniority Level Filter */}
       <div style={styles.filterGroup}>
         <h3 style={styles.filterTitle}>Seniority Level</h3>
         <div style={styles.filterOptions}>
@@ -81,52 +77,50 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
       </div>
 
       {/* City Location Dropdown */}
-      {isLocationVisible && (
-        <div style={styles.filterGroup}>
-          <h3 style={styles.filterTitle}>City</h3>
-          <FormControl
-            fullWidth
+      <div style={styles.filterGroup}>
+        <h3 style={styles.filterTitle}>City</h3>
+        <FormControl
+          fullWidth
+          sx={{
+            mt: 1,
+            '& .MuiInputBase-root': {
+              color: 'white',
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            },
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'rgba(255, 255, 255, 0.3)',
+            },
+            '& .MuiSvgIcon-root': {
+              color: 'white',
+            },
+          }}>
+          <InputLabel id='city-select-label' sx={{ color: 'white' }}>
+            City
+          </InputLabel>
+          <Select
+            labelId='city-select-label'
+            id='city-select'
+            value={filters.preferences?.city || ''}
+            label='City'
+            onChange={handleCityChange}
+            displayEmpty
             sx={{
-              mt: 1,
-              '& .MuiInputBase-root': {
-                color: 'white',
-                backgroundColor: () => (isLocationVisible ? 'rgba(255, 255, 255, 0.1)' : theme.color.keeperGrey),
-              },
-              '& .MuiOutlinedInput-notchedOutline': {
-                borderColor: () => (isLocationVisible ? 'rgba(255, 255, 255, 0.3)' : 'white'),
-              },
-              '& .MuiSvgIcon-root': {
-                color: 'white',
-              },
-              '&.Mui-disabled': {
-                opacity: 0.6,
-              },
+              color: 'white',
+              '& .MuiSelect-icon': { color: 'white' },
             }}>
-            <InputLabel id='city-select-label' sx={{ color: 'white' }}>
-              City
-            </InputLabel>
-            <Select
-              labelId='city-select-label'
-              id='city-select'
-              value={filters.preferences?.city || ''}
-              label='City'
-              onChange={handleCityChange}
-              sx={{
-                color: 'white',
-                '& .MuiSelect-icon': { color: 'white' },
-              }}>
-              <MenuItem value=''>
-                <em>Select a city</em>
+            <MenuItem value=''>
+              <em>Any</em>
+            </MenuItem>
+            {cities.map(city => (
+              <MenuItem key={city} value={city}>
+                {city}
               </MenuItem>
-              {cities.map(city => (
-                <MenuItem key={city} value={city}>
-                  {city}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </div>
-      )}
+            ))}
+          </Select>
+        </FormControl>
+      </div>
+
+      {/* Must Include Salary Filter */}
 
       {/* Salary Filter */}
       <div style={styles.filterGroup}>
@@ -136,7 +130,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             minimumValue={30000}
             maximumValue={300000}
             step={5000}
-            defaultValue={(filters.preferences?.minimumSalary as number) || 140000}
+            defaultValue={filters.preferences?.minimumSalary as number}
             formatDisplayValue={value => `$${value.toLocaleString()}`}
             onSliderComplete={handleSalaryChange}
           />
