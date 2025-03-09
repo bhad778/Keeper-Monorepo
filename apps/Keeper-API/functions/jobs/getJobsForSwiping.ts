@@ -9,6 +9,7 @@ import Job from '../../models/Job';
 import { getItemsForSwipingLimit, headers } from '../../constants';
 import Swipe from '../../models/Swipe';
 import { escapeRegex, extractErrorMessage } from '../../keeperApiUtils';
+import { PipelineStage } from 'mongoose';
 
 // {
 //   "userId": "6789b086457faa1335ce57d8",
@@ -58,8 +59,6 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
     }
 
     await connectToDatabase();
-
-    let findObject: any = {};
 
     if (preferences) {
       const { textSearch, seniorityLevel, locationFlexibility, minimumSalary, city, relevantSkills } = preferences;
@@ -111,22 +110,9 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
       }
 
       // filter by city (case-insensitive)
-      if (city?.length > 0) {
-        const caseInsensitiveCity = city.map(text => new RegExp(`^${escapeRegex(text)}$`, 'i'));
-        searchFilters.push({ jobLocation: { $in: caseInsensitiveCity } });
-      }
-
-      if (minimumSalary) {
-        searchFilters.push({
-          $or: [
-            // Find jobs where the max salary is greater than or equal to our minimum
-            { 'formattedCompensation.payRange.max': { $gte: minimumSalary } },
-
-            // Also include jobs where the min salary is greater than or equal to our minimum
-            // This helps when jobs only specify a minimum salary without a maximum
-            { 'formattedCompensation.payRange.min': { $gte: minimumSalary } },
-          ],
-        });
+      if (city) {
+        const caseInsensitiveCity = new RegExp(`^${escapeRegex(city)}$`, 'i');
+        searchFilters.push({ jobLocation: caseInsensitiveCity });
       }
 
       // filter by seniorityLevel (case-insensitive)
@@ -134,10 +120,6 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
         const caseInsensitiveSeniorityLevel = seniorityLevel.map(text => new RegExp(`^${escapeRegex(text)}$`, 'i'));
         searchFilters.push({ seniorityLevel: { $in: caseInsensitiveSeniorityLevel } });
       }
-
-      findObject = {
-        $and: searchFilters,
-      };
 
       // by default mongo text search splits the words then searches them individually and if any of them match
       // then it returns the document. This switches it to be like an and operator where all of them have to match.
@@ -150,41 +132,93 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
         return terms.join(' ');
       };
 
-      if (textSearch) {
-        const formattedSearchTerm = buildTextSearchQuery(textSearch);
+      // After all filters are processed, use aggregation regardless of whether minimumSalary exists
+      const aggregationPipeline: PipelineStage[] = [];
 
-        const textSearchFilter = { $text: { $search: formattedSearchTerm } };
-
-        if (!findObject.$and) {
-          findObject.$and = [];
-        }
-        findObject.$and.push(textSearchFilter);
+      // Start with the base filters that apply to all scenarios
+      if (searchFilters.length > 0) {
+        aggregationPipeline.push({ $match: { $and: searchFilters } });
       }
 
-      // Handle count request
-      if (isCount) {
-        const count = await Job.countDocuments(findObject).exec();
-        return callback(null, {
-          statusCode: 200,
-          headers,
-          body: JSON.stringify(count),
+      // If using text search, add that to the pipeline
+      if (textSearch) {
+        const formattedSearchTerm = buildTextSearchQuery(textSearch);
+        aggregationPipeline.push({
+          $match: { $text: { $search: formattedSearchTerm } },
+        });
+
+        // Add the text score as a field
+        aggregationPipeline.push({
+          $addFields: { score: { $meta: 'textScore' } },
         });
       }
 
-      // Fetch jobs for swiping
-      const jobs = await Job.find(findObject, {
-        _id: 1,
-        relevantSkills: 1,
-        jobTitle: 1,
-        seniorityLevel: 1,
-        locationFlexibility: 1,
-        formattedCompensation: 1,
-        applyLink: 1,
-      })
-        .populate('companyId')
-        .sort(textSearch ? { score: { $meta: 'textScore' } } : {})
-        .limit(getItemsForSwipingLimit)
-        .exec();
+      // Now add salary prioritization if minimumSalary exists
+      if (minimumSalary) {
+        aggregationPipeline.push({
+          $addFields: {
+            salaryPriority: {
+              $cond: {
+                if: {
+                  $and: [
+                    // Check if formattedCompensation is not null
+                    { $ne: ['$formattedCompensation', null] },
+
+                    // Check if payRange is not null
+                    { $ne: ['$formattedCompensation.payRange', null] },
+
+                    // Check if either min or max meets the minimum salary
+                    {
+                      $or: [
+                        { $gte: ['$formattedCompensation.payRange.max', minimumSalary] },
+                        { $gte: ['$formattedCompensation.payRange.min', minimumSalary] },
+                      ],
+                    },
+                  ],
+                },
+                then: 1, // High priority for jobs meeting salary criteria
+                else: 2, // Lower priority for all other jobs
+              },
+            },
+          },
+        });
+
+        // Sort by salary priority first, then any other sort criteria
+        if (textSearch) {
+          aggregationPipeline.push({ $sort: { salaryPriority: 1, score: { $meta: 'textScore' } } });
+        } else {
+          aggregationPipeline.push({ $sort: { salaryPriority: 1 } });
+        }
+      } else {
+        // If no minimum salary filter, just sort by text score if applicable
+        if (textSearch) {
+          aggregationPipeline.push({ $sort: { score: { $meta: 'textScore' } } });
+        }
+      }
+
+      aggregationPipeline.push({
+        $project: {
+          _id: 1,
+          relevantSkills: 1,
+          jobTitle: 1,
+          seniorityLevel: 1,
+          locationFlexibility: 1,
+          formattedCompensation: 1,
+          applyLink: 1,
+          companyId: 1,
+        },
+      });
+
+      aggregationPipeline.push({ $limit: getItemsForSwipingLimit });
+
+      const jobs = await Job.aggregate(aggregationPipeline).exec();
+
+      // Populate companyId using mongoose's populate after aggregation
+      if (jobs.length > 0) {
+        await Job.populate(jobs, { path: 'companyId' });
+      }
+
+      console.log('jobs.length', jobs.length);
 
       return callback(null, {
         statusCode: 200,

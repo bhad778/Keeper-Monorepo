@@ -85,6 +85,9 @@ export const useStyles = () => {
       width: '100%',
       height: '100px', // Fixed height for bottom spinner
     },
+    title: {
+      color: theme.color.pink,
+    },
     jobCard: {
       padding: '20px',
       borderRadius: '10px',
@@ -96,6 +99,8 @@ export const useStyles = () => {
       gap: '10px',
       transition: 'transform 0.2s, box-shadow 0.2s',
       cursor: 'pointer',
+      // maxHeight: '300px', // Optional: Set max height to prevent excessive scrolling
+      // maxWidth: '400px',
     },
     jobTitle: {
       fontSize: '18px',

@@ -1,6 +1,7 @@
 import { TJob } from 'keeperTypes';
 
 import useStyles from './FindJobsJobItemStyles';
+import span from 'components/span';
 
 type FindJobsJobItemProps = {
   job: TJob;
@@ -13,8 +14,21 @@ const FindJobsJobItem = ({ job, index, handleApplyClick }: FindJobsJobItemProps)
 
   return (
     <div key={job._id} style={styles.jobCard}>
-      <h4 style={styles.jobTitle}>{index + 1}</h4>
-      <h4 style={styles.jobTitle}>{job.jobTitle}</h4>
+      <span style={styles.jobTitle}>{index + 1}</span>
+      <span style={styles.title}>jobTitle</span>
+      <span style={styles.jobTitle}>{job.jobTitle}</span>
+      <span style={styles.title}>jobLocation</span>
+      <span style={styles.jobTitle}>{job.jobLocation}</span>
+      <span style={styles.title}>locationFlexibility</span>
+      <span style={styles.jobTitle}>{job.locationFlexibility}</span>
+      <span style={styles.title}>seniorityLevel</span>
+      <span style={styles.jobTitle}>{job.seniorityLevel}</span>
+      <span style={styles.title}>skills</span>
+      <span style={styles.jobTitle}>{JSON.stringify(job.relevantSkills)}</span>
+      <span style={styles.title}>minSalary</span>
+      <span style={styles.jobTitle}>{job.formattedCompensation?.payRange?.min}</span>
+      <span style={styles.title}>maxSalary</span>
+      <span style={styles.jobTitle}>{job.formattedCompensation?.payRange?.max}</span>
       <p style={styles.jobDescription}>
         {job.formattedCompensation?.payRange
           ? `$${job.formattedCompensation.payRange.min} - $${job.formattedCompensation.payRange.max}`
