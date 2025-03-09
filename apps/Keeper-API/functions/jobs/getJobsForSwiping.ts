@@ -61,7 +61,15 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
     await connectToDatabase();
 
     if (preferences) {
-      const { textSearch, seniorityLevel, locationFlexibility, minimumSalary, city, relevantSkills } = preferences;
+      const {
+        textSearch,
+        seniorityLevel,
+        locationFlexibility,
+        minimumSalary,
+        mustIncludeSalary,
+        city,
+        relevantSkills,
+      } = preferences;
 
       // Fetch swipes to exclude already swiped jobs
       // TODO: make sure this is scalable
@@ -107,6 +115,19 @@ module.exports.handler = async (event: APIGatewayEvent, context: Context, callba
           text => new RegExp(`^${escapeRegex(text)}$`, 'i'),
         );
         searchFilters.push({ locationFlexibility: { $in: caseInsensitiveLocationFlexibility } });
+      }
+
+      if (mustIncludeSalary) {
+        searchFilters.push({
+          $or: [
+            // Find jobs where the max salary is greater than or equal to our minimum
+            { 'formattedCompensation.payRange.max': { $gte: minimumSalary } },
+
+            // Also include jobs where the min salary is greater than or equal to our minimum
+            // This helps when jobs only specify a minimum salary without a maximum
+            { 'formattedCompensation.payRange.min': { $gte: minimumSalary } },
+          ],
+        });
       }
 
       // filter by city (case-insensitive)

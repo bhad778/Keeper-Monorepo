@@ -73,6 +73,7 @@ export type TEmployeePreferences = {
   textSearch?: string;
   seniorityLevel?: SeniorityLevelEnum[];
   locationFlexibility?: LocationFlexibilityEnum[];
+  mustIncludeSalary?: boolean;
   minimumSalary?: number | null;
   city?: string;
   relevantSkills?: Array<string>;
