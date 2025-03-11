@@ -7,13 +7,6 @@ jspm_packages/
 .build/
 build/
 
-# Webpack directories and artifacts
-.webpack/
-dist/
-*.js
-*.js.map
-*.d.ts
-
 # Environment variables
 variables.env
 .env

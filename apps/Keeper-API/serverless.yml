@@ -44,11 +44,7 @@ provider:
         - 's3:GetObject'
         - 's3:DeleteObject'
         - 's3:ListBucket'
-      Resource:
-        - 'arn:aws:s3:::keeper-image-bucket/*'
-        - 'arn:aws:s3:::keeper-image-bucket'
-        - 'arn:aws:s3:::${self:custom.resumeBucketName}/*'
-        - 'arn:aws:s3:::${self:custom.resumeBucketName}'
+      Resource: 'arn:aws:s3:::*' # Ideally specify the exact bucket ARN(s)
 
 package:
   individually: true
@@ -76,16 +72,23 @@ plugins:
   - serverless-offline
   - serverless-dotenv-plugin
   - serverless-prune-plugin
-  - serverless-webpack
+  - serverless-esbuild
 
 custom:
-  webpack:
-    webpackConfig: './webpack.config.ts' # Specify the Webpack config file
-    includeModules: true # Automatically include required `node_modules`
-    packager: npm # Set package manager (npm or yarn)
-    packagerOptions:
-      scripts:
-        - 'npm rebuild' # Ensure any native dependencies are properly rebuilt
+  esbuild:
+    bundle: true
+    minify: false # Set to true for production
+    sourcemap: true # Helpful for debugging
+    target: 'node18'
+    platform: 'node'
+    concurrency: 10
+    packager: 'npm'
+    exclude:
+      - 'aws-sdk'
+    define:
+      'process.env.NODE_ENV': '"${opt:stage, self:provider.stage, "dev"}"'
+    external:
+      - 'aws-sdk'
   prune:
     automatic: true
     number: 3

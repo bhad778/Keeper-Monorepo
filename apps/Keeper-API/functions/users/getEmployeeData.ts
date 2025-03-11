@@ -15,7 +15,6 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
 
   try {
     // Validate the request body
-    console.info('Event body:', event.body);
     if (!event.body) {
       throw new Error('Missing request body.');
     }
@@ -25,7 +24,6 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
       isPing: Joi.boolean(),
     });
 
-    console.info('Validating request body against schema');
     const isError = ValidateBody(event, getEmployeeDataSchema, callback);
     if (isError) {
       console.info('Validation failed');
@@ -33,7 +31,6 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     }
 
     const { phoneNumber, isPing } = JSON.parse(event.body);
-    console.info('Parsed request body:', { phoneNumber, isPing });
 
     // Handle ping request
     if (isPing) {
@@ -52,7 +49,6 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     // Fetch employee data
     console.info(`Fetching employee data for phone number: ${phoneNumber}`);
     const employee = await Employee.findOne({ phoneNumber }).exec();
-    console.info('Employee data:', employee);
 
     if (!employee) {
       throw new Error(`Employee with phone number ${phoneNumber} not found.`);
@@ -60,7 +56,6 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
 
     // Update preferences with required education enum
     const user = employee.toObject();
-    console.info('Employee object:', user);
 
     // Prepare the response data
     const loggedInEmployeeData: TLoggedInEmployee = {
@@ -80,8 +75,6 @@ export const handler = async (event: APIGatewayEvent, context: Context, callback
     const returnData = {
       loggedInUserData: loggedInEmployeeData,
     };
-
-    console.info('Return data prepared:', returnData);
 
     // Return success response
     callback(null, {

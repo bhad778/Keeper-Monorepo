@@ -4,11 +4,13 @@
     "module": "CommonJS", // Ensure compatibility with Node.js
     "baseUrl": ".", // Base URL for module resolution
     "rootDir": "../../", // Set to the monorepo root to include all relevant files
-    "outDir": "./dist", // Compiled output directory
+    "outDir": "./.esbuild", // Changed to esbuild output directory
     "strict": true, // Enable strict type checking
     "esModuleInterop": true, // Enable ES module compatibility
     "skipLibCheck": true, // Skip type checking for declaration files
     "noImplicitAny": false,
+    "isolatedModules": true, // Recommended for esbuild
+    "target": "ES2020", // Modern JS target to match Node 18
     "paths": {
       "keeperConstants/*": ["../../packages/keeperConstants/*"],
       "keeperTypes/*": ["../../packages/keeperTypes/*"],
@@ -28,7 +30,8 @@
   ],
   "exclude": [
     "node_modules", // Exclude node_modules
-    "dist", // Exclude build directory
+    ".esbuild", // Exclude esbuild directory
+    ".serverless", // Exclude serverless directory
     "../Keeper-WebApp/**", // Exclude unrelated apps
     "../Keeper-UI/**", // Exclude unrelated apps
     "../Keeper-Queues-Service/**", // Exclude unrelated apps
