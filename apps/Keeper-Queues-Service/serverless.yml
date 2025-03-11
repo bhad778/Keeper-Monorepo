@@ -1,4 +1,4 @@
-service: keeper-queues-service
+service: keeper-queues
 app: pare
 org: jobfindingapp778
 

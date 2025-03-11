@@ -18,7 +18,7 @@
       "developmentClient": true,
       "distribution": "internal",
       "env": {
-        "API_URL": "https://mzl4y00fba.execute-api.us-east-1.amazonaws.com/dev"
+        "API_URL": "https://5ceiqbtll1.execute-api.us-east-1.amazonaws.com/development"
       },
       "ios": {
         "image": "latest"

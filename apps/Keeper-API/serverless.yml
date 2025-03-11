@@ -69,8 +69,8 @@ package:
     - keeperApiUtils.ts
 
 plugins:
-  - serverless-offline
   - serverless-dotenv-plugin
+  - serverless-offline
   - serverless-prune-plugin
   - serverless-esbuild
 
@@ -86,13 +86,16 @@ custom:
     exclude:
       - 'aws-sdk'
     define:
-      'process.env.NODE_ENV': '"${opt:stage, self:provider.stage, "dev"}"'
+      'process.env.NODE_ENV': '"${opt:stage, self:provider.stage, "development"}"'
     external:
       - 'aws-sdk'
+  dotenv:
+    path: .env.${opt:stage, self:provider.stage, 'development'}
+    includeAll: true
   prune:
     automatic: true
     number: 3
-  resumeBucketName: ${opt:stage, 'dev'}-keeper-resume-bucket
+  resumeBucketName: ${opt:stage, 'development'}-keeper-resume-bucket
 
 resources:
   Resources:

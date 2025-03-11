@@ -7,10 +7,10 @@
     "start": "sls offline",
     "clean": "rm -rf node_modules && rm -rf yarn.lock && rm -rf package-lock.json && npm install",
     "deploy-function": "sls deploy function -f",
-    "deploy-dev": "NODE_OPTIONS='--max-old-space-size=8192' npx serverless deploy",
+    "deploy-dev": "NODE_OPTIONS='--max-old-space-size=8192' npx serverless deploy --stage development",
     "deploy-prod": "sls deploy --stage production",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "debug": "SLS_DEBUG=* && node --inspect ./node_modules/serverless/bin/serverless offline -s dev"
+    "debug": "SLS_DEBUG=* && node --inspect ./node_modules/serverless/bin/serverless offline -s development"
   },
   "author": "",
   "license": "ISC",

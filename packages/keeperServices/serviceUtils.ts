@@ -7,10 +7,25 @@ type ApiResponse<T> = {
   errorMessage?: string;
 };
 
-// const apiUrl = process.env.VITE_API_URL;
-const apiUrl = 'https://mzl4y00fba.execute-api.us-east-1.amazonaws.com/dev';
+// // This helper function gets the environment variable from either Vite or Node.js environment
+// function getEnvVariable(name: string): string | undefined {
+//   // Check if we're in a Vite environment
+//   if (typeof import.meta !== 'undefined' && import.meta.env) {
+//     return import.meta.env[name];
+//   }
+//   // Check if we're in a Node.js environment
+//   else if (typeof process !== 'undefined' && process.env) {
+//     return process.env[name];
+//   }
+//   // Fallback if neither is available
+//   return undefined;
+// }
+
+const apiUrl = process.env.VITE_API_URL;
 
 export const postRequest = <T>(endpoint: string, payload?: any): Promise<ApiResponse<T>> => {
+  console.log('apiUrl', apiUrl);
+  console.log('endpoint', endpoint);
   return axios
     .post(`${apiUrl}/${endpoint}`, payload, {
       headers: {

@@ -4,7 +4,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "start": "API_URL='https://mzl4y00fba.execute-api.us-east-1.amazonaws.com/dev' npx expo start -c",
+    "start": "API_URL='https://5ceiqbtll1.execute-api.us-east-1.amazonaws.com/development' npx expo start -c",
     "clean": "rm -rf node_modules && yarn add expo && rm yarn.lock && expo install",
     "fix": "npx expo install --fix",
     "android": "expo run:android",

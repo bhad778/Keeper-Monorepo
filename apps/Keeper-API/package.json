@@ -9,7 +9,7 @@
     "clean": "yarn clean-esbuild && rm -rf node_modules && rm -rf yarn.lock && rm -rf package-lock.json && yarn install",
     "clean-esbuild": "rm -rf .esbuild .serverless",
     "deploy-function": "sls deploy function -f",
-    "deploy-dev": "npx serverless deploy --stage dev",
+    "deploy-dev": "npx serverless deploy --stage development",
     "deploy-prod": "sls deploy --stage production",
     "test": "echo \"Error: no test specified\" && exit 1",
     "debug": "SLS_DEBUG=* && node --inspect ./node_modules/serverless/bin/serverless offline -s dev"
