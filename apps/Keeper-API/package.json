@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.145",
-    "@types/aws-sdk": "^0.0.42",
+    "@types/aws-sdk": "^2.7.4",
     "@types/joi": "^17.2.3",
     "@types/mongoose": "^5.11.97",
     "serverless": "^3.39.0",
