@@ -54,7 +54,7 @@ const initialState: TLoggedInUserData = {
     locationFlexibility: [],
     minimumSalary: 0,
     city: '',
-    relevantSkills: [''],
+    relevantSkills: [],
   },
 };
 
