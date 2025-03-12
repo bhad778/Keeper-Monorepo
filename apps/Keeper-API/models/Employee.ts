@@ -10,6 +10,7 @@ const EmployeeSchema = new mongoose.Schema({
   education: { type: Number, required: false },
   receivedLikes: { type: Array, required: false },
   hasSeenFirstLikeAlert: { type: Boolean, required: false },
+  hasResume: { type: Boolean, required: false },
   hasGottenToEditProfileScreen: { type: Boolean, required: false },
   hasReceivedLikeNotification: { type: Boolean, required: false },
   matches: { type: Array, required: false },

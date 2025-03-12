@@ -20,6 +20,7 @@ export type TEmployee = {
   geoLocation: TGeoLocation | null;
   receivedLikes: string[];
   hasSeenFirstLikeAlert?: boolean;
+  hasResume?: boolean;
   hasGottenToEditProfileScreen?: boolean;
   hasReceivedLikeNotification?: boolean;
   matches: TMatch[];

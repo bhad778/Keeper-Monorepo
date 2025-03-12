@@ -7,6 +7,7 @@ export const useStyles = () => {
     modal: {
       backgroundColor: theme.color.primary,
       margin: 0,
+      padding: 5,
     },
   } as const;
 

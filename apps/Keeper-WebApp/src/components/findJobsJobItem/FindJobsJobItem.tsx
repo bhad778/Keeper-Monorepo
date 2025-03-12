@@ -1,7 +1,9 @@
 import { TJob } from 'keeperTypes';
+import { RootState } from 'reduxStore';
+import { useSelector } from 'react-redux';
+import { KeeperSelectButton } from 'components';
 
 import useStyles from './FindJobsJobItemStyles';
-import { KeeperSelectButton } from 'components';
 
 type FindJobsJobItemProps = {
   job: TJob;
@@ -11,7 +13,19 @@ type FindJobsJobItemProps = {
 };
 
 const FindJobsJobItem = ({ job, index, setIsVisible, handleApplyClick }: FindJobsJobItemProps) => {
+  const hasResume = useSelector((state: RootState) => state.loggedInUser.hasResume);
+
   const styles = useStyles();
+
+  const tailorResume = () => {};
+
+  const onTailorButtonClick = () => {
+    if (hasResume) {
+      tailorResume();
+    } else {
+      setIsVisible(true);
+    }
+  };
 
   return (
     <div key={job._id} style={styles.jobCard}>
@@ -45,8 +59,8 @@ const FindJobsJobItem = ({ job, index, setIsVisible, handleApplyClick }: FindJob
         textStyles={styles.buttonText}
       />
       <KeeperSelectButton
-        onClick={() => setIsVisible(true)}
-        title='Tailor Resume for this Job'
+        onClick={onTailorButtonClick}
+        title='Tailor Resume With AI'
         buttonStyles={styles.applyButton}
         textStyles={styles.buttonText}
       />

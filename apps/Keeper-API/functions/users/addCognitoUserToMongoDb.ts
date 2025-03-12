@@ -52,6 +52,7 @@ export const handler = async (
         geoLocation: null,
         receivedLikes: [],
         hasSeenFirstLikeAlert: false,
+        hasResume: false,
         hasGottenToEditProfileScreen: false,
         hasReceivedLikeNotification: false,
         matches: [],

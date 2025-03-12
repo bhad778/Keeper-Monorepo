@@ -53,6 +53,8 @@ import UsersThatLikedYouList from './usersThatLikedYouList/UsersThatLikedYouList
 import WithBadge from './withBadge/WIthBadge';
 import ModalFilterContent from './modalFilterContent/ModalFilterContent';
 import FindJobsJobItem from './findJobsJobItem/FindJobsJobItem';
+import UploadResume from './uploadResume/UploadResume';
+import ViewResume from './viewResume/ViewResume';
 
 export {
   AppBoldText,
@@ -110,4 +112,6 @@ export {
   UsersThatLikedYouList,
   WithBadge,
   ModalFilterContent,
+  UploadResume,
+  ViewResume,
 };

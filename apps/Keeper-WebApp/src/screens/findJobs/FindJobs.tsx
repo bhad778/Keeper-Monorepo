@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { AlertModal, FindJobsJobItem, LoadingSpinner } from 'components';
+import { ResumeModal } from 'modals';
 
 import useStyles from './FindJobsStyles';
 import { useJobFilters } from './hooks/useJobFilters';
 import { useJobData } from './hooks/useJobData';
 import FilterSidebar from './components/filterSidebar/FilterSidebar';
-import { ResumeModal } from 'modals';
 
 const PRELOAD_OFFSET = 2000;
 
