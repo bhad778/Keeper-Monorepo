@@ -5,6 +5,7 @@ import LogoModal from './logo-modal/LogoModal';
 import ResponsibilitiesModal from './responsibilities-modal/ResponsibilitiesModal';
 import Compensation from './compensation-modal/CompensationModal';
 import RequiredSkillsModal from './required-skills-modal/RequiredSkillsModal';
+import ResumeModal from './resume-modal/ResumeModal';
 
 export {
   BenefitsModal,
@@ -14,4 +15,5 @@ export {
   ResponsibilitiesModal,
   Compensation,
   RequiredSkillsModal,
+  ResumeModal,
 };

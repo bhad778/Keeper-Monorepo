@@ -1,14 +1,16 @@
 import { TJob } from 'keeperTypes';
 
 import useStyles from './FindJobsJobItemStyles';
+import { KeeperSelectButton } from 'components';
 
 type FindJobsJobItemProps = {
   job: TJob;
   index: number;
+  setIsVisible: (visible: boolean) => void;
   handleApplyClick: (job: TJob) => void;
 };
 
-const FindJobsJobItem = ({ job, index, handleApplyClick }: FindJobsJobItemProps) => {
+const FindJobsJobItem = ({ job, index, setIsVisible, handleApplyClick }: FindJobsJobItemProps) => {
   const styles = useStyles();
 
   return (
@@ -36,9 +38,18 @@ const FindJobsJobItem = ({ job, index, handleApplyClick }: FindJobsJobItemProps)
       <p style={styles.jobDescription}>{job.jobLocation}</p>
       <p style={styles.jobDescription}>{job.locationFlexibility}</p>
       <p style={styles.jobDescription}>{job.seniorityLevel}</p>
-      <span onClick={() => handleApplyClick(job)} style={styles.applyButton}>
-        <span style={styles.buttonText}>Apply</span>
-      </span>
+      <KeeperSelectButton
+        onClick={() => handleApplyClick(job)}
+        title='Apply'
+        buttonStyles={styles.applyButton}
+        textStyles={styles.buttonText}
+      />
+      <KeeperSelectButton
+        onClick={() => setIsVisible(true)}
+        title='Tailor Resume for this Job'
+        buttonStyles={styles.applyButton}
+        textStyles={styles.buttonText}
+      />
     </div>
   );
 };

@@ -1,16 +1,18 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AlertModal, FindJobsJobItem, LoadingSpinner } from 'components';
 
 import useStyles from './FindJobsStyles';
 import { useJobFilters } from './hooks/useJobFilters';
 import { useJobData } from './hooks/useJobData';
 import FilterSidebar from './components/filterSidebar/FilterSidebar';
+import { ResumeModal } from 'modals';
 
 const PRELOAD_OFFSET = 2000;
 
 const FindJob = () => {
-  const { filters, handleSearchChange, toggleFilter, handleCityChange, handleSalaryChange } = useJobFilters();
+  const [isResumeModalVisible, setIsResumeModalVisible] = useState(false);
 
+  const { filters, handleSearchChange, toggleFilter, handleCityChange, handleSalaryChange } = useJobFilters();
   const {
     jobs,
     displayedJobs,
@@ -51,6 +53,7 @@ const FindJob = () => {
 
   return (
     <div style={styles.container}>
+      <ResumeModal isVisible={isResumeModalVisible} setIsVisible={setIsResumeModalVisible} />
       <AlertModal
         isOpen={isNotLoggedInAlertOpen}
         title={'You have to be signed up to apply'}
@@ -80,7 +83,13 @@ const FindJob = () => {
         ) : (
           <div style={styles.jobGrid} ref={jobGridRef}>
             {displayedJobs.map((job, index) => (
-              <FindJobsJobItem key={job._id || index} job={job} index={index} handleApplyClick={handleApplyClick} />
+              <FindJobsJobItem
+                key={job._id || index}
+                job={job}
+                index={index}
+                handleApplyClick={handleApplyClick}
+                setIsVisible={setIsResumeModalVisible}
+              />
             ))}
             {loadingMore && (
               <div style={styles.jobGridSpinner}>
