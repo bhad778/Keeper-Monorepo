@@ -1,5 +1,5 @@
 import { QueryOptions, RootFilterQuery } from 'mongoose';
-import { OperationEnum, TJob, TCompany, TEmployeePreferences } from 'keeperTypes';
+import { OperationEnum, TJob, TCompany, TEmployeePreferences, TResumeData } from 'keeperTypes';
 
 export type TAddApplication = {
   employeeId: string;

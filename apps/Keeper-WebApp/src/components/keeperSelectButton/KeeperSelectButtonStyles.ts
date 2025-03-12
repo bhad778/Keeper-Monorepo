@@ -5,52 +5,49 @@ export const useStyles = (isBig: boolean, selected?: boolean) => {
 
   const styles: { [k: string]: React.CSSProperties } = {
     benefitButtons: {
-      margin: 4,
+      display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      height: 50,
-      borderRadius: 30,
-      backgroundColor: theme.color.primary,
-      border: `solid ${theme.color.white}  ${theme.general.borderWidth}px`,
-      display: 'flex',
-      padding: 10,
-      paddingLeft: 15,
-      paddingRight: 15,
+      backgroundColor: theme.color.white,
+      borderRadius: 50,
+      border: 'unset',
+      height: isBig ? 66 : 50,
+      margin: 6,
+      paddingLeft: 13,
+      paddingRight: 13,
     },
     benefitsButtonsPressed: {
-      margin: 4,
+      display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      height: 50,
-      borderRadius: 30,
       backgroundColor: theme.color.pink,
-      display: 'flex',
-      padding: 10,
-      paddingLeft: 15,
-      paddingRight: 15,
-    },
-    buttonTextPressed: {
-      fontSize: isBig ? 20 : 18,
-      color: theme.color.black,
+      borderRadius: 50,
+      border: 'unset',
+      height: isBig ? 66 : 50,
+      margin: 6,
+      paddingLeft: 13,
+      paddingRight: 13,
     },
     buttonText: {
-      fontSize: isBig ? 20 : 15,
-      color: selected ? 'black' : 'white',
-      whiteSpace: 'nowrap',
+      color: 'black',
+      fontSize: isBig ? 25 : 14,
+      textAlign: 'center',
     },
     smallButtonText: {
-      fontSize: 18,
+      fontSize: isBig ? 17 : 12,
     },
-    bigButtons: {
-      margin: 4,
-      justifyContent: 'center',
+    // New styles for icon integration
+    buttonContentContainer: {
+      display: 'flex',
+      flexDirection: 'row',
       alignItems: 'center',
-      height: 50,
-      width: '47%',
-      borderRadius: 30,
+      justifyContent: 'center',
+      gap: '8px', // Spacing between icon and text
     },
-    bigButtonText: {
-      fontSize: 20,
+    buttonIcon: {
+      color: selected ? 'black' : theme.color.primary,
+      height: isBig ? 28 : 20,
+      width: isBig ? 28 : 20,
     },
   } as const;
 

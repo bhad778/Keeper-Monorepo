@@ -1,4 +1,4 @@
-import { TAccountType, TMatch, TSwipe, TEmployeeSettings, TLoggedInEmployee } from 'keeperTypes';
+import { TAccountType, TMatch, TSwipe, TEmployeeSettings, TLoggedInEmployee, TEmployee } from 'keeperTypes';
 
 import { TUpdateEmployeePreferencesPayload } from './serviceTypes';
 import { postRequest } from './serviceUtils';
@@ -29,7 +29,7 @@ const UsersService = {
   addMatch: (payload: { accountType: TAccountType; loggedInUserMatch: TMatch; otherUserMatch: TMatch }) =>
     postRequest('addMatch', payload),
 
-  updateUserData: (payload: { userId: string; accountType: TAccountType; updateObject: any }) =>
+  updateUserData: (payload: { userId: string; accountType: TAccountType; updateObject: Partial<TEmployee> }) =>
     postRequest('updateUserData', payload),
 
   updateMatchNotification: (payload: {

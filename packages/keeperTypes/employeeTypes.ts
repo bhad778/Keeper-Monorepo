@@ -49,6 +49,17 @@ export type TEmployeeSettings = {
   linkedInUrl?: string;
 };
 
+export type TResumeData = {
+  resumeInfo: {
+    _id: string;
+    employeeId: string;
+    fileUrl: string;
+    fileName: string;
+    uploadDate: string;
+  };
+  downloadUrl: string;
+};
+
 export type TEmployeePastJob =
   | {
       uuid?: string;
