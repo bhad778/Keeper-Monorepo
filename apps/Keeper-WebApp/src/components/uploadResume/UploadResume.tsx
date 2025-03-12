@@ -1,12 +1,9 @@
-import AppBoldText from 'components/AppBoldText';
-import AppHeaderText from 'components/AppHeaderText';
-import AppText from 'components/AppText';
+import { AppText, AppHeaderText, AppBoldText, LoadingSpinner, KeeperButton } from 'components';
 import { useState } from 'react';
 import { FileUploader } from 'react-drag-drop-files';
 import { useSelector, useDispatch } from 'react-redux';
 import { addLoggedInUser, RootState } from 'reduxStore';
 import { ResumesService, UsersService } from 'keeperServices';
-import { LoadingSpinner, KeeperSelectButton } from 'components';
 import toast from 'react-hot-toast';
 
 import useStyles from './UploadResumeStyles';
@@ -109,11 +106,11 @@ const UploadResume = () => {
             <LoadingSpinner />
           </div>
         ) : (
-          <KeeperSelectButton
+          <KeeperButton
             buttonStyles={styles.uploadButton}
             onClick={onUploadClick}
-            title={uploadSuccess ? 'Upload Another' : 'Upload'}
-            selected={!!file && !uploadSuccess}
+            text={uploadSuccess ? 'Upload Another' : 'Upload'}
+            isLoading={isUploading}
             disabled={!file || isUploading}
           />
         )}

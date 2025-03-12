@@ -94,15 +94,12 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
               color: 'white',
             },
           }}>
-          <InputLabel id='city-select-label' sx={{ color: 'white' }}>
-            City
-          </InputLabel>
           <Select
             labelId='city-select-label'
             id='city-select'
             value={filters.preferences?.city || ''}
-            label='City'
             onChange={handleCityChange}
+            variant='outlined'
             displayEmpty
             sx={{
               color: 'white',
@@ -120,8 +117,6 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
         </FormControl>
       </div>
 
-      {/* Must Include Salary Filter */}
-
       {/* Salary Filter */}
       <div style={styles.filterGroup}>
         <h3 style={styles.filterTitle}>Minimum Salary</h3>
@@ -130,8 +125,8 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
             minimumValue={30000}
             maximumValue={300000}
             step={5000}
-            defaultValue={filters.preferences?.minimumSalary as number}
-            formatDisplayValue={value => `$${value.toLocaleString()}`}
+            defaultValue={(filters.preferences?.minimumSalary as number) || 100000}
+            formatDisplayValue={value => `$${value?.toLocaleString()}`}
             onSliderComplete={handleSalaryChange}
           />
         </div>

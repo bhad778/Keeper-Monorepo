@@ -1,5 +1,5 @@
 import { Callback, CognitoUserPoolTriggerEvent, Context } from 'aws-lambda';
-import { TEmployer, TEmployee, LocationFlexibilityEnum } from 'keeperTypes';
+import { TEmployer, TEmployee, LocationFlexibilityEnum, SeniorityLevelEnum } from 'keeperTypes';
 
 import connectToDatabase from '../../db';
 import Employee from '../../models/Employee';
@@ -77,11 +77,11 @@ export const handler = async (
         },
         preferences: {
           textSearch: '',
-          seniorityLevel: [],
+          seniorityLevel: [SeniorityLevelEnum.Entry, SeniorityLevelEnum.Mid, SeniorityLevelEnum.Senior],
           locationFlexibility: [LocationFlexibilityEnum.Remote],
-          minimumSalary: null,
+          minimumSalary: 100000,
           city: '',
-          relevantSkills: [],
+          relevantSkills: ['React', 'Node', 'JavaScript', 'TypeScript', 'Python', 'Java', '.NET', 'C#'],
         },
       };
 

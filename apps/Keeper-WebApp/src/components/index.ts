@@ -55,9 +55,11 @@ import ModalFilterContent from './modalFilterContent/ModalFilterContent';
 import FindJobsJobItem from './findJobsJobItem/FindJobsJobItem';
 import UploadResume from './uploadResume/UploadResume';
 import ViewResume from './viewResume/ViewResume';
+import KeeperButton from './keeperButton/KeeperButton';
 
 export {
   AppBoldText,
+  KeeperButton,
   AppHeaderText,
   FindJobsJobItem,
   AppText,
