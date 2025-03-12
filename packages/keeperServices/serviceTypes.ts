@@ -6,6 +6,17 @@ export type TAddApplication = {
   jobId: string;
 };
 
+export type TGetResumePayload = {
+  employeeId: string;
+};
+
+export type TUploadResumePayload = {
+  employeeId: string;
+  fileName: string;
+  fileData: string;
+  mimeType: string;
+};
+
 export type TGetJobsForSwipingPayload = {
   userId?: string; // ID of the user making the request
   preferences?: TEmployeePreferences; // User's preferences for job search

@@ -4,6 +4,7 @@ import UsersService from './UsersService';
 import CompaniesService from './CompaniesService';
 import ThirdPartyService from './ThirdPartyService';
 import ApplicationsService from './ApplicationsService';
+import ResumesService from './ResumesService';
 import ChatGPTService from './ChatGPTService';
 export * from './serviceTypes';
 
@@ -14,5 +15,6 @@ export {
   CompaniesService,
   ThirdPartyService,
   ApplicationsService,
+  ResumesService,
   ChatGPTService,
 };
