@@ -3,52 +3,36 @@ import { AppBoldText, AppHeaderText, Clickable } from 'components';
 // @ts-ignore
 import { Triangle } from 'react-loader-spinner';
 
-import { useStyles } from './KeeperSelectButtonStyles';
+import { useStyles } from './KeeperButtonStyles';
 
-interface KeeperSelectButtonProps {
+interface KeeperButtonProps {
   onClick: (index: any) => void;
-  title: string;
+  text: string;
   key?: number | string;
-  selected?: boolean;
   buttonStyles?: React.CSSProperties;
-  selectedButtonStyles?: any;
-  unSelectedButtonStyles?: any;
-  selectedTextStyles?: any;
-  unSelectedTextStyles?: any;
   textStyles?: React.CSSProperties;
-  isBig?: boolean;
   isLoading?: boolean;
   disabled?: boolean;
   isAppHeaderText?: boolean;
-  children?: React.ReactNode;
-  // New props for icon support
   IconComponent?: React.ComponentType<any>;
   iconProps?: Record<string, any>;
   iconPosition?: 'left' | 'right';
 }
 
-const KeeperSelectButton = ({
+const KeeperButton = ({
   onClick,
-  selected,
   key,
-  title,
+  text,
   buttonStyles,
   textStyles,
-  selectedButtonStyles,
-  unSelectedButtonStyles,
-  selectedTextStyles,
-  unSelectedTextStyles,
-  isBig,
   isLoading,
   disabled,
   isAppHeaderText,
-  children,
-  // New props with defaults
   IconComponent,
   iconProps = {},
   iconPosition = 'left',
-}: KeeperSelectButtonProps) => {
-  const styles = useStyles(isBig || false, selected, disabled);
+}: KeeperButtonProps) => {
+  const styles = useStyles(disabled);
 
   // Determine if we need to render the icon
   const showIcon = !isLoading && IconComponent;
@@ -59,27 +43,19 @@ const KeeperSelectButton = ({
   // Calculate button text styles
   const buttonTextStyles = {
     ...styles.buttonText,
-    ...(title.length > 15 ? styles.smallButtonText : {}),
+    ...(text.length > 15 ? styles.smallButtonText : {}),
     ...textStyles,
-    ...(selected ? selectedTextStyles : unSelectedTextStyles),
   };
 
   return (
     <Clickable
       key={key || 0}
-      onClick={() => onClick(key || title)}
+      onClick={() => onClick(key || text)}
       disabled={disabled}
-      style={{
-        ...(selected
-          ? { ...styles.benefitsButtonsPressed, ...selectedButtonStyles }
-          : { ...styles.benefitButtons, ...unSelectedButtonStyles }),
-        ...buttonStyles,
-      }}>
+      style={{ ...styles.keeperButton, ...buttonStyles }}>
       <div style={styles.buttonContentContainer}>
-        {/* Render left-positioned icon if needed */}
         {showIcon && iconPosition === 'left' && <IconComponent style={styles.buttonIcon} {...iconProps} />}
 
-        {/* Button text or loading spinner */}
         <TextComponent style={buttonTextStyles}>
           {isLoading ? (
             <Triangle
@@ -91,17 +67,14 @@ const KeeperSelectButton = ({
               visible={true}
             />
           ) : (
-            title
+            text
           )}
         </TextComponent>
 
-        {/* Render right-positioned icon if needed */}
         {showIcon && iconPosition === 'right' && <IconComponent style={styles.buttonIcon} {...iconProps} />}
       </div>
-
-      {children}
     </Clickable>
   );
 };
 
-export default KeeperSelectButton;
+export default KeeperButton;

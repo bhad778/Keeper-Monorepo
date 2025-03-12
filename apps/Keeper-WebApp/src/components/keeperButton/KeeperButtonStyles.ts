@@ -1,40 +1,28 @@
 import { useTheme } from 'theme/theme.context';
 
-export const useStyles = (isBig: boolean, selected?: boolean, disabled?: boolean) => {
+export const useStyles = (disabled?: boolean) => {
   const { theme } = useTheme();
 
   const styles: { [k: string]: React.CSSProperties } = {
-    benefitButtons: {
+    keeperButton: {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: disabled ? theme.color.primary : theme.color.white,
+      backgroundColor: disabled ? theme.color.primary : theme.color.pink,
       borderRadius: 50,
-      border: 'unset',
-      height: isBig ? 66 : 50,
-      margin: 6,
-      paddingLeft: 13,
-      paddingRight: 13,
-    },
-    benefitsButtonsPressed: {
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: theme.color.pink,
-      borderRadius: 50,
-      border: 'unset',
-      height: isBig ? 66 : 50,
+      border: disabled ? '1px solid white' : 'unset',
+      height: 50,
       margin: 6,
       paddingLeft: 13,
       paddingRight: 13,
     },
     buttonText: {
       color: 'black',
-      fontSize: isBig ? 25 : 14,
+      fontSize: 14,
       textAlign: 'center',
     },
     smallButtonText: {
-      fontSize: isBig ? 17 : 12,
+      fontSize: 12,
     },
     // New styles for icon integration
     buttonContentContainer: {
@@ -45,9 +33,9 @@ export const useStyles = (isBig: boolean, selected?: boolean, disabled?: boolean
       gap: '8px', // Spacing between icon and text
     },
     buttonIcon: {
-      color: selected ? 'black' : theme.color.primary,
-      height: isBig ? 28 : 20,
-      width: isBig ? 28 : 20,
+      color: theme.color.primary,
+      height: 20,
+      width: 20,
     },
   } as const;
 

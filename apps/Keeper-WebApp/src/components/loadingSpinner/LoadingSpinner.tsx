@@ -1,4 +1,5 @@
 import { CSSProperties } from 'react';
+// @ts-ignore
 import { Triangle } from 'react-loader-spinner';
 
 type LoadingSpinnerProps = {
@@ -14,8 +15,8 @@ const LoadingSpinner = ({ size = '130', styles }: LoadingSpinnerProps) => {
       <Triangle
         height={size}
         width={size}
-        color="#4fa94d"
-        ariaLabel="triangle-loading"
+        color='#4fa94d'
+        ariaLabel='triangle-loading'
         wrapperStyle={{}}
         visible={true}
       />

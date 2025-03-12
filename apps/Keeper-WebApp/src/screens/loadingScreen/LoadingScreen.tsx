@@ -1,3 +1,4 @@
+// @ts-ignore
 import { Triangle } from 'react-loader-spinner';
 
 import useStyles from './LoadingScreenStyles';
@@ -14,10 +15,10 @@ const LoadingScreen = ({ backgroundColor }: LoadingScreenProps) => {
   return (
     <div style={styles.loadingScreenContainer}>
       <Triangle
-        height="130"
-        width="130"
-        color="#4fa94d"
-        ariaLabel="triangle-loading"
+        height='130'
+        width='130'
+        color='#4fa94d'
+        ariaLabel='triangle-loading'
         wrapperStyle={{}}
         visible={true}
       />

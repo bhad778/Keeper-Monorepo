@@ -1,4 +1,5 @@
 import { useState } from 'react';
+// @ts-ignore
 import { Triangle } from 'react-loader-spinner';
 import { useDidMountEffect } from 'hooks';
 
@@ -41,10 +42,10 @@ const KeeperImage = ({ style, source, isApiCallLoading, resizeMode }: KeeperImag
     <>
       <div style={{ ...style, ...styles.emptyCompanyLogoContainer }}>
         <Triangle
-          height="130"
-          width="130"
-          color="#4fa94d"
-          ariaLabel="triangle-loading"
+          height='130'
+          width='130'
+          color='#4fa94d'
+          ariaLabel='triangle-loading'
           wrapperStyle={{}}
           visible={!isImageReady}
         />

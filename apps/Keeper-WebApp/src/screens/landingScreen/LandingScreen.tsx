@@ -1,5 +1,6 @@
 import { useAuth } from 'services';
 import { useEffect } from 'react';
+// @ts-ignore
 import { Triangle } from 'react-loader-spinner';
 
 import useStyles from './LandingScreenStyles';
