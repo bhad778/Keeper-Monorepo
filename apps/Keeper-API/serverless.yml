@@ -89,12 +89,12 @@ custom:
     platform: 'node'
     concurrency: 10
     packager: 'npm'
-    exclude:
-      - 'aws-sdk'
     define:
       'process.env.NODE_ENV': '"${opt:stage, self:provider.stage, "development"}"'
     external:
-      - 'aws-sdk'
+      - '@aws-sdk/client-s3'
+      - '@aws-sdk/s3-request-presigner'
+      - '@aws-sdk/types'
   dotenv:
     path: .env.${opt:stage, self:provider.stage, 'development'}
     includeAll: true

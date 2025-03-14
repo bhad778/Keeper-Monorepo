@@ -1,5 +1,5 @@
 import * as Joi from 'joi';
-import { S3 } from 'aws-sdk';
+import S3 from 'aws-sdk/clients/s3';
 import { v4 as uuid } from 'uuid';
 
 import { allowedMimes, headers } from '../../constants';

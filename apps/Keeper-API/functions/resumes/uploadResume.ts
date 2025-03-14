@@ -1,5 +1,5 @@
 import { APIGatewayEvent, Context } from 'aws-lambda';
-import { S3 } from 'aws-sdk';
+import { S3Client, PutObjectCommand, PutObjectCommandInput } from '@aws-sdk/client-s3';
 import { v4 as uuid } from 'uuid';
 import * as Joi from 'joi';
 
@@ -8,18 +8,14 @@ import connectToDatabase from '../../db';
 import Resume from '../../models/Resume';
 import { extractErrorMessage } from '../../keeperApiUtils';
 
-// List of allowed file types
-const allowedMimeTypes = ['application/pdf'];
-
 console.info('Starting Lambda function setup');
 
 // Log AWS environment info
 console.info('AWS Region:', process.env.AWS_REGION || 'Not set');
 
-// Initialize S3 client with proper configuration
-const s3 = new S3({
+// Initialize S3 client with AWS SDK v3
+const s3Client = new S3Client({
   region: process.env.AWS_REGION || 'us-east-1',
-  signatureVersion: 'v4',
 });
 
 const BUCKET_NAME = process.env.VITE_RESUME_BUCKET;
@@ -28,6 +24,9 @@ console.info('Using S3 bucket:', BUCKET_NAME || 'No bucket name specified!');
 if (!BUCKET_NAME) {
   console.error('VITE_RESUME_BUCKET environment variable is not set');
 }
+
+// List of allowed file types
+const allowedMimeTypes = ['application/pdf'];
 
 export const handler = async (event: APIGatewayEvent, context: Context) => {
   context.callbackWaitsForEmptyEventLoop = false;
@@ -95,8 +94,8 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
       throw new Error('S3 bucket name is not configured. Please check VITE_RESUME_BUCKET environment variable.');
     }
 
-    // Upload file to S3
-    const uploadParams = {
+    // Prepare S3 upload parameters
+    const uploadParams: PutObjectCommandInput = {
       Bucket: BUCKET_NAME,
       Key: key,
       Body: decodedFile,
@@ -106,29 +105,25 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
       Bucket: uploadParams.Bucket,
       Key: uploadParams.Key,
       ContentType: uploadParams.ContentType,
-      BodyLength: uploadParams.Body.length,
+      BodyLength: decodedFile.length,
     });
 
-    console.info('S3 configuration:', {
-      region: s3.config.region,
-      signatureVersion: s3.config.signatureVersion,
-      hasCredentials: !!s3.config.credentials,
-    });
-
-    // Create a manual promise wrapper for the s3.upload method
+    // Create upload command and send to S3
     console.info('Starting S3 upload');
-    const uploadResult: any = await new Promise((resolve, reject) => {
-      s3.upload(uploadParams, (err, data) => {
-        if (err) {
-          console.error('S3 upload error:', JSON.stringify(err));
-          reject(err);
-        } else {
-          console.info('S3 upload successful:', data.Location);
-          resolve(data);
-        }
-      });
-    });
+    const command = new PutObjectCommand(uploadParams);
+
+    try {
+      const uploadResult = await s3Client.send(command);
+      console.info('S3 upload result:', uploadResult);
+    } catch (uploadError) {
+      console.error('S3 upload error:', uploadError);
+      throw uploadError;
+    }
     console.info('S3 upload completed successfully');
+
+    // Construct the file URL manually since AWS SDK v3 doesn't return it directly
+    const fileUrl = `https://${BUCKET_NAME}.s3.amazonaws.com/${key}`;
+    console.info('Constructed file URL:', fileUrl);
 
     // Connect to the database
     console.info('Connecting to database');
@@ -153,7 +148,7 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
     if (existingResume) {
       console.info('Found existing resume, updating');
       // If a resume exists, update it
-      existingResume.fileUrl = uploadResult.Location;
+      existingResume.fileUrl = fileUrl;
       existingResume.fileName = fileName;
       existingResume.uploadDate = new Date();
       await existingResume.save();
@@ -173,7 +168,7 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
       // If no resume exists, create a new entry
       const newResume = new Resume({
         employeeId,
-        fileUrl: uploadResult.Location,
+        fileUrl,
         fileName,
       });
 
