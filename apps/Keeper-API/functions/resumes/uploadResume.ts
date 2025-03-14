@@ -8,12 +8,6 @@ import connectToDatabase from '../../db';
 import Resume from '../../models/Resume';
 import { extractErrorMessage } from '../../keeperApiUtils';
 
-console.info('Starting Lambda function setup');
-
-// Log AWS environment info
-console.info('AWS Region:', process.env.AWS_REGION || 'Not set');
-
-// Initialize S3 client with AWS SDK v3
 const s3Client = new S3Client({
   region: process.env.AWS_REGION || 'us-east-1',
 });
