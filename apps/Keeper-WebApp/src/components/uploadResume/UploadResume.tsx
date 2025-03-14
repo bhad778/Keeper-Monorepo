@@ -8,7 +8,11 @@ import toast from 'react-hot-toast';
 
 import useStyles from './UploadResumeStyles';
 
-const UploadResume = () => {
+interface UploadResumeProps {
+  onComplete?: () => void;
+}
+
+const UploadResume = ({ onComplete }: UploadResumeProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
@@ -57,6 +61,11 @@ const UploadResume = () => {
 
         // Update the hasResume flag in Redux
         dispatch(addLoggedInUser({ hasResume: true }));
+
+        // Call the onComplete callback if it exists
+        if (onComplete) {
+          onComplete();
+        }
       } else {
         toast.error(response.message || 'Failed to upload resume');
       }

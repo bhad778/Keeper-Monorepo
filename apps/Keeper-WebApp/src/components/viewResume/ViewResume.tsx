@@ -74,16 +74,16 @@ const ViewResume = () => {
     }
   };
 
-  // if (showReplace) {
-  //   return (
-  //     <UploadResume
-  //       onComplete={() => {
-  //         setShowReplace(false);
-  //         fetchResumeData();
-  //       }}
-  //     />
-  //   );
-  // }
+  if (showReplace) {
+    return (
+      <UploadResume
+        onComplete={() => {
+          setShowReplace(false);
+          fetchResumeData();
+        }}
+      />
+    );
+  }
 
   if (isLoading) {
     return (
@@ -102,11 +102,10 @@ const ViewResume = () => {
           <div style={styles.resumeHeader}>
             <div style={styles.resumeIconContainer}>
               <DescriptionIcon style={styles.resumeIcon} />
+              <AppBoldText style={styles.fileName}>{resumeData.resumeInfo.fileName}</AppBoldText>
             </div>
 
             <div style={styles.resumeDetails}>
-              <AppBoldText style={styles.fileName}>{resumeData.resumeInfo.fileName}</AppBoldText>
-
               <AppText style={styles.uploadDate}>
                 Uploaded on: {new Date(resumeData.resumeInfo.uploadDate).toLocaleDateString()}
               </AppText>

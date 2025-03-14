@@ -8,6 +8,13 @@ export const useStyles = () => {
       backgroundColor: theme.color.primary,
       margin: 0,
       padding: 5,
+      height: '90vh',
+      width: '40vw',
+      overflowY: 'auto',
+      justifyContent: 'center',
+      alignItems: 'center',
+      display: 'flex',
+      paddingBottom: 20,
     },
   } as const;
 
