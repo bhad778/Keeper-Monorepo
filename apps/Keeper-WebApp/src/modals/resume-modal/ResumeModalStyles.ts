@@ -9,7 +9,7 @@ export const useStyles = () => {
       margin: 0,
       padding: 5,
       height: '90vh',
-      width: '40vw',
+      width: '50vw',
       overflowY: 'auto',
       justifyContent: 'center',
       alignItems: 'center',
