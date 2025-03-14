@@ -7,6 +7,7 @@ frameworkVersion: '3'
 provider:
   name: aws
   runtime: nodejs18.x
+  stage: development
   timeout: 20
   region: us-east-1
   iamRoleStatements:

@@ -9,6 +9,7 @@ useDotenv: true
 provider:
   name: aws
   versionFunctions: false
+  stage: development
   runtime: nodejs18.x
   timeout: 20
   httpApi:
@@ -19,6 +20,7 @@ provider:
     # keeperImageUploadBucket: ${self:custom.keeperImageUploadBucket}
     region: 'us-east-1'
     VITE_RESUME_BUCKET: ${self:custom.resumeBucketName}
+    VITE_IMAGE_BUCKET: ${self:custom.imageBucketName}
   iamRoleStatements:
     # Allow sending emails with SES
     - Effect: 'Allow'
@@ -44,7 +46,11 @@ provider:
         - 's3:GetObject'
         - 's3:DeleteObject'
         - 's3:ListBucket'
-      Resource: 'arn:aws:s3:::*' # Ideally specify the exact bucket ARN(s)
+      Resource:
+        - 'arn:aws:s3:::${self:custom.resumeBucketName}'
+        - 'arn:aws:s3:::${self:custom.resumeBucketName}/*'
+        - 'arn:aws:s3:::${self:custom.imageBucketName}'
+        - 'arn:aws:s3:::${self:custom.imageBucketName}/*'
 
 package:
   individually: true
@@ -96,6 +102,7 @@ custom:
     automatic: true
     number: 3
   resumeBucketName: ${opt:stage, 'development'}-keeper-resume-bucket
+  imageBucketName: keeper-image-bucket
 
 resources:
   Resources:
@@ -103,6 +110,36 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.resumeBucketName}
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders:
+                - '*'
+              AllowedMethods:
+                - GET
+                - PUT
+                - POST
+                - HEAD
+              AllowedOrigins:
+                - https://zyrajobs.com
+                - http://localhost:3000
+              ExposedHeaders:
+                - ETag
+                - Content-Length
+                - Content-Type
+              MaxAge: 3600
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          BlockPublicPolicy: true
+          IgnorePublicAcls: true
+          RestrictPublicBuckets: true
+        OwnershipControls:
+          Rules:
+            - ObjectOwnership: BucketOwnerEnforced
+
+    ImagesBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.imageBucketName}
         CorsConfiguration:
           CorsRules:
             - AllowedHeaders:
@@ -156,6 +193,8 @@ functions:
 
   uploadResume:
     handler: functions/resumes/uploadResume.handler
+    environment:
+      VITE_RESUME_BUCKET: ${self:custom.resumeBucketName}
     events:
       - http:
           path: uploadResume
@@ -172,6 +211,8 @@ functions:
 
   imageUpload:
     handler: functions/misc/imageUpload.handler
+    environment:
+      VITE_IMAGE_BUCKET: ${self:custom.imageBucketName}
     events:
       - http:
           path: imageUpload

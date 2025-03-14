@@ -17,7 +17,7 @@ export const useStyles = (disabled?: boolean) => {
       paddingRight: 13,
     },
     buttonText: {
-      color: 'black',
+      color: disabled ? theme.color.white : theme.color.primary,
       fontSize: 14,
       textAlign: 'center',
     },

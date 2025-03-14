@@ -57,12 +57,13 @@ const ViewResume = () => {
       await UsersService.updateUserData({
         userId,
         accountType,
-        updateObject: { hasResume: true },
+        updateObject: { hasResume: false },
       });
 
       // Update the hasResume flag in Redux
       dispatch(addLoggedInUser({ hasResume: false }));
 
+      setResumeData(null);
       toast.success('Resume deleted successfully');
     } catch (error) {
       console.error('Error deleting resume:', error);
@@ -73,15 +74,16 @@ const ViewResume = () => {
     }
   };
 
-  const handleViewResume = () => {
-    if (resumeData?.downloadUrl) {
-      window.open(resumeData.downloadUrl, '_blank');
-    }
-  };
-
-  if (showReplace) {
-    return <UploadResume />;
-  }
+  // if (showReplace) {
+  //   return (
+  //     <UploadResume
+  //       onComplete={() => {
+  //         setShowReplace(false);
+  //         fetchResumeData();
+  //       }}
+  //     />
+  //   );
+  // }
 
   if (isLoading) {
     return (
@@ -97,26 +99,26 @@ const ViewResume = () => {
 
       {resumeData ? (
         <div style={styles.resumeContainer}>
-          <div style={styles.resumeIconContainer}>
-            <DescriptionIcon style={styles.resumeIcon} />
+          <div style={styles.resumeHeader}>
+            <div style={styles.resumeIconContainer}>
+              <DescriptionIcon style={styles.resumeIcon} />
+            </div>
+
+            <div style={styles.resumeDetails}>
+              <AppBoldText style={styles.fileName}>{resumeData.resumeInfo.fileName}</AppBoldText>
+
+              <AppText style={styles.uploadDate}>
+                Uploaded on: {new Date(resumeData.resumeInfo.uploadDate).toLocaleDateString()}
+              </AppText>
+            </div>
           </div>
 
-          <div style={styles.resumeDetails}>
-            <AppBoldText style={styles.fileName}>{resumeData.resumeInfo.fileName}</AppBoldText>
-
-            <AppText style={styles.uploadDate}>
-              Uploaded on: {new Date(resumeData.resumeInfo.uploadDate).toLocaleDateString()}
-            </AppText>
+          {/* Embedded PDF viewer */}
+          <div style={styles.pdfContainer}>
+            <iframe src={`${resumeData.downloadUrl}#toolbar=0`} style={styles.pdfViewer} title='Resume PDF' />
           </div>
 
           <div style={styles.actionsContainer}>
-            <KeeperSelectButton
-              buttonStyles={styles.viewButton}
-              onClick={handleViewResume}
-              title='View Resume'
-              selected={true}
-            />
-
             <div style={styles.buttonsRow}>
               <KeeperSelectButton
                 buttonStyles={styles.replaceButton}
@@ -153,7 +155,7 @@ const ViewResume = () => {
           <AppText style={styles.noResumeText}>We couldn't find your resume. Please upload a new one.</AppText>
           <KeeperSelectButton
             buttonStyles={styles.uploadNewButton}
-            onClick={() => dispatch(addLoggedInUser({ hasResume: false }))}
+            onClick={() => setShowReplace(true)}
             title='Upload New Resume'
           />
         </div>

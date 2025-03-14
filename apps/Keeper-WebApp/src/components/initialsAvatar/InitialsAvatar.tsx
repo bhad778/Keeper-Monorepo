@@ -1,10 +1,11 @@
 import { AlertModal, AppHeaderText, Clickable, KeeperModal } from 'components';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from 'services';
 import { Link } from 'react-router-dom';
 import { Auth } from 'aws-amplify';
 
 import useStyles from './InitialsAvatarStyles';
+import { ResumeModal } from 'modals';
 
 type InitialsAvatarProps = {
   currentPath: string;
@@ -15,10 +16,16 @@ type InitialsAvatarProps = {
 const InitialsAvatar = ({ currentPath }: InitialsAvatarProps) => {
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
   const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
+  const [isResumeModalVisible, setIsResumeModalVisible] = useState(false);
 
   const { logOut, resetReduxData } = useAuth();
 
   const styles = useStyles(currentPath);
+
+  useEffect(() => {
+    closeAccountModal();
+    closeAlertModal();
+  }, [isResumeModalVisible]);
 
   const closeAccountModal = useCallback(() => {
     setIsAccountModalOpen(false);
@@ -51,6 +58,11 @@ const InitialsAvatar = ({ currentPath }: InitialsAvatarProps) => {
     );
   };
 
+  const onYourResumeClick = () => {
+    setIsResumeModalVisible(true);
+    closeAccountModal();
+  };
+
   return (
     <>
       <AlertModal
@@ -60,7 +72,11 @@ const InitialsAvatar = ({ currentPath }: InitialsAvatarProps) => {
         closeModal={closeAlertModal}
         onConfirmPress={deleteAccount}
       />
+      <ResumeModal isVisible={isResumeModalVisible} setIsVisible={setIsResumeModalVisible} />
       <KeeperModal isOpen={isAccountModalOpen} closeModal={closeAccountModal} modalStyles={styles.keeperModal}>
+        <Clickable style={styles.modalItem} onClick={() => setIsResumeModalVisible(true)}>
+          <AppHeaderText style={styles.modalItemText}>Your Resume</AppHeaderText>
+        </Clickable>
         <Clickable style={styles.modalItem} onClick={logOut}>
           <AppHeaderText style={styles.modalItemText}>Log Out</AppHeaderText>
         </Clickable>
